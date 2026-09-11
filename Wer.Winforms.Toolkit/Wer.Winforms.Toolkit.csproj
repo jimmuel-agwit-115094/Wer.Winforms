@@ -31,22 +31,76 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="System.Design" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controls\WerBanner.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Controls\WerButton.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Controls\WerButtonPrimary.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Controls\WerButtonDisabled.cs">
+<Compile Include="Controls\WerButtonWarning.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Controls\WerButtonWarning.cs">
+    <Compile Include="Controls\WerButtonSuccess.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Controls\WerButtonOrange.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\WerGroupBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\WerCheckbox.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\WerDatePicker.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\WerIntegerField.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\WerRadioButton.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\WerRichTextField.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\WerSearchField.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\WerLink.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\WerLabel.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\WerTextField.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\WerTabPage.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\WerTabControl.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\WerStatusIndicator.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\WerComboBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\WerCurrencyField.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Design\WerTabControlDesigner.cs" />
+    <Compile Include="WerTheme.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

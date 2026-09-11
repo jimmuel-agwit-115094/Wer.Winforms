@@ -1,0 +1,167 @@
+using System;
+using System.ComponentModel;
+using System.Drawing;
+using System.Drawing.Drawing2D;
+using System.Drawing.Text;
+using System.Windows.Forms;
+
+namespace Wer.Winforms.Toolkit.Controls
+{
+    [ToolboxItem(true)]
+    [Description("Tab control with custom-painted headers. Behaves exactly like the native TabControl — add TabPages in the designer, drop controls onto each page.")]
+    [DefaultEvent("SelectedIndexChanged")]
+    public class WerTabControl : TabControl
+    {
+        private int _hoverIndex = -1;
+
+        private const int IndicatorH   = 3;
+        private const int BorderRadius = 6;
+
+        private static readonly Color BorderColor = Color.FromArgb(210, 215, 220);
+
+        public WerTabControl()
+        {
+            SetStyle(ControlStyles.UserPaint | ControlStyles.AllPaintingInWmPaint |
+                     ControlStyles.OptimizedDoubleBuffer, true);
+
+            Font      = WerTheme.BodyFont;
+            BackColor = Color.White;
+            ItemSize  = new Size(0, 38);   // controls tab strip height; width is auto
+            Padding   = new Point(16, 0);  // horizontal padding inside each tab header
+        }
+
+        // ── Paint ─────────────────────────────────────────────────────
+
+        protected override void OnPaint(PaintEventArgs e)
+        {
+            var g = e.Graphics;
+            g.SmoothingMode     = SmoothingMode.AntiAlias;
+            g.TextRenderingHint = TextRenderingHint.ClearTypeGridFit;
+
+            // Clear entire area with parent's back color to avoid bleed
+            using (var brush = new SolidBrush(Parent != null ? Parent.BackColor : SystemColors.Control))
+                g.FillRectangle(brush, ClientRectangle);
+
+            if (TabCount == 0) return;
+
+            // Content area rounded border (fills white inside)
+            DrawContentBorder(g);
+
+            // Fill entire tab strip area white
+            var firstTab = GetTabRect(0);
+            var stripRect = new Rectangle(1, 1, Width - 2, firstTab.Bottom);
+            using (var brush = new SolidBrush(Color.White))
+                g.FillRectangle(brush, stripRect);
+
+            // Separator line between strip and content
+            using (var pen = new Pen(Color.FromArgb(220, 220, 220), 1))
+                g.DrawLine(pen, 0, firstTab.Bottom + 1, Width, firstTab.Bottom + 1);
+
+            // Tab headers
+            for (int i = 0; i < TabCount; i++)
+                DrawTab(g, i);
+        }
+
+        private void DrawContentBorder(Graphics g)
+        {
+            // Border wraps the entire control (tab strip + content), inset by 1px
+            var rect = new Rectangle(0, 0, Width - 1, Height - 1);
+            if (rect.Width <= 0 || rect.Height <= 0) return;
+
+            // Fill content area white inside the rounded rect
+            using (var path = RoundedRect(rect, BorderRadius))
+            using (var brush = new SolidBrush(Color.White))
+                g.FillPath(brush, path);
+
+            using (var path = RoundedRect(rect, BorderRadius))
+            using (var pen  = new Pen(BorderColor, 1f))
+                g.DrawPath(pen, path);
+        }
+
+        private void DrawTab(Graphics g, int index)
+        {
+            var  bounds   = GetTabRect(index);
+            bool selected = index == SelectedIndex;
+            bool hover    = index == _hoverIndex;
+
+            // Clear tab background
+            using (var brush = new SolidBrush(BackColor))
+                g.FillRectangle(brush, bounds);
+
+            // Hover tint
+            if (hover && !selected)
+                using (var brush = new SolidBrush(Color.FromArgb(15, WerTheme.PrimaryColor)))
+                    g.FillRectangle(brush, bounds);
+
+            // Label
+            var font  = selected
+                ? new Font(Font.FontFamily, Font.Size, FontStyle.Bold)
+                : Font;
+            Color color;
+            if (selected)
+                color = Color.FromArgb(33, 37, 41);       // dark — matches screenshot
+            else if (hover)
+                color = WerTheme.PrimaryColor;             // teal on hover
+            else
+                color = Color.FromArgb(108, 117, 125);    // muted gray for inactive
+
+            TextRenderer.DrawText(g, TabPages[index].Text, font, bounds, color,
+                TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter |
+                TextFormatFlags.SingleLine);
+
+            // Active underline indicator — full tab width, flush to bottom
+            if (selected)
+                using (var brush = new SolidBrush(WerTheme.PrimaryColor))
+                    g.FillRectangle(brush,
+                        bounds.X, bounds.Bottom - IndicatorH,
+                        bounds.Width, IndicatorH);
+
+            if (selected) font.Dispose();
+        }
+
+        // ── Hover tracking ─────────────────────────────────────────────
+
+        protected override void OnMouseMove(MouseEventArgs e)
+        {
+            base.OnMouseMove(e);
+            int h = -1;
+            for (int i = 0; i < TabCount; i++)
+                if (GetTabRect(i).Contains(e.Location)) { h = i; break; }
+            if (h != _hoverIndex) { _hoverIndex = h; Invalidate(); }
+        }
+
+        protected override void OnMouseLeave(EventArgs e)
+        {
+            base.OnMouseLeave(e);
+            _hoverIndex = -1;
+            Invalidate();
+        }
+
+        protected override void OnSelectedIndexChanged(EventArgs e)
+        {
+            base.OnSelectedIndexChanged(e);
+            Invalidate();
+        }
+
+        protected override void OnControlAdded(ControlEventArgs e)
+        {
+            base.OnControlAdded(e);
+            if (e.Control is TabPage tp)
+                tp.BackColor = Color.White;
+        }
+
+        // ── Helpers ───────────────────────────────────────────────────
+
+        private static GraphicsPath RoundedRect(Rectangle rect, int radius)
+        {
+            var path = new GraphicsPath();
+            int d    = radius * 2;
+            path.AddArc(rect.X,           rect.Y,          d, d, 180, 90);
+            path.AddArc(rect.Right - d,   rect.Y,          d, d, 270, 90);
+            path.AddArc(rect.Right - d,   rect.Bottom - d, d, d,   0, 90);
+            path.AddArc(rect.X,           rect.Bottom - d, d, d,  90, 90);
+            path.CloseFigure();
+            return path;
+        }
+    }
+}

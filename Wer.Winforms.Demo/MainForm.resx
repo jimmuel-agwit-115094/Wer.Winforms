@@ -117,4 +117,12 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="werRichTextField1.Rtf" xml:space="preserve">
+    <value>{\rtf1\ansi\deff0\nouicompat{\fonttbl{\f0\fnil Segoe UI;}}
+{\colortbl ;\red33\green37\blue41;}
+{\*\generator Riched20 10.0.26100}\viewkind4\uc1 
+\pard\cf1\f0\fs20\lang1033 werRichTextField1\par
+}
+</value>
+  </data>
 </root>

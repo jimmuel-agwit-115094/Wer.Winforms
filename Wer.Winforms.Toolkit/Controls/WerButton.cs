@@ -28,7 +28,7 @@ namespace Wer.Winforms.Toolkit.Controls
                 ControlStyles.SupportsTransparentBackColor,
                 true);
 
-            Font = new Font("Segoe UI", 9.75f, FontStyle.Regular);
+            Font = WerTheme.ButtonFont;
             ForeColor = Color.White;
             Size = new Size(100, 36);
             Cursor = Cursors.Hand;
@@ -93,29 +93,38 @@ namespace Wer.Winforms.Toolkit.Controls
             var rect = new Rectangle(0, 0, Width - 1, Height - 1);
             var radius = Math.Min(_borderRadius, Math.Min(rect.Width, rect.Height) / 2);
 
-            Color fill;
             if (!Enabled)
-                fill = _buttonColor;
-            else if (_isPressed)
-                fill = _pressedColor;
-            else if (_isHovering)
-                fill = _hoverColor;
-            else
-                fill = _buttonColor;
+            {
+                // Disabled look: white fill, gray border, gray text
+                using (var path = CreateRoundedRect(rect, radius))
+                {
+                    using (var brush = new SolidBrush(Color.White))
+                        g.FillPath(brush, path);
+
+                    using (var pen = new Pen(WerTheme.BorderColor, 1))
+                        g.DrawPath(pen, path);
+                }
+
+                if (!string.IsNullOrEmpty(Text))
+                {
+                    var flags = TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter |
+                                TextFormatFlags.SingleLine | TextFormatFlags.NoPadding;
+                    TextRenderer.DrawText(g, Text, Font, ClientRectangle, WerTheme.DisabledColor, flags);
+                }
+                return;
+            }
+
+            Color fill = _isPressed ? _pressedColor : _isHovering ? _hoverColor : _buttonColor;
 
             using (var path = CreateRoundedRect(rect, radius))
             {
                 using (var brush = new SolidBrush(fill))
-                {
                     g.FillPath(brush, path);
-                }
 
                 if (_borderWidth > 0 && _borderColor != Color.Empty)
                 {
                     using (var pen = new Pen(_borderColor, _borderWidth))
-                    {
                         g.DrawPath(pen, path);
-                    }
                 }
             }
 
@@ -125,6 +134,13 @@ namespace Wer.Winforms.Toolkit.Controls
                             TextFormatFlags.SingleLine | TextFormatFlags.NoPadding;
                 TextRenderer.DrawText(g, Text, Font, ClientRectangle, ForeColor, flags);
             }
+        }
+
+        protected override void OnEnabledChanged(EventArgs e)
+        {
+            Cursor = Enabled ? Cursors.Hand : Cursors.Default;
+            Invalidate();
+            base.OnEnabledChanged(e);
         }
 
         private static GraphicsPath CreateRoundedRect(Rectangle rect, int radius)

@@ -4,14 +4,14 @@ using System.Drawing;
 namespace Wer.Winforms.Toolkit.Controls
 {
     [ToolboxItem(true)]
-    [Description("Primary filled button — uses WerTheme.PrimaryColor.")]
-    public class WerButtonPrimary : WerButton
+    [Description("Orange button — uses WerTheme.OrangeColor.")]
+    public class WerButtonOrange : WerButton
     {
-        public WerButtonPrimary()
+        public WerButtonOrange()
         {
-            ButtonColor = WerTheme.PrimaryColor;
-            HoverColor = DarkenColor(WerTheme.PrimaryColor, 0.15);
-            PressedColor = DarkenColor(WerTheme.PrimaryColor, 0.30);
+            ButtonColor = WerTheme.OrangeColor;
+            HoverColor = DarkenColor(WerTheme.OrangeColor, 0.15);
+            PressedColor = DarkenColor(WerTheme.OrangeColor, 0.30);
             ForeColor = Color.White;
         }
 
