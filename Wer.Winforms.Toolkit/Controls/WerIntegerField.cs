@@ -58,6 +58,7 @@ namespace Wer.Winforms.Toolkit.Controls
             // Border panel
             _inputBorder = new Panel { BackColor = Color.Transparent };
             _inputBorder.Paint += OnBorderPaint;
+            _inputBorder.Click += (s, ev) => { _input.Visible = true; _input.Focus(); };
             Controls.Add(_inputBorder);
 
             // Inner TextBox
@@ -72,10 +73,17 @@ namespace Wer.Winforms.Toolkit.Controls
             };
             _input.KeyPress    += OnInputKeyPress;
             _input.TextChanged += OnInputTextChanged;
-            _input.GotFocus    += (s, e) => { _hasFocus = true;  _inputBorder.Invalidate(); };
-            _input.LostFocus   += (s, e) => { _hasFocus = false; _inputBorder.Invalidate(); ClampValue(); };
+            _input.GotFocus    += (s, e) => { _hasFocus = true; _input.Visible = true; _inputBorder.Invalidate(); };
+            _input.LostFocus   += (s, e) =>
+            {
+                _hasFocus = false;
+                ClampValue();
+                _input.Visible = !string.IsNullOrEmpty(_input.Text);
+                _inputBorder.Invalidate();
+            };
             _inputBorder.Controls.Add(_input);
 
+            _input.Visible = false;
             LayoutInternals();
         }
 

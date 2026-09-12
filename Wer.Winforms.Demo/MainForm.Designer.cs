@@ -43,6 +43,11 @@ namespace Wer.Winforms.Demo
             this.werNegativeBanner1 = new Wer.Winforms.Toolkit.Controls.WerNegativeBanner();
             this.werInfoBanner1 = new Wer.Winforms.Toolkit.Controls.WerInfoBanner();
             this.tabPage4 = new System.Windows.Forms.TabPage();
+            this.werButtonSuccess6 = new Wer.Winforms.Toolkit.Controls.WerButtonSuccess();
+            this.werButtonSuccess5 = new Wer.Winforms.Toolkit.Controls.WerButtonSuccess();
+            this.werButtonSuccess4 = new Wer.Winforms.Toolkit.Controls.WerButtonSuccess();
+            this.werButtonSuccess3 = new Wer.Winforms.Toolkit.Controls.WerButtonSuccess();
+            this.werButtonSuccess2 = new Wer.Winforms.Toolkit.Controls.WerButtonSuccess();
             this.werPercentField1 = new Wer.Winforms.Toolkit.Controls.WerPercentField();
             this.werSearchField1 = new Wer.Winforms.Toolkit.Controls.WerSearchField();
             this.werTextField1 = new Wer.Winforms.Toolkit.Controls.WerTextField();
@@ -50,7 +55,6 @@ namespace Wer.Winforms.Demo
             this.werTelephoneField1 = new Wer.Winforms.Toolkit.Controls.WerTelephoneField();
             this.werIntegerField1 = new Wer.Winforms.Toolkit.Controls.WerIntegerField();
             this.werDatePicker1 = new Wer.Winforms.Toolkit.Controls.WerDatePicker();
-            this.werCurrencyField1 = new Wer.Winforms.Toolkit.Controls.WerCurrencyField();
             this.werComboBox1 = new Wer.Winforms.Toolkit.Controls.WerComboBox();
             this.tabPage5 = new System.Windows.Forms.TabPage();
             this.werEmptyGroupBox1 = new Wer.Winforms.Toolkit.Controls.WerEmptyGroupBox();
@@ -58,6 +62,7 @@ namespace Wer.Winforms.Demo
             this.tabPage6 = new System.Windows.Forms.TabPage();
             this.werDataGrid1 = new Wer.Winforms.Toolkit.Controls.WerDataGrid();
             this.werLabel3 = new Wer.Winforms.Toolkit.Controls.WerLabel();
+            this.werCurrencyField1 = new Wer.Winforms.Toolkit.Controls.WerCurrencyField();
             this.werTabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.tabPage2.SuspendLayout();
@@ -440,6 +445,12 @@ namespace Wer.Winforms.Demo
             // tabPage4
             // 
             this.tabPage4.BackColor = System.Drawing.Color.White;
+            this.tabPage4.Controls.Add(this.werCurrencyField1);
+            this.tabPage4.Controls.Add(this.werButtonSuccess6);
+            this.tabPage4.Controls.Add(this.werButtonSuccess5);
+            this.tabPage4.Controls.Add(this.werButtonSuccess4);
+            this.tabPage4.Controls.Add(this.werButtonSuccess3);
+            this.tabPage4.Controls.Add(this.werButtonSuccess2);
             this.tabPage4.Controls.Add(this.werPercentField1);
             this.tabPage4.Controls.Add(this.werSearchField1);
             this.tabPage4.Controls.Add(this.werTextField1);
@@ -447,7 +458,6 @@ namespace Wer.Winforms.Demo
             this.tabPage4.Controls.Add(this.werTelephoneField1);
             this.tabPage4.Controls.Add(this.werIntegerField1);
             this.tabPage4.Controls.Add(this.werDatePicker1);
-            this.tabPage4.Controls.Add(this.werCurrencyField1);
             this.tabPage4.Controls.Add(this.werComboBox1);
             this.tabPage4.Location = new System.Drawing.Point(4, 42);
             this.tabPage4.Name = "tabPage4";
@@ -455,6 +465,83 @@ namespace Wer.Winforms.Demo
             this.tabPage4.Size = new System.Drawing.Size(940, 471);
             this.tabPage4.TabIndex = 3;
             this.tabPage4.Text = "Text Fields";
+            // 
+            // werButtonSuccess6
+            // 
+            this.werButtonSuccess6.BorderColor = System.Drawing.Color.Empty;
+            this.werButtonSuccess6.ButtonColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(167)))), ((int)(((byte)(69)))));
+            this.werButtonSuccess6.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.werButtonSuccess6.Font = new System.Drawing.Font("Segoe UI", 9.75F);
+            this.werButtonSuccess6.ForeColor = System.Drawing.Color.White;
+            this.werButtonSuccess6.HoverColor = System.Drawing.Color.FromArgb(((int)(((byte)(34)))), ((int)(((byte)(141)))), ((int)(((byte)(58)))));
+            this.werButtonSuccess6.Location = new System.Drawing.Point(347, 383);
+            this.werButtonSuccess6.Name = "werButtonSuccess6";
+            this.werButtonSuccess6.PressedColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(116)))), ((int)(((byte)(48)))));
+            this.werButtonSuccess6.Size = new System.Drawing.Size(73, 36);
+            this.werButtonSuccess6.TabIndex = 14;
+            this.werButtonSuccess6.Text = "Test";
+            // 
+            // werButtonSuccess5
+            // 
+            this.werButtonSuccess5.BorderColor = System.Drawing.Color.Empty;
+            this.werButtonSuccess5.ButtonColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(167)))), ((int)(((byte)(69)))));
+            this.werButtonSuccess5.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.werButtonSuccess5.Font = new System.Drawing.Font("Segoe UI", 9.75F);
+            this.werButtonSuccess5.ForeColor = System.Drawing.Color.White;
+            this.werButtonSuccess5.HoverColor = System.Drawing.Color.FromArgb(((int)(((byte)(34)))), ((int)(((byte)(141)))), ((int)(((byte)(58)))));
+            this.werButtonSuccess5.Location = new System.Drawing.Point(347, 298);
+            this.werButtonSuccess5.Name = "werButtonSuccess5";
+            this.werButtonSuccess5.PressedColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(116)))), ((int)(((byte)(48)))));
+            this.werButtonSuccess5.Size = new System.Drawing.Size(73, 36);
+            this.werButtonSuccess5.TabIndex = 13;
+            this.werButtonSuccess5.Text = "Test";
+            // 
+            // werButtonSuccess4
+            // 
+            this.werButtonSuccess4.BorderColor = System.Drawing.Color.Empty;
+            this.werButtonSuccess4.ButtonColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(167)))), ((int)(((byte)(69)))));
+            this.werButtonSuccess4.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.werButtonSuccess4.Font = new System.Drawing.Font("Segoe UI", 9.75F);
+            this.werButtonSuccess4.ForeColor = System.Drawing.Color.White;
+            this.werButtonSuccess4.HoverColor = System.Drawing.Color.FromArgb(((int)(((byte)(34)))), ((int)(((byte)(141)))), ((int)(((byte)(58)))));
+            this.werButtonSuccess4.Location = new System.Drawing.Point(347, 212);
+            this.werButtonSuccess4.Name = "werButtonSuccess4";
+            this.werButtonSuccess4.PressedColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(116)))), ((int)(((byte)(48)))));
+            this.werButtonSuccess4.Size = new System.Drawing.Size(73, 36);
+            this.werButtonSuccess4.TabIndex = 12;
+            this.werButtonSuccess4.Text = "Test";
+            // 
+            // werButtonSuccess3
+            // 
+            this.werButtonSuccess3.BorderColor = System.Drawing.Color.Empty;
+            this.werButtonSuccess3.ButtonColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(167)))), ((int)(((byte)(69)))));
+            this.werButtonSuccess3.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.werButtonSuccess3.Font = new System.Drawing.Font("Segoe UI", 9.75F);
+            this.werButtonSuccess3.ForeColor = System.Drawing.Color.White;
+            this.werButtonSuccess3.HoverColor = System.Drawing.Color.FromArgb(((int)(((byte)(34)))), ((int)(((byte)(141)))), ((int)(((byte)(58)))));
+            this.werButtonSuccess3.Location = new System.Drawing.Point(347, 134);
+            this.werButtonSuccess3.Name = "werButtonSuccess3";
+            this.werButtonSuccess3.PressedColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(116)))), ((int)(((byte)(48)))));
+            this.werButtonSuccess3.Size = new System.Drawing.Size(73, 36);
+            this.werButtonSuccess3.TabIndex = 11;
+            this.werButtonSuccess3.Text = "Test";
+            this.werButtonSuccess3.Click += new System.EventHandler(this.werButtonSuccess3_Click);
+            // 
+            // werButtonSuccess2
+            // 
+            this.werButtonSuccess2.BorderColor = System.Drawing.Color.Empty;
+            this.werButtonSuccess2.ButtonColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(167)))), ((int)(((byte)(69)))));
+            this.werButtonSuccess2.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.werButtonSuccess2.Font = new System.Drawing.Font("Segoe UI", 9.75F);
+            this.werButtonSuccess2.ForeColor = System.Drawing.Color.White;
+            this.werButtonSuccess2.HoverColor = System.Drawing.Color.FromArgb(((int)(((byte)(34)))), ((int)(((byte)(141)))), ((int)(((byte)(58)))));
+            this.werButtonSuccess2.Location = new System.Drawing.Point(347, 51);
+            this.werButtonSuccess2.Name = "werButtonSuccess2";
+            this.werButtonSuccess2.PressedColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(116)))), ((int)(((byte)(48)))));
+            this.werButtonSuccess2.Size = new System.Drawing.Size(73, 36);
+            this.werButtonSuccess2.TabIndex = 10;
+            this.werButtonSuccess2.Text = "Test";
+            this.werButtonSuccess2.Click += new System.EventHandler(this.werButtonSuccess2_Click);
             // 
             // werPercentField1
             // 
@@ -470,7 +557,7 @@ namespace Wer.Winforms.Demo
             // 
             this.werSearchField1.BackColor = System.Drawing.Color.Transparent;
             this.werSearchField1.Font = new System.Drawing.Font("Segoe UI", 9.75F);
-            this.werSearchField1.Location = new System.Drawing.Point(426, 298);
+            this.werSearchField1.Location = new System.Drawing.Point(468, 298);
             this.werSearchField1.Name = "werSearchField1";
             this.werSearchField1.Size = new System.Drawing.Size(300, 36);
             this.werSearchField1.TabIndex = 7;
@@ -481,7 +568,7 @@ namespace Wer.Winforms.Demo
             this.werTextField1.BackColor = System.Drawing.Color.Transparent;
             this.werTextField1.Font = new System.Drawing.Font("Segoe UI", 9.75F);
             this.werTextField1.LabelText = "TextField Label";
-            this.werTextField1.Location = new System.Drawing.Point(426, 188);
+            this.werTextField1.Location = new System.Drawing.Point(468, 188);
             this.werTextField1.Name = "werTextField1";
             this.werTextField1.Size = new System.Drawing.Size(300, 60);
             this.werTextField1.TabIndex = 6;
@@ -490,7 +577,7 @@ namespace Wer.Winforms.Demo
             // 
             this.werPhoneField1.BackColor = System.Drawing.Color.Transparent;
             this.werPhoneField1.Font = new System.Drawing.Font("Segoe UI", 9.75F);
-            this.werPhoneField1.Location = new System.Drawing.Point(426, 110);
+            this.werPhoneField1.Location = new System.Drawing.Point(468, 110);
             this.werPhoneField1.Name = "werPhoneField1";
             this.werPhoneField1.Size = new System.Drawing.Size(300, 60);
             this.werPhoneField1.TabIndex = 5;
@@ -499,7 +586,7 @@ namespace Wer.Winforms.Demo
             // 
             this.werTelephoneField1.BackColor = System.Drawing.Color.Transparent;
             this.werTelephoneField1.Font = new System.Drawing.Font("Segoe UI", 9.75F);
-            this.werTelephoneField1.Location = new System.Drawing.Point(426, 27);
+            this.werTelephoneField1.Location = new System.Drawing.Point(468, 27);
             this.werTelephoneField1.Name = "werTelephoneField1";
             this.werTelephoneField1.Size = new System.Drawing.Size(300, 60);
             this.werTelephoneField1.TabIndex = 4;
@@ -527,18 +614,6 @@ namespace Wer.Winforms.Demo
             this.werDatePicker1.TabIndex = 2;
             this.werDatePicker1.Text = "werDatePicker1";
             this.werDatePicker1.Value = null;
-            // 
-            // werCurrencyField1
-            // 
-            this.werCurrencyField1.BackColor = System.Drawing.Color.Transparent;
-            this.werCurrencyField1.Font = new System.Drawing.Font("Segoe UI", 9.75F);
-            this.werCurrencyField1.LabelText = "Currency Label";
-            this.werCurrencyField1.Location = new System.Drawing.Point(22, 110);
-            this.werCurrencyField1.Name = "werCurrencyField1";
-            this.werCurrencyField1.Required = true;
-            this.werCurrencyField1.Size = new System.Drawing.Size(319, 60);
-            this.werCurrencyField1.TabIndex = 1;
-            this.werCurrencyField1.Value = null;
             // 
             // werComboBox1
             // 
@@ -630,6 +705,18 @@ namespace Wer.Winforms.Demo
             this.werLabel3.TabIndex = 2;
             this.werLabel3.Text = "Winforms Controls";
             // 
+            // werCurrencyField1
+            // 
+            this.werCurrencyField1.BackColor = System.Drawing.Color.Transparent;
+            this.werCurrencyField1.Font = new System.Drawing.Font("Segoe UI", 9.75F);
+            this.werCurrencyField1.LabelText = "Currency Label";
+            this.werCurrencyField1.Location = new System.Drawing.Point(22, 111);
+            this.werCurrencyField1.Name = "werCurrencyField1";
+            this.werCurrencyField1.Size = new System.Drawing.Size(319, 59);
+            this.werCurrencyField1.TabIndex = 15;
+            this.werCurrencyField1.Text = "werCurrencyField1";
+            this.werCurrencyField1.Value = null;
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -686,7 +773,6 @@ namespace Wer.Winforms.Demo
         private System.Windows.Forms.TabPage tabPage4;
         private Toolkit.Controls.WerIntegerField werIntegerField1;
         private Toolkit.Controls.WerDatePicker werDatePicker1;
-        private Toolkit.Controls.WerCurrencyField werCurrencyField1;
         private Toolkit.Controls.WerComboBox werComboBox1;
         private Toolkit.Controls.WerButtonWarning werButtonWarning2;
         private Toolkit.Controls.WerPhoneField werPhoneField1;
@@ -701,5 +787,11 @@ namespace Wer.Winforms.Demo
         private Toolkit.Controls.WerPercentField werPercentField1;
         private System.Windows.Forms.TabPage tabPage6;
         private Toolkit.Controls.WerDataGrid werDataGrid1;
+        private Toolkit.Controls.WerButtonSuccess werButtonSuccess2;
+        private Toolkit.Controls.WerButtonSuccess werButtonSuccess6;
+        private Toolkit.Controls.WerButtonSuccess werButtonSuccess5;
+        private Toolkit.Controls.WerButtonSuccess werButtonSuccess4;
+        private Toolkit.Controls.WerButtonSuccess werButtonSuccess3;
+        private Toolkit.Controls.WerCurrencyField werCurrencyField1;
     }
 }

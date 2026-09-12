@@ -14,10 +14,10 @@ namespace Wer.Winforms.Demo
             // Populate combobox
             werComboBox1.Items.AddRange(new[]
             {
-                "Combobox item",
-                "Combobox item",
-                "Combobox item",
-                "Combobox item"
+                "A",
+                "B",
+                "C",
+                "D"
             });
 
             SetupDataGrid();
@@ -70,6 +70,18 @@ namespace Wer.Winforms.Demo
         private void werDataGrid1_Load(object sender, EventArgs e)
         {
 
+        }
+
+        private void werButtonSuccess2_Click(object sender, EventArgs e)
+        {
+            var val = werComboBox1.SelectedItem.ToString();
+            MessageBox.Show("Selected value: " + val, "ComboBox Value");
+        }
+
+        private void werButtonSuccess3_Click(object sender, EventArgs e)
+        {
+            var val = decimal.Parse(werCurrencyField1.Text);
+            MessageBox.Show("Selected value: " + val, "ComboBox Value");
         }
     }
 }

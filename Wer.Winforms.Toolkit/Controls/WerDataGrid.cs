@@ -225,7 +225,7 @@ namespace Wer.Winforms.Toolkit.Controls
             Controls.Add(_vScroll);
 
             _searchBox = new WerSearchField();
-            _searchBox.Size = new Size(200, 30);
+            _searchBox.Size = new Size(260, 30);
             _searchBox.Text = "";
             _searchBox.TextChanged += (s, ev) =>
             {

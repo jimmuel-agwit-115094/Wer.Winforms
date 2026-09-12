@@ -62,6 +62,7 @@ namespace Wer.Winforms.Toolkit.Controls
             // Border panel
             _inputBorder = new Panel { BackColor = Color.Transparent };
             _inputBorder.Paint += OnBorderPaint;
+            _inputBorder.Click += (s, ev) => { _input.Visible = true; _input.Focus(); };
             Controls.Add(_inputBorder);
 
             // Inner TextBox
@@ -81,6 +82,9 @@ namespace Wer.Winforms.Toolkit.Controls
             _inputBorder.Controls.Add(_input);
 
             LayoutInternals();
+
+            // Start with input hidden so placeholder shows
+            _input.Visible = false;
         }
 
         // ── Public properties ────────────────────────────────────────
@@ -217,6 +221,7 @@ namespace Wer.Winforms.Toolkit.Controls
         private void OnInputGotFocus(object sender, EventArgs e)
         {
             _hasFocus = true;
+            _input.Visible = true;
             _inputBorder.Invalidate();
 
             // Strip thousand separators for easier editing
@@ -226,21 +231,24 @@ namespace Wer.Winforms.Toolkit.Controls
         private void OnInputLostFocus(object sender, EventArgs e)
         {
             _hasFocus = false;
-            _inputBorder.Invalidate();
 
             // Parse, clamp, and format with thousand separators
-            var raw = _input.Text.Replace(",", "");
-            if (decimal.TryParse(raw, NumberStyles.Number, CultureInfo.InvariantCulture, out decimal val))
+            var raw = _input.Text.Replace(",", "").Trim();
+            if (!string.IsNullOrEmpty(raw) && decimal.TryParse(raw, NumberStyles.Number, CultureInfo.InvariantCulture, out decimal val))
             {
-                // Enforce decimal places
                 val = Math.Round(val, _decimalPlaces);
-
-                // Clamp
                 if (_minValue.HasValue && val < _minValue.Value) val = _minValue.Value;
                 if (_maxValue.HasValue && val > _maxValue.Value) val = _maxValue.Value;
-
                 _input.Text = FormatForDisplay(val);
             }
+            else
+            {
+                _input.Text = "";
+            }
+
+            // Hide TextBox when empty so painted placeholder shows through
+            _input.Visible = !string.IsNullOrEmpty(_input.Text);
+            _inputBorder.Invalidate();
         }
 
         private string FormatForDisplay(decimal val)
