@@ -72,6 +72,7 @@ namespace Wer.Winforms.Toolkit.Controls
                 TextAlign   = HorizontalAlignment.Left,
             };
             _input.KeyPress    += OnInputKeyPress;
+            _input.KeyDown     += OnInputKeyDown;
             _input.TextChanged += OnInputTextChanged;
             _input.GotFocus    += (s, e) => { _hasFocus = true; _input.Visible = true; _inputBorder.Invalidate(); };
             _input.LostFocus   += (s, e) =>
@@ -202,6 +203,22 @@ namespace Wer.Winforms.Toolkit.Controls
                 return;
 
             e.Handled = true; // block everything else
+        }
+
+        private void OnInputKeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Control && e.KeyCode == Keys.V)
+            {
+                if (Clipboard.ContainsText())
+                {
+                    if (!int.TryParse(Clipboard.GetText().Trim(), out _))
+                        e.SuppressKeyPress = true;
+                }
+                else
+                {
+                    e.SuppressKeyPress = true;
+                }
+            }
         }
 
         private void OnInputTextChanged(object sender, EventArgs e)

@@ -76,6 +76,7 @@ namespace Wer.Winforms.Toolkit.Controls
                 TextAlign   = HorizontalAlignment.Left,
             };
             _input.KeyPress    += OnInputKeyPress;
+            _input.KeyDown     += OnInputKeyDown;
             _input.TextChanged += (s, e) => ValueChanged?.Invoke(this, EventArgs.Empty);
             _input.GotFocus    += OnInputGotFocus;
             _input.LostFocus   += OnInputLostFocus;
@@ -217,6 +218,26 @@ namespace Wer.Winforms.Toolkit.Controls
                 return;
 
             e.Handled = true;
+        }
+
+        private void OnInputKeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Control && e.KeyCode == Keys.V)
+            {
+                if (Clipboard.ContainsText())
+                {
+                    var text = Clipboard.GetText().Replace(",", "").Trim();
+                    if (!decimal.TryParse(text, System.Globalization.NumberStyles.Number,
+                        System.Globalization.CultureInfo.InvariantCulture, out _))
+                    {
+                        e.SuppressKeyPress = true;
+                    }
+                }
+                else
+                {
+                    e.SuppressKeyPress = true;
+                }
+            }
         }
 
         // ── Focus: strip formatting on enter, format on leave ────────

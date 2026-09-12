@@ -107,5 +107,13 @@ namespace Wer.Winforms.Demo
             var val = werTimePicker1.Value;
             MessageBox.Show("Selected value: " + val, "ComboBox Value");
         }
+
+        private void werToggle1_CheckedChanged(object sender, EventArgs e)
+        {
+            
+                var val = werToggle1.Checked;
+                MessageBox.Show("Selected value: " + val, "ComboBox Value");
+            
+        }
     }
 }
