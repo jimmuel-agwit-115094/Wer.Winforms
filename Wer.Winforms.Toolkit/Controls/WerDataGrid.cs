@@ -1,9 +1,11 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Drawing.Drawing2D;
+using System.Reflection;
 using System.Windows.Forms;
 
 namespace Wer.Winforms.Toolkit.Controls
@@ -85,6 +87,8 @@ namespace Wer.Winforms.Toolkit.Controls
             {
                 if (value is DataTable dt)
                     _dataTable = dt;
+                else if (value is IEnumerable enumerable)
+                    _dataTable = ObjectListToDataTable(enumerable);
                 else
                     _dataTable = null;
 
@@ -97,6 +101,61 @@ namespace Wer.Winforms.Toolkit.Controls
                 RecalcLayout();
                 Invalidate();
             }
+        }
+
+        private DataTable ObjectListToDataTable(IEnumerable items)
+        {
+            var table = new DataTable();
+            PropertyInfo[] props = null;
+
+            foreach (var item in items)
+            {
+                if (props == null)
+                {
+                    props = item.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance);
+
+                    // If columns are defined, only include those properties
+                    if (_columns.Count > 0)
+                    {
+                        var colNames = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+                        foreach (var c in _columns)
+                            colNames.Add(c.PropertyName);
+                        if (_primaryKeyColumn != null)
+                            colNames.Add(_primaryKeyColumn);
+
+                        foreach (var p in props)
+                        {
+                            if (colNames.Contains(p.Name))
+                            {
+                                var colType = Nullable.GetUnderlyingType(p.PropertyType) ?? p.PropertyType;
+                                table.Columns.Add(p.Name, colType);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        foreach (var p in props)
+                        {
+                            var colType = Nullable.GetUnderlyingType(p.PropertyType) ?? p.PropertyType;
+                            table.Columns.Add(p.Name, colType);
+                        }
+                    }
+                }
+
+                var row = table.NewRow();
+                foreach (DataColumn col in table.Columns)
+                {
+                    var prop = item.GetType().GetProperty(col.ColumnName, BindingFlags.Public | BindingFlags.Instance);
+                    if (prop != null)
+                    {
+                        var val = prop.GetValue(item);
+                        row[col.ColumnName] = val ?? DBNull.Value;
+                    }
+                }
+                table.Rows.Add(row);
+            }
+
+            return table;
         }
 
         public WerDataGrid()
@@ -311,11 +370,40 @@ namespace Wer.Winforms.Toolkit.Controls
                     var textRect = new Rectangle(x + CellPadding, y, colW - CellPadding * 2, RowHeight);
 
                     var val = row[_columns[i].PropertyName];
-                    string text = val == null || val == DBNull.Value ? "" : val.ToString();
+                    string text;
+                    var colAlign = _columns[i].Alignment;
 
-                    var align = _columns[i].Alignment == HorizontalAlignment.Right
+                    if (val == null || val == DBNull.Value)
+                    {
+                        text = "";
+                    }
+                    else if (val is decimal decVal)
+                    {
+                        text = decVal.ToString("#,##0.00");
+                        if (colAlign == HorizontalAlignment.Left) colAlign = HorizontalAlignment.Right;
+                    }
+                    else if (val is double dblVal)
+                    {
+                        text = dblVal.ToString("#,##0.00");
+                        if (colAlign == HorizontalAlignment.Left) colAlign = HorizontalAlignment.Right;
+                    }
+                    else if (val is float fltVal)
+                    {
+                        text = fltVal.ToString("#,##0.00");
+                        if (colAlign == HorizontalAlignment.Left) colAlign = HorizontalAlignment.Right;
+                    }
+                    else if (val is DateTime dtVal)
+                    {
+                        text = dtVal.ToString("MMM. dd, yyyy");
+                    }
+                    else
+                    {
+                        text = val.ToString();
+                    }
+
+                    var align = colAlign == HorizontalAlignment.Right
                         ? TextFormatFlags.Right
-                        : _columns[i].Alignment == HorizontalAlignment.Center
+                        : colAlign == HorizontalAlignment.Center
                             ? TextFormatFlags.HorizontalCenter
                             : TextFormatFlags.Left;
 
