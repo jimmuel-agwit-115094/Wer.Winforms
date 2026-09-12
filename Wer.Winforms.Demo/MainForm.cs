@@ -30,5 +30,10 @@ namespace Wer.Winforms.Demo
         private void werButtonPrimary1_Click(object sender, System.EventArgs e)
         {
         }
+
+        private void werTabControl1_SelectedIndexChanged_1(object sender, System.EventArgs e)
+        {
+
+        }
     }
 }

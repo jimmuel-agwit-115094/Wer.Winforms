@@ -8,34 +8,29 @@ using System.Windows.Forms;
 namespace Wer.Winforms.Toolkit.Controls
 {
     [ToolboxItem(true)]
-    [Description("Currency text field with label, required indicator, $ prefix, thousand separators, disabled and read-only states.")]
+    [Description("Percentage text field with label, % suffix, required indicator, disabled and read-only states.")]
     [DefaultEvent("ValueChanged")]
     [DefaultProperty("LabelText")]
-    public class WerCurrencyField : Control
+    public class WerPercentField : Control
     {
-        // ── Sub-controls ────────────────────────────────────────────
         private readonly TextBox _input;
         private readonly Panel   _inputBorder;
 
-        // ── State ────────────────────────────────────────────────────
-        private string  _labelText   = "Currency Label";
-        private string  _placeholder = "0.00";
+        private string  _labelText     = "Percent Label";
+        private string  _placeholder   = "0.00";
         private bool    _required;
         private bool    _readOnly;
         private bool    _hasFocus;
-        private string  _currencySymbol = "₱";
-        private int     _decimalPlaces  = 2;
-        private decimal? _minValue;
-        private decimal? _maxValue;
+        private int     _decimalPlaces = 2;
+        private decimal? _minValue     = 0;
+        private decimal? _maxValue     = 100;
 
-        // ── Layout ───────────────────────────────────────────────────
         private const int LabelHeight  = 20;
         private const int LabelGap     = 4;
         private const int BorderRadius = 8;
         private const int InputPadH    = 10;
-        private const int PrefixWidth  = 18;
+        private const int SuffixWidth  = 20;
 
-        // ── Colors (same as WerTextField) ────────────────────────────
         private static readonly Color LabelNormal      = Color.Black;
         private static readonly Color LabelRequired    = Color.FromArgb(200, 100, 20);
         private static readonly Color LabelDisabled    = Color.FromArgb(150, 150, 150);
@@ -43,13 +38,13 @@ namespace Wer.Winforms.Toolkit.Controls
         private static readonly Color BorderNormal     = Color.FromArgb(200, 210, 220);
         private static readonly Color BorderFocus      = Color.FromArgb(12, 124, 146);
         private static readonly Color PlaceholderColor = Color.FromArgb(160, 170, 180);
-        private static readonly Color PrefixColor      = Color.FromArgb(108, 117, 125);
+        private static readonly Color SuffixColor      = Color.FromArgb(108, 117, 125);
         private static readonly Color BgNormal         = Color.White;
         private static readonly Color BgDisabled       = Color.FromArgb(242, 242, 242);
 
         public event EventHandler ValueChanged;
 
-        public WerCurrencyField()
+        public WerPercentField()
         {
             SetStyle(ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint |
                      ControlStyles.ResizeRedraw | ControlStyles.OptimizedDoubleBuffer |
@@ -59,12 +54,10 @@ namespace Wer.Winforms.Toolkit.Controls
             Font      = WerTheme.BodyFont;
             Size      = new Size(220, LabelHeight + LabelGap + 36);
 
-            // Border panel
             _inputBorder = new Panel { BackColor = Color.Transparent };
             _inputBorder.Paint += OnBorderPaint;
             Controls.Add(_inputBorder);
 
-            // Inner TextBox
             _input = new TextBox
             {
                 BorderStyle = BorderStyle.None,
@@ -85,36 +78,32 @@ namespace Wer.Winforms.Toolkit.Controls
 
         // ── Public properties ────────────────────────────────────────
 
-        [Category("WerCurrencyField")]
-        [DefaultValue("Label")]
-        [Description("Label displayed above the input.")]
+        [Category("WerPercentField")]
+        [DefaultValue("Percent Label")]
         public string LabelText
         {
             get => _labelText;
             set { _labelText = value; Invalidate(); }
         }
 
-        [Category("WerCurrencyField")]
+        [Category("WerPercentField")]
         [DefaultValue("0.00")]
-        [Description("Placeholder text shown when the field is empty.")]
         public string Placeholder
         {
             get => _placeholder;
             set { _placeholder = value; _inputBorder.Invalidate(); }
         }
 
-        [Category("WerCurrencyField")]
+        [Category("WerPercentField")]
         [DefaultValue(false)]
-        [Description("Show red asterisk and orange label when true.")]
         public bool Required
         {
             get => _required;
             set { _required = value; Invalidate(); }
         }
 
-        [Category("WerCurrencyField")]
+        [Category("WerPercentField")]
         [DefaultValue(false)]
-        [Description("Field is read-only: gray background, orange label, no editing.")]
         public bool ReadOnly
         {
             get => _readOnly;
@@ -128,45 +117,32 @@ namespace Wer.Winforms.Toolkit.Controls
             }
         }
 
-        [Category("WerCurrencyField")]
-        [DefaultValue("₱")]
-        [Description("Currency symbol shown before the value.")]
-        public string CurrencySymbol
-        {
-            get => _currencySymbol;
-            set { _currencySymbol = value ?? "₱"; _inputBorder.Invalidate(); }
-        }
-
-        [Category("WerCurrencyField")]
+        [Category("WerPercentField")]
         [DefaultValue(2)]
-        [Description("Number of decimal places (0-4).")]
         public int DecimalPlaces
         {
             get => _decimalPlaces;
             set => _decimalPlaces = Math.Max(0, Math.Min(4, value));
         }
 
-        [Category("WerCurrencyField")]
-        [DefaultValue(null)]
-        [Description("Minimum allowed value. Null = no limit.")]
+        [Category("WerPercentField")]
+        [DefaultValue(typeof(decimal), "0")]
         public decimal? MinValue
         {
             get => _minValue;
             set => _minValue = value;
         }
 
-        [Category("WerCurrencyField")]
-        [DefaultValue(null)]
-        [Description("Maximum allowed value. Null = no limit.")]
+        [Category("WerPercentField")]
+        [DefaultValue(typeof(decimal), "100")]
         public decimal? MaxValue
         {
             get => _maxValue;
             set => _maxValue = value;
         }
 
-        [Category("WerCurrencyField")]
+        [Category("WerPercentField")]
         [Browsable(false)]
-        [Description("The current decimal value, or null if empty/invalid.")]
         public decimal? Value
         {
             get
@@ -186,7 +162,7 @@ namespace Wer.Winforms.Toolkit.Controls
         }
 
         [Browsable(true)]
-        [Category("WerCurrencyField")]
+        [Category("WerPercentField")]
         [DefaultValue("")]
         public override string Text
         {
@@ -199,28 +175,44 @@ namespace Wer.Winforms.Toolkit.Controls
         private void OnInputKeyPress(object sender, KeyPressEventArgs e)
         {
             if (char.IsControl(e.KeyChar)) return;
-            if (char.IsDigit(e.KeyChar)) return;
 
-            // Allow one decimal point
-            if (e.KeyChar == '.' && _decimalPlaces > 0 && !_input.Text.Contains("."))
+            // Allow decimal point (once)
+            if (e.KeyChar == '.' && _decimalPlaces > 0 && !_input.Text.Contains(".")) return;
+
+            if (!char.IsDigit(e.KeyChar)) { e.Handled = true; return; }
+
+            // Build what the text would look like after this keystroke
+            string current = _input.Text;
+            int selStart = _input.SelectionStart;
+            int selLen   = _input.SelectionLength;
+            string proposed = current.Substring(0, selStart)
+                            + e.KeyChar
+                            + current.Substring(selStart + selLen);
+
+            // Block if too many decimal places
+            int dotIdx = proposed.IndexOf('.');
+            if (dotIdx >= 0 && proposed.Length - dotIdx - 1 > _decimalPlaces)
+            {
+                e.Handled = true;
                 return;
+            }
 
-            // Allow minus at start
-            if (e.KeyChar == '-' && _input.SelectionStart == 0 && !_input.Text.Contains("-"))
-                return;
-
-            e.Handled = true;
+            // Block if value would exceed max
+            if (decimal.TryParse(proposed, System.Globalization.NumberStyles.Number,
+                System.Globalization.CultureInfo.InvariantCulture, out decimal val))
+            {
+                if (_maxValue.HasValue && val > _maxValue.Value)
+                {
+                    e.Handled = true;
+                    return;
+                }
+            }
         }
-
-        // ── Focus: strip formatting on enter, format on leave ────────
 
         private void OnInputGotFocus(object sender, EventArgs e)
         {
             _hasFocus = true;
             _inputBorder.Invalidate();
-
-            // Strip thousand separators for easier editing
-            _input.Text = _input.Text.Replace(",", "");
         }
 
         private void OnInputLostFocus(object sender, EventArgs e)
@@ -228,17 +220,11 @@ namespace Wer.Winforms.Toolkit.Controls
             _hasFocus = false;
             _inputBorder.Invalidate();
 
-            // Parse, clamp, and format with thousand separators
-            var raw = _input.Text.Replace(",", "");
-            if (decimal.TryParse(raw, NumberStyles.Number, CultureInfo.InvariantCulture, out decimal val))
+            if (decimal.TryParse(_input.Text, NumberStyles.Number, CultureInfo.InvariantCulture, out decimal val))
             {
-                // Enforce decimal places
                 val = Math.Round(val, _decimalPlaces);
-
-                // Clamp
                 if (_minValue.HasValue && val < _minValue.Value) val = _minValue.Value;
                 if (_maxValue.HasValue && val > _maxValue.Value) val = _maxValue.Value;
-
                 _input.Text = FormatForDisplay(val);
             }
         }
@@ -275,14 +261,6 @@ namespace Wer.Winforms.Toolkit.Controls
             LayoutInternals();
         }
 
-        protected override void OnFontChanged(EventArgs e)
-        {
-            base.OnFontChanged(e);
-            if (_input == null) return;
-            _input.Font = Font;
-            LayoutInternals();
-        }
-
         private void LayoutInternals()
         {
             if (_inputBorder == null || _input == null) return;
@@ -291,11 +269,9 @@ namespace Wer.Winforms.Toolkit.Controls
             int borderH   = Height - borderTop;
             _inputBorder.SetBounds(0, borderTop, Width, borderH);
 
-            // TextBox offset to the right of the currency symbol
             int textH = _input.PreferredHeight;
             int textY = (borderH - textH) / 2;
-            int leftPad = InputPadH + PrefixWidth;
-            _input.SetBounds(leftPad, Math.Max(0, textY), Width - leftPad - InputPadH, textH);
+            _input.SetBounds(InputPadH, Math.Max(0, textY), Width - InputPadH - SuffixWidth - InputPadH, textH);
         }
 
         // ── Paint label ──────────────────────────────────────────────
@@ -306,9 +282,9 @@ namespace Wer.Winforms.Toolkit.Controls
             g.TextRenderingHint = System.Drawing.Text.TextRenderingHint.ClearTypeGridFit;
 
             Color labelColor;
-            if (!Enabled)                    labelColor = LabelDisabled;
-            else if (_readOnly) labelColor = LabelRequired;
-            else                             labelColor = LabelNormal;
+            if (!Enabled)        labelColor = LabelDisabled;
+            else if (_readOnly)  labelColor = LabelRequired;
+            else                 labelColor = LabelNormal;
 
             var labelRect = new Rectangle(0, 0, Width, LabelHeight);
             TextRenderer.DrawText(g, _labelText, Font, labelRect, labelColor,
@@ -316,7 +292,7 @@ namespace Wer.Winforms.Toolkit.Controls
 
             if (_required && Enabled)
             {
-                int labelW   = TextRenderer.MeasureText(g, _labelText, Font).Width;
+                int labelW = TextRenderer.MeasureText(g, _labelText, Font).Width;
                 var starRect = new Rectangle(labelW + 2, 0, 12, LabelHeight);
                 TextRenderer.DrawText(g, "*", Font, starRect, RequiredStar,
                     TextFormatFlags.Left | TextFormatFlags.VerticalCenter);
@@ -334,12 +310,10 @@ namespace Wer.Winforms.Toolkit.Controls
             var rect  = new Rectangle(0, 0, panel.Width - 1, panel.Height - 1);
             bool inactive = !Enabled || _readOnly;
 
-            // Background fill
             using (var path = RoundedRect(rect, BorderRadius))
             using (var brush = new SolidBrush(inactive ? BgDisabled : BgNormal))
                 g.FillPath(brush, path);
 
-            // Border
             if (Enabled && !_readOnly)
             {
                 var borderColor = _hasFocus ? BorderFocus : BorderNormal;
@@ -354,17 +328,16 @@ namespace Wer.Winforms.Toolkit.Controls
                     g.DrawPath(pen, path);
             }
 
-            // Currency symbol prefix
-            var prefixRect = new Rectangle(InputPadH, 0, PrefixWidth, panel.Height);
-            var prefixCol  = inactive ? LabelDisabled : PrefixColor;
-            TextRenderer.DrawText(g, _currencySymbol, Font, prefixRect, prefixCol,
-                TextFormatFlags.Left | TextFormatFlags.VerticalCenter | TextFormatFlags.SingleLine);
+            // % suffix
+            var suffixRect = new Rectangle(panel.Width - SuffixWidth - InputPadH, 0, SuffixWidth, panel.Height);
+            var suffixCol  = inactive ? LabelDisabled : SuffixColor;
+            TextRenderer.DrawText(g, "%", Font, suffixRect, suffixCol,
+                TextFormatFlags.Right | TextFormatFlags.VerticalCenter | TextFormatFlags.SingleLine);
 
             // Placeholder
             if (string.IsNullOrEmpty(_input.Text) && !_hasFocus && Enabled && !string.IsNullOrEmpty(_placeholder))
             {
-                int leftPad = InputPadH + PrefixWidth;
-                var ph = new Rectangle(leftPad, 0, panel.Width - leftPad - InputPadH, panel.Height);
+                var ph = new Rectangle(InputPadH, 0, panel.Width - InputPadH - SuffixWidth - InputPadH, panel.Height);
                 TextRenderer.DrawText(g, _placeholder, _input.Font, ph, PlaceholderColor,
                     TextFormatFlags.VerticalCenter | TextFormatFlags.SingleLine);
             }

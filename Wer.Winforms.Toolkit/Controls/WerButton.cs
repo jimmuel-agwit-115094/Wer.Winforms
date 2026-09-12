@@ -95,21 +95,16 @@ namespace Wer.Winforms.Toolkit.Controls
 
             if (!Enabled)
             {
-                // Disabled look: white fill, gray border, gray text
+                // Disabled look: light gray fill, no border, muted text
                 using (var path = CreateRoundedRect(rect, radius))
-                {
-                    using (var brush = new SolidBrush(Color.White))
-                        g.FillPath(brush, path);
-
-                    using (var pen = new Pen(WerTheme.BorderColor, 1))
-                        g.DrawPath(pen, path);
-                }
+                using (var brush = new SolidBrush(Color.FromArgb(230, 232, 236)))
+                    g.FillPath(brush, path);
 
                 if (!string.IsNullOrEmpty(Text))
                 {
                     var flags = TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter |
                                 TextFormatFlags.SingleLine | TextFormatFlags.NoPadding;
-                    TextRenderer.DrawText(g, Text, Font, ClientRectangle, WerTheme.DisabledColor, flags);
+                    TextRenderer.DrawText(g, Text, Font, ClientRectangle, Color.FromArgb(170, 175, 182), flags);
                 }
                 return;
             }
