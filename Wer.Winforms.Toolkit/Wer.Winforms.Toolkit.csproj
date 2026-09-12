@@ -66,6 +66,9 @@
     <Compile Include="Controls\WerIntegerField.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Controls\WerEmptyGroupBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Controls\WerRadioButton.cs">
       <SubType>Component</SubType>
     </Compile>

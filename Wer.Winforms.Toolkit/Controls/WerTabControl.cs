@@ -22,15 +22,23 @@ namespace Wer.Winforms.Toolkit.Controls
         public WerTabControl()
         {
             SetStyle(ControlStyles.UserPaint | ControlStyles.AllPaintingInWmPaint |
-                     ControlStyles.OptimizedDoubleBuffer, true);
+                     ControlStyles.OptimizedDoubleBuffer | ControlStyles.ResizeRedraw, true);
 
             Font      = WerTheme.BodyFont;
             BackColor = Color.White;
-            ItemSize  = new Size(0, 38);   // controls tab strip height; width is auto
-            Padding   = new Point(16, 0);  // horizontal padding inside each tab header
+            ItemSize  = new Size(0, 38);
+            Padding   = new Point(16, 0);
         }
 
         // ── Paint ─────────────────────────────────────────────────────
+
+        protected override void OnPaintBackground(PaintEventArgs pevent)
+        {
+            // Fill with parent color, then white rounded rect on top
+            var g = pevent.Graphics;
+            using (var brush = new SolidBrush(Parent != null ? Parent.BackColor : SystemColors.Control))
+                g.FillRectangle(brush, ClientRectangle);
+        }
 
         protected override void OnPaint(PaintEventArgs e)
         {
@@ -38,44 +46,27 @@ namespace Wer.Winforms.Toolkit.Controls
             g.SmoothingMode     = SmoothingMode.AntiAlias;
             g.TextRenderingHint = TextRenderingHint.ClearTypeGridFit;
 
-            // Clear entire area with parent's back color to avoid bleed
-            using (var brush = new SolidBrush(Parent != null ? Parent.BackColor : SystemColors.Control))
-                g.FillRectangle(brush, ClientRectangle);
-
             if (TabCount == 0) return;
 
-            // Content area rounded border (fills white inside)
-            DrawContentBorder(g);
-
-            // Fill entire tab strip area white
-            var firstTab = GetTabRect(0);
-            var stripRect = new Rectangle(1, 1, Width - 2, firstTab.Bottom);
+            // White rounded fill for entire control
+            var outerRect = new Rectangle(0, 0, Width - 1, Height - 1);
+            using (var path = RoundedRect(outerRect, BorderRadius))
             using (var brush = new SolidBrush(Color.White))
-                g.FillRectangle(brush, stripRect);
+                g.FillPath(brush, path);
 
-            // Separator line between strip and content
+            // Rounded border
+            using (var path = RoundedRect(outerRect, BorderRadius))
+            using (var pen = new Pen(BorderColor, 1f))
+                g.DrawPath(pen, path);
+
+            // Separator line
+            var firstTab = GetTabRect(0);
             using (var pen = new Pen(Color.FromArgb(220, 220, 220), 1))
-                g.DrawLine(pen, 0, firstTab.Bottom + 1, Width, firstTab.Bottom + 1);
+                g.DrawLine(pen, 1, firstTab.Bottom + 1, Width - 1, firstTab.Bottom + 1);
 
             // Tab headers
             for (int i = 0; i < TabCount; i++)
                 DrawTab(g, i);
-        }
-
-        private void DrawContentBorder(Graphics g)
-        {
-            // Border wraps the entire control (tab strip + content), inset by 1px
-            var rect = new Rectangle(0, 0, Width - 1, Height - 1);
-            if (rect.Width <= 0 || rect.Height <= 0) return;
-
-            // Fill content area white inside the rounded rect
-            using (var path = RoundedRect(rect, BorderRadius))
-            using (var brush = new SolidBrush(Color.White))
-                g.FillPath(brush, path);
-
-            using (var path = RoundedRect(rect, BorderRadius))
-            using (var pen  = new Pen(BorderColor, 1f))
-                g.DrawPath(pen, path);
         }
 
         private void DrawTab(Graphics g, int index)
@@ -84,8 +75,8 @@ namespace Wer.Winforms.Toolkit.Controls
             bool selected = index == SelectedIndex;
             bool hover    = index == _hoverIndex;
 
-            // Clear tab background
-            using (var brush = new SolidBrush(BackColor))
+            // Tab background — white
+            using (var brush = new SolidBrush(Color.White))
                 g.FillRectangle(brush, bounds);
 
             // Hover tint
@@ -94,22 +85,22 @@ namespace Wer.Winforms.Toolkit.Controls
                     g.FillRectangle(brush, bounds);
 
             // Label
-            var font  = selected
+            var font = selected
                 ? new Font(Font.FontFamily, Font.Size, FontStyle.Bold)
                 : Font;
             Color color;
             if (selected)
-                color = Color.FromArgb(33, 37, 41);       // dark — matches screenshot
+                color = Color.FromArgb(33, 37, 41);
             else if (hover)
-                color = WerTheme.PrimaryColor;             // teal on hover
+                color = WerTheme.PrimaryColor;
             else
-                color = Color.FromArgb(108, 117, 125);    // muted gray for inactive
+                color = Color.FromArgb(108, 117, 125);
 
             TextRenderer.DrawText(g, TabPages[index].Text, font, bounds, color,
                 TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter |
                 TextFormatFlags.SingleLine);
 
-            // Active underline indicator — full tab width, flush to bottom
+            // Active underline indicator
             if (selected)
                 using (var brush = new SolidBrush(WerTheme.PrimaryColor))
                     g.FillRectangle(brush,
@@ -119,7 +110,7 @@ namespace Wer.Winforms.Toolkit.Controls
             if (selected) font.Dispose();
         }
 
-        // ── Hover tracking ─────────────────────────────────────────────
+        // ── Hover tracking ───────────────────────────────────────────
 
         protected override void OnMouseMove(MouseEventArgs e)
         {
@@ -150,7 +141,7 @@ namespace Wer.Winforms.Toolkit.Controls
                 tp.BackColor = Color.White;
         }
 
-        // ── Helpers ───────────────────────────────────────────────────
+        // ── Helpers ──────────────────────────────────────────────────
 
         private static GraphicsPath RoundedRect(Rectangle rect, int radius)
         {

@@ -16,6 +16,16 @@ namespace Wer.Winforms.Demo
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
+            this.werGroupBox4 = new Wer.Winforms.Toolkit.Controls.WerGroupBox();
+            this.werGroupBox3 = new Wer.Winforms.Toolkit.Controls.WerGroupBox();
+            this.werTabControl1 = new Wer.Winforms.Toolkit.Controls.WerTabControl();
+            this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.werComboBox1 = new Wer.Winforms.Toolkit.Controls.WerComboBox();
+            this.werGroupBox1 = new Wer.Winforms.Toolkit.Controls.WerGroupBox();
+            this.werLink1 = new Wer.Winforms.Toolkit.Controls.WerLink();
+            this.werLabel1 = new Wer.Winforms.Toolkit.Controls.WerLabel();
+            this.werRadioButton1 = new Wer.Winforms.Toolkit.Controls.WerRadioButton();
             this.werButtonPrimary2 = new Wer.Winforms.Toolkit.Controls.WerButtonPrimary();
             this.werStatusIndicator6 = new Wer.Winforms.Toolkit.Controls.WerStatusIndicator();
             this.werStatusIndicator3 = new Wer.Winforms.Toolkit.Controls.WerStatusIndicator();
@@ -30,19 +40,164 @@ namespace Wer.Winforms.Demo
             this.werInfoBanner1 = new Wer.Winforms.Toolkit.Controls.WerInfoBanner();
             this.werDatePicker1 = new Wer.Winforms.Toolkit.Controls.WerDatePicker();
             this.werCurrencyField1 = new Wer.Winforms.Toolkit.Controls.WerCurrencyField();
-            this.werComboBox1 = new Wer.Winforms.Toolkit.Controls.WerComboBox();
             this.werCheckbox1 = new Wer.Winforms.Toolkit.Controls.WerCheckbox();
             this.werButtonWarning1 = new Wer.Winforms.Toolkit.Controls.WerButtonWarning();
             this.werButtonPrimary1 = new Wer.Winforms.Toolkit.Controls.WerButtonPrimary();
-            this.werTabControl1 = new Wer.Winforms.Toolkit.Controls.WerTabControl();
-            this.tabPage1 = new System.Windows.Forms.TabPage();
-            this.tabPage2 = new System.Windows.Forms.TabPage();
-            this.werRadioButton1 = new Wer.Winforms.Toolkit.Controls.WerRadioButton();
-            this.werLabel1 = new Wer.Winforms.Toolkit.Controls.WerLabel();
-            this.werLink1 = new Wer.Winforms.Toolkit.Controls.WerLink();
-            this.werGroupBox1 = new Wer.Winforms.Toolkit.Controls.WerGroupBox();
+            this.werEmptyGroupBox1 = new Wer.Winforms.Toolkit.Controls.WerEmptyGroupBox();
             this.werTabControl1.SuspendLayout();
             this.SuspendLayout();
+            // 
+            // werGroupBox4
+            // 
+            this.werGroupBox4.BackColor = System.Drawing.Color.Transparent;
+            this.werGroupBox4.BodyBackColor = System.Drawing.Color.White;
+            // 
+            // 
+            // 
+            this.werGroupBox4.BodyPanel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.werGroupBox4.BodyPanel.BackColor = System.Drawing.Color.White;
+            this.werGroupBox4.BodyPanel.Location = new System.Drawing.Point(2, 62);
+            this.werGroupBox4.BodyPanel.Name = "";
+            this.werGroupBox4.BodyPanel.Size = new System.Drawing.Size(396, 95);
+            this.werGroupBox4.BodyPanel.TabIndex = 0;
+            this.werGroupBox4.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(200)))), ((int)(((byte)(210)))), ((int)(((byte)(220)))));
+            this.werGroupBox4.DividerColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.werGroupBox4.HeaderBackColor = System.Drawing.Color.White;
+            this.werGroupBox4.Location = new System.Drawing.Point(1095, 585);
+            this.werGroupBox4.Name = "werGroupBox4";
+            this.werGroupBox4.Size = new System.Drawing.Size(400, 160);
+            this.werGroupBox4.TabIndex = 31;
+            // 
+            // werGroupBox3
+            // 
+            this.werGroupBox3.BackColor = System.Drawing.Color.Transparent;
+            this.werGroupBox3.BodyBackColor = System.Drawing.Color.White;
+            // 
+            // 
+            // 
+            this.werGroupBox3.BodyPanel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.werGroupBox3.BodyPanel.BackColor = System.Drawing.Color.White;
+            this.werGroupBox3.BodyPanel.Location = new System.Drawing.Point(2, 62);
+            this.werGroupBox3.BodyPanel.Name = "";
+            this.werGroupBox3.BodyPanel.Size = new System.Drawing.Size(396, 95);
+            this.werGroupBox3.BodyPanel.TabIndex = 0;
+            this.werGroupBox3.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(200)))), ((int)(((byte)(210)))), ((int)(((byte)(220)))));
+            this.werGroupBox3.DividerColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.werGroupBox3.HeaderBackColor = System.Drawing.Color.White;
+            this.werGroupBox3.Location = new System.Drawing.Point(-23, -46);
+            this.werGroupBox3.Name = "werGroupBox3";
+            this.werGroupBox3.Size = new System.Drawing.Size(400, 160);
+            this.werGroupBox3.TabIndex = 30;
+            // 
+            // werTabControl1
+            // 
+            this.werTabControl1.Controls.Add(this.tabPage1);
+            this.werTabControl1.Controls.Add(this.tabPage2);
+            this.werTabControl1.Font = new System.Drawing.Font("Segoe UI", 9.75F);
+            this.werTabControl1.ItemSize = new System.Drawing.Size(0, 38);
+            this.werTabControl1.Location = new System.Drawing.Point(615, 188);
+            this.werTabControl1.Name = "werTabControl1";
+            this.werTabControl1.Padding = new System.Drawing.Point(16, 0);
+            this.werTabControl1.SelectedIndex = 0;
+            this.werTabControl1.Size = new System.Drawing.Size(411, 245);
+            this.werTabControl1.TabIndex = 28;
+            // 
+            // tabPage1
+            // 
+            this.tabPage1.BackColor = System.Drawing.Color.White;
+            this.tabPage1.Location = new System.Drawing.Point(4, 42);
+            this.tabPage1.Name = "tabPage1";
+            this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage1.Size = new System.Drawing.Size(403, 199);
+            this.tabPage1.TabIndex = 0;
+            this.tabPage1.Text = "tabPage1";
+            // 
+            // tabPage2
+            // 
+            this.tabPage2.BackColor = System.Drawing.Color.White;
+            this.tabPage2.Location = new System.Drawing.Point(4, 42);
+            this.tabPage2.Name = "tabPage2";
+            this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage2.Size = new System.Drawing.Size(403, 199);
+            this.tabPage2.TabIndex = 1;
+            this.tabPage2.Text = "tabPage2";
+            // 
+            // werComboBox1
+            // 
+            this.werComboBox1.BackColor = System.Drawing.Color.Transparent;
+            this.werComboBox1.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.werComboBox1.Font = new System.Drawing.Font("Segoe UI", 9.75F);
+            this.werComboBox1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(33)))), ((int)(((byte)(37)))), ((int)(((byte)(41)))));
+            this.werComboBox1.ItemsArray = new string[0];
+            this.werComboBox1.Location = new System.Drawing.Point(44, 195);
+            this.werComboBox1.Name = "werComboBox1";
+            this.werComboBox1.Size = new System.Drawing.Size(220, 60);
+            this.werComboBox1.TabIndex = 27;
+            // 
+            // werGroupBox1
+            // 
+            this.werGroupBox1.BackColor = System.Drawing.Color.Transparent;
+            this.werGroupBox1.BodyBackColor = System.Drawing.Color.White;
+            // 
+            // 
+            // 
+            this.werGroupBox1.BodyPanel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.werGroupBox1.BodyPanel.BackColor = System.Drawing.Color.White;
+            this.werGroupBox1.BodyPanel.Location = new System.Drawing.Point(2, 62);
+            this.werGroupBox1.BodyPanel.Name = "";
+            this.werGroupBox1.BodyPanel.Size = new System.Drawing.Size(396, 95);
+            this.werGroupBox1.BodyPanel.TabIndex = 0;
+            this.werGroupBox1.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(200)))), ((int)(((byte)(210)))), ((int)(((byte)(220)))));
+            this.werGroupBox1.DividerColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.werGroupBox1.HeaderBackColor = System.Drawing.Color.White;
+            this.werGroupBox1.Location = new System.Drawing.Point(615, 22);
+            this.werGroupBox1.Name = "werGroupBox1";
+            this.werGroupBox1.Size = new System.Drawing.Size(400, 160);
+            this.werGroupBox1.TabIndex = 26;
+            // 
+            // werLink1
+            // 
+            this.werLink1.AutoSize = true;
+            this.werLink1.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.werLink1.Font = new System.Drawing.Font("Segoe UI", 9.75F);
+            this.werLink1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(12)))), ((int)(((byte)(124)))), ((int)(((byte)(146)))));
+            this.werLink1.HoverColor = System.Drawing.Color.FromArgb(((int)(((byte)(8)))), ((int)(((byte)(86)))), ((int)(((byte)(102)))));
+            this.werLink1.LinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(12)))), ((int)(((byte)(124)))), ((int)(((byte)(146)))));
+            this.werLink1.Location = new System.Drawing.Point(340, 137);
+            this.werLink1.Name = "werLink1";
+            this.werLink1.Size = new System.Drawing.Size(58, 17);
+            this.werLink1.TabIndex = 25;
+            this.werLink1.Text = "werLink1";
+            this.werLink1.VisitedColor = System.Drawing.Color.FromArgb(((int)(((byte)(12)))), ((int)(((byte)(124)))), ((int)(((byte)(146)))));
+            // 
+            // werLabel1
+            // 
+            this.werLabel1.AutoSize = true;
+            this.werLabel1.Font = new System.Drawing.Font("Segoe UI", 9.75F);
+            this.werLabel1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(33)))), ((int)(((byte)(37)))), ((int)(((byte)(41)))));
+            this.werLabel1.Location = new System.Drawing.Point(60, 137);
+            this.werLabel1.Name = "werLabel1";
+            this.werLabel1.Size = new System.Drawing.Size(67, 17);
+            this.werLabel1.TabIndex = 24;
+            this.werLabel1.Text = "werLabel1";
+            // 
+            // werRadioButton1
+            // 
+            this.werRadioButton1.BackColor = System.Drawing.Color.Transparent;
+            this.werRadioButton1.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.werRadioButton1.Font = new System.Drawing.Font("Segoe UI", 9.75F);
+            this.werRadioButton1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(33)))), ((int)(((byte)(37)))), ((int)(((byte)(41)))));
+            this.werRadioButton1.Location = new System.Drawing.Point(173, 137);
+            this.werRadioButton1.Name = "werRadioButton1";
+            this.werRadioButton1.Size = new System.Drawing.Size(120, 22);
+            this.werRadioButton1.TabIndex = 23;
+            this.werRadioButton1.Text = "werRadioButton1";
             // 
             // werButtonPrimary2
             // 
@@ -52,7 +207,7 @@ namespace Wer.Winforms.Demo
             this.werButtonPrimary2.Font = new System.Drawing.Font("Segoe UI", 9.75F);
             this.werButtonPrimary2.ForeColor = System.Drawing.Color.White;
             this.werButtonPrimary2.HoverColor = System.Drawing.Color.FromArgb(((int)(((byte)(10)))), ((int)(((byte)(105)))), ((int)(((byte)(124)))));
-            this.werButtonPrimary2.Location = new System.Drawing.Point(435, 50);
+            this.werButtonPrimary2.Location = new System.Drawing.Point(43, 54);
             this.werButtonPrimary2.Name = "werButtonPrimary2";
             this.werButtonPrimary2.PressedColor = System.Drawing.Color.FromArgb(((int)(((byte)(8)))), ((int)(((byte)(86)))), ((int)(((byte)(102)))));
             this.werButtonPrimary2.Size = new System.Drawing.Size(174, 36);
@@ -63,7 +218,7 @@ namespace Wer.Winforms.Demo
             // 
             this.werStatusIndicator6.BackColor = System.Drawing.Color.Transparent;
             this.werStatusIndicator6.Font = new System.Drawing.Font("Segoe UI", 9.75F);
-            this.werStatusIndicator6.Location = new System.Drawing.Point(526, 368);
+            this.werStatusIndicator6.Location = new System.Drawing.Point(425, 150);
             this.werStatusIndicator6.Name = "werStatusIndicator6";
             this.werStatusIndicator6.Size = new System.Drawing.Size(158, 26);
             this.werStatusIndicator6.Status = Wer.Winforms.Toolkit.Controls.WerStatus.Negative;
@@ -74,7 +229,7 @@ namespace Wer.Winforms.Demo
             // 
             this.werStatusIndicator3.BackColor = System.Drawing.Color.Transparent;
             this.werStatusIndicator3.Font = new System.Drawing.Font("Segoe UI", 9.75F);
-            this.werStatusIndicator3.Location = new System.Drawing.Point(526, 336);
+            this.werStatusIndicator3.Location = new System.Drawing.Point(425, 118);
             this.werStatusIndicator3.Name = "werStatusIndicator3";
             this.werStatusIndicator3.Size = new System.Drawing.Size(158, 26);
             this.werStatusIndicator3.Status = Wer.Winforms.Toolkit.Controls.WerStatus.Notice;
@@ -85,7 +240,7 @@ namespace Wer.Winforms.Demo
             // 
             this.werStatusIndicator4.BackColor = System.Drawing.Color.Transparent;
             this.werStatusIndicator4.Font = new System.Drawing.Font("Segoe UI", 9.75F);
-            this.werStatusIndicator4.Location = new System.Drawing.Point(526, 304);
+            this.werStatusIndicator4.Location = new System.Drawing.Point(425, 86);
             this.werStatusIndicator4.Name = "werStatusIndicator4";
             this.werStatusIndicator4.Size = new System.Drawing.Size(158, 26);
             this.werStatusIndicator4.Status = Wer.Winforms.Toolkit.Controls.WerStatus.Positive;
@@ -96,7 +251,7 @@ namespace Wer.Winforms.Demo
             // 
             this.werStatusIndicator2.BackColor = System.Drawing.Color.Transparent;
             this.werStatusIndicator2.Font = new System.Drawing.Font("Segoe UI", 9.75F);
-            this.werStatusIndicator2.Location = new System.Drawing.Point(526, 272);
+            this.werStatusIndicator2.Location = new System.Drawing.Point(425, 54);
             this.werStatusIndicator2.Name = "werStatusIndicator2";
             this.werStatusIndicator2.Size = new System.Drawing.Size(158, 26);
             this.werStatusIndicator2.TabIndex = 15;
@@ -106,7 +261,7 @@ namespace Wer.Winforms.Demo
             // 
             this.werStatusIndicator1.BackColor = System.Drawing.Color.Transparent;
             this.werStatusIndicator1.Font = new System.Drawing.Font("Segoe UI", 9.75F);
-            this.werStatusIndicator1.Location = new System.Drawing.Point(526, 240);
+            this.werStatusIndicator1.Location = new System.Drawing.Point(425, 22);
             this.werStatusIndicator1.Name = "werStatusIndicator1";
             this.werStatusIndicator1.Size = new System.Drawing.Size(158, 26);
             this.werStatusIndicator1.Status = Wer.Winforms.Toolkit.Controls.WerStatus.Informative;
@@ -208,20 +363,6 @@ namespace Wer.Winforms.Demo
             this.werCurrencyField1.TabIndex = 4;
             this.werCurrencyField1.Value = null;
             // 
-            // werComboBox1
-            // 
-            this.werComboBox1.BackColor = System.Drawing.Color.White;
-            this.werComboBox1.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.werComboBox1.Font = new System.Drawing.Font("Segoe UI", 9.75F);
-            this.werComboBox1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(33)))), ((int)(((byte)(37)))), ((int)(((byte)(41)))));
-            this.werComboBox1.ItemsArray = new string[0];
-            this.werComboBox1.LabelText = "ComboBox Label";
-            this.werComboBox1.Location = new System.Drawing.Point(43, 206);
-            this.werComboBox1.Name = "werComboBox1";
-            this.werComboBox1.Size = new System.Drawing.Size(220, 60);
-            this.werComboBox1.TabIndex = 3;
-            this.werComboBox1.Text = "werComboBox1";
-            // 
             // werCheckbox1
             // 
             this.werCheckbox1.BackColor = System.Drawing.Color.Transparent;
@@ -242,7 +383,7 @@ namespace Wer.Winforms.Demo
             this.werButtonWarning1.Font = new System.Drawing.Font("Segoe UI", 9.75F);
             this.werButtonWarning1.ForeColor = System.Drawing.Color.White;
             this.werButtonWarning1.HoverColor = System.Drawing.Color.FromArgb(((int)(((byte)(152)))), ((int)(((byte)(49)))), ((int)(((byte)(49)))));
-            this.werButtonWarning1.Location = new System.Drawing.Point(223, 50);
+            this.werButtonWarning1.Location = new System.Drawing.Point(207, 12);
             this.werButtonWarning1.Name = "werButtonWarning1";
             this.werButtonWarning1.PressedColor = System.Drawing.Color.FromArgb(((int)(((byte)(125)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))));
             this.werButtonWarning1.Size = new System.Drawing.Size(195, 36);
@@ -257,106 +398,22 @@ namespace Wer.Winforms.Demo
             this.werButtonPrimary1.Font = new System.Drawing.Font("Segoe UI", 9.75F);
             this.werButtonPrimary1.ForeColor = System.Drawing.Color.White;
             this.werButtonPrimary1.HoverColor = System.Drawing.Color.FromArgb(((int)(((byte)(10)))), ((int)(((byte)(105)))), ((int)(((byte)(124)))));
-            this.werButtonPrimary1.Location = new System.Drawing.Point(43, 50);
+            this.werButtonPrimary1.Location = new System.Drawing.Point(27, 12);
             this.werButtonPrimary1.Name = "werButtonPrimary1";
             this.werButtonPrimary1.PressedColor = System.Drawing.Color.FromArgb(((int)(((byte)(8)))), ((int)(((byte)(86)))), ((int)(((byte)(102)))));
             this.werButtonPrimary1.Size = new System.Drawing.Size(174, 36);
             this.werButtonPrimary1.TabIndex = 0;
             this.werButtonPrimary1.Text = "werButtonPrimary1";
             // 
-            // werTabControl1
+            // werEmptyGroupBox1
             // 
-            this.werTabControl1.Controls.Add(this.tabPage1);
-            this.werTabControl1.Controls.Add(this.tabPage2);
-            this.werTabControl1.Font = new System.Drawing.Font("Segoe UI", 9.75F);
-            this.werTabControl1.ItemSize = new System.Drawing.Size(0, 38);
-            this.werTabControl1.Location = new System.Drawing.Point(725, 206);
-            this.werTabControl1.Name = "werTabControl1";
-            this.werTabControl1.Padding = new System.Drawing.Point(16, 0);
-            this.werTabControl1.SelectedIndex = 0;
-            this.werTabControl1.Size = new System.Drawing.Size(365, 180);
-            this.werTabControl1.TabIndex = 21;
-            // 
-            // tabPage1
-            // 
-            this.tabPage1.BackColor = System.Drawing.Color.White;
-            this.tabPage1.Location = new System.Drawing.Point(4, 42);
-            this.tabPage1.Name = "tabPage1";
-            this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(357, 134);
-            this.tabPage1.TabIndex = 0;
-            this.tabPage1.Text = "tabPage1";
-            // 
-            // tabPage2
-            // 
-            this.tabPage2.BackColor = System.Drawing.Color.White;
-            this.tabPage2.Location = new System.Drawing.Point(4, 42);
-            this.tabPage2.Name = "tabPage2";
-            this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(357, 134);
-            this.tabPage2.TabIndex = 1;
-            this.tabPage2.Text = "tabPage2";
-            // 
-            // werRadioButton1
-            // 
-            this.werRadioButton1.BackColor = System.Drawing.Color.Transparent;
-            this.werRadioButton1.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.werRadioButton1.Font = new System.Drawing.Font("Segoe UI", 9.75F);
-            this.werRadioButton1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(33)))), ((int)(((byte)(37)))), ((int)(((byte)(41)))));
-            this.werRadioButton1.Location = new System.Drawing.Point(173, 137);
-            this.werRadioButton1.Name = "werRadioButton1";
-            this.werRadioButton1.Size = new System.Drawing.Size(120, 22);
-            this.werRadioButton1.TabIndex = 23;
-            this.werRadioButton1.Text = "werRadioButton1";
-            // 
-            // werLabel1
-            // 
-            this.werLabel1.AutoSize = true;
-            this.werLabel1.Font = new System.Drawing.Font("Segoe UI", 9.75F);
-            this.werLabel1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(33)))), ((int)(((byte)(37)))), ((int)(((byte)(41)))));
-            this.werLabel1.Location = new System.Drawing.Point(60, 137);
-            this.werLabel1.Name = "werLabel1";
-            this.werLabel1.Size = new System.Drawing.Size(67, 17);
-            this.werLabel1.TabIndex = 24;
-            this.werLabel1.Text = "werLabel1";
-            // 
-            // werLink1
-            // 
-            this.werLink1.AutoSize = true;
-            this.werLink1.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.werLink1.Font = new System.Drawing.Font("Segoe UI", 9.75F);
-            this.werLink1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(12)))), ((int)(((byte)(124)))), ((int)(((byte)(146)))));
-            this.werLink1.HoverColor = System.Drawing.Color.FromArgb(((int)(((byte)(8)))), ((int)(((byte)(86)))), ((int)(((byte)(102)))));
-            this.werLink1.LinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(12)))), ((int)(((byte)(124)))), ((int)(((byte)(146)))));
-            this.werLink1.Location = new System.Drawing.Point(340, 137);
-            this.werLink1.Name = "werLink1";
-            this.werLink1.Size = new System.Drawing.Size(58, 17);
-            this.werLink1.TabIndex = 25;
-            this.werLink1.Text = "werLink1";
-            this.werLink1.VisitedColor = System.Drawing.Color.FromArgb(((int)(((byte)(12)))), ((int)(((byte)(124)))), ((int)(((byte)(146)))));
-            // 
-            // werGroupBox1
-            // 
-            this.werGroupBox1.BackColor = System.Drawing.Color.Transparent;
-            this.werGroupBox1.BodyBackColor = System.Drawing.Color.White;
-            // 
-            // 
-            // 
-            this.werGroupBox1.BodyPanel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.werGroupBox1.BodyPanel.BackColor = System.Drawing.Color.White;
-            this.werGroupBox1.BodyPanel.Location = new System.Drawing.Point(2, 62);
-            this.werGroupBox1.BodyPanel.Name = "";
-            this.werGroupBox1.BodyPanel.Size = new System.Drawing.Size(396, 95);
-            this.werGroupBox1.BodyPanel.TabIndex = 0;
-            this.werGroupBox1.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(200)))), ((int)(((byte)(210)))), ((int)(((byte)(220)))));
-            this.werGroupBox1.DividerColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.werGroupBox1.HeaderBackColor = System.Drawing.Color.White;
-            this.werGroupBox1.Location = new System.Drawing.Point(661, 29);
-            this.werGroupBox1.Name = "werGroupBox1";
-            this.werGroupBox1.Size = new System.Drawing.Size(400, 160);
-            this.werGroupBox1.TabIndex = 26;
+            this.werEmptyGroupBox1.BackColor = System.Drawing.Color.Transparent;
+            this.werEmptyGroupBox1.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(200)))), ((int)(((byte)(210)))), ((int)(((byte)(220)))));
+            this.werEmptyGroupBox1.Location = new System.Drawing.Point(1132, 235);
+            this.werEmptyGroupBox1.Name = "werEmptyGroupBox1";
+            this.werEmptyGroupBox1.Padding = new System.Windows.Forms.Padding(10);
+            this.werEmptyGroupBox1.Size = new System.Drawing.Size(400, 200);
+            this.werEmptyGroupBox1.TabIndex = 32;
             // 
             // MainForm
             // 
@@ -364,11 +421,15 @@ namespace Wer.Winforms.Demo
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
             this.ClientSize = new System.Drawing.Size(1491, 782);
+            this.Controls.Add(this.werEmptyGroupBox1);
+            this.Controls.Add(this.werGroupBox4);
+            this.Controls.Add(this.werGroupBox3);
+            this.Controls.Add(this.werTabControl1);
+            this.Controls.Add(this.werComboBox1);
             this.Controls.Add(this.werGroupBox1);
             this.Controls.Add(this.werLink1);
             this.Controls.Add(this.werLabel1);
             this.Controls.Add(this.werRadioButton1);
-            this.Controls.Add(this.werTabControl1);
             this.Controls.Add(this.werButtonPrimary2);
             this.Controls.Add(this.werStatusIndicator6);
             this.Controls.Add(this.werStatusIndicator3);
@@ -383,7 +444,6 @@ namespace Wer.Winforms.Demo
             this.Controls.Add(this.werInfoBanner1);
             this.Controls.Add(this.werDatePicker1);
             this.Controls.Add(this.werCurrencyField1);
-            this.Controls.Add(this.werComboBox1);
             this.Controls.Add(this.werCheckbox1);
             this.Controls.Add(this.werButtonWarning1);
             this.Controls.Add(this.werButtonPrimary1);
@@ -402,7 +462,6 @@ namespace Wer.Winforms.Demo
         private Toolkit.Controls.WerButtonPrimary werButtonPrimary1;
         private Toolkit.Controls.WerButtonWarning werButtonWarning1;
         private Toolkit.Controls.WerCheckbox werCheckbox1;
-        private Toolkit.Controls.WerComboBox werComboBox1;
         private Toolkit.Controls.WerCurrencyField werCurrencyField1;
         private Toolkit.Controls.WerDatePicker werDatePicker1;
         private Toolkit.Controls.WerInfoBanner werInfoBanner1;
@@ -417,12 +476,16 @@ namespace Wer.Winforms.Demo
         private Toolkit.Controls.WerStatusIndicator werStatusIndicator4;
         private Toolkit.Controls.WerStatusIndicator werStatusIndicator6;
         private Toolkit.Controls.WerButtonPrimary werButtonPrimary2;
-        private Toolkit.Controls.WerTabControl werTabControl1;
-        private System.Windows.Forms.TabPage tabPage1;
-        private System.Windows.Forms.TabPage tabPage2;
         private Toolkit.Controls.WerRadioButton werRadioButton1;
         private Toolkit.Controls.WerLabel werLabel1;
         private Toolkit.Controls.WerLink werLink1;
         private Toolkit.Controls.WerGroupBox werGroupBox1;
+        private Toolkit.Controls.WerComboBox werComboBox1;
+        private Toolkit.Controls.WerTabControl werTabControl1;
+        private System.Windows.Forms.TabPage tabPage1;
+        private System.Windows.Forms.TabPage tabPage2;
+        private Toolkit.Controls.WerGroupBox werGroupBox3;
+        private Toolkit.Controls.WerGroupBox werGroupBox4;
+        private Toolkit.Controls.WerEmptyGroupBox werEmptyGroupBox1;
     }
 }
