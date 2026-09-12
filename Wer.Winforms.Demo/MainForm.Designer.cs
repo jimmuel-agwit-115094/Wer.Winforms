@@ -56,6 +56,7 @@ namespace Wer.Winforms.Demo
             this.werLabel3 = new Wer.Winforms.Toolkit.Controls.WerLabel();
             this.werDivider1 = new Wer.Winforms.Toolkit.Controls.WerDivider();
             this.werPercentField1 = new Wer.Winforms.Toolkit.Controls.WerPercentField();
+            this.tabPage6 = new System.Windows.Forms.TabPage();
             this.werTabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.tabPage2.SuspendLayout();
@@ -71,6 +72,7 @@ namespace Wer.Winforms.Demo
             this.werTabControl1.Controls.Add(this.tabPage3);
             this.werTabControl1.Controls.Add(this.tabPage4);
             this.werTabControl1.Controls.Add(this.tabPage5);
+            this.werTabControl1.Controls.Add(this.tabPage6);
             this.werTabControl1.Font = new System.Drawing.Font("Segoe UI", 9.75F);
             this.werTabControl1.ItemSize = new System.Drawing.Size(0, 38);
             this.werTabControl1.Location = new System.Drawing.Point(12, 49);
@@ -571,7 +573,17 @@ namespace Wer.Winforms.Demo
             this.werGroupBox1.Name = "werGroupBox1";
             this.werGroupBox1.Size = new System.Drawing.Size(400, 160);
             this.werGroupBox1.TabIndex = 0;
-            // 
+            //
+            // tabPage6
+            //
+            this.tabPage6.BackColor = System.Drawing.Color.White;
+            this.tabPage6.Location = new System.Drawing.Point(4, 42);
+            this.tabPage6.Name = "tabPage6";
+            this.tabPage6.Padding = new System.Windows.Forms.Padding(12);
+            this.tabPage6.Size = new System.Drawing.Size(940, 471);
+            this.tabPage6.TabIndex = 5;
+            this.tabPage6.Text = "DataGrid";
+            //
             // werLabel3
             // 
             this.werLabel3.AutoSize = true;
@@ -673,5 +685,6 @@ namespace Wer.Winforms.Demo
         private Toolkit.Controls.WerSearchField werSearchField1;
         private Toolkit.Controls.WerDivider werDivider1;
         private Toolkit.Controls.WerPercentField werPercentField1;
+        private System.Windows.Forms.TabPage tabPage6;
     }
 }

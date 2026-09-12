@@ -31,6 +31,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="System.Data" />
     <Reference Include="System.Design" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
@@ -45,7 +46,7 @@
     <Compile Include="Controls\WerButtonPrimary.cs">
       <SubType>Component</SubType>
     </Compile>
-<Compile Include="Controls\WerButtonWarning.cs">
+    <Compile Include="Controls\WerButtonWarning.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Controls\WerButtonSuccess.cs">
@@ -130,6 +131,11 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Design\WerTabControlDesigner.cs" />
+    <Compile Include="Controls\WerDataGrid.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\WerDataGridColumn.cs" />
+    <Compile Include="Controls\WerDataGridEditEventArgs.cs" />
     <Compile Include="WerTheme.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
