@@ -131,6 +131,9 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Design\WerTabControlDesigner.cs" />
+    <Compile Include="Controls\WerTimePicker.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Controls\WerDataGrid.cs">
       <SubType>UserControl</SubType>
     </Compile>

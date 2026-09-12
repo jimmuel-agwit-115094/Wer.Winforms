@@ -101,5 +101,11 @@ namespace Wer.Winforms.Demo
             var val = werPercentField1.Value;
             MessageBox.Show("Selected value: " + val, "ComboBox Value");
         }
+
+        private void werButtonSuccess7_Click(object sender, EventArgs e)
+        {
+            var val = werTimePicker1.Value;
+            MessageBox.Show("Selected value: " + val, "ComboBox Value");
+        }
     }
 }
