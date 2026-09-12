@@ -25,19 +25,7 @@ namespace Wer.Winforms.Demo
 
         private void SetupDataGrid()
         {
-            var grid = new WerDataGrid();
-            grid.Dock = DockStyle.Fill;
-
-            // Only show these 5 columns — Id, Supplier, Warehouse are on the object but hidden
-            grid.SetColumns(new[]
-            {
-                new WerDataGridColumn("Name", "Product"),
-                new WerDataGridColumn("Qty", "Qty", 70, HorizontalAlignment.Center),
-                new WerDataGridColumn("Price", "Price", 110),
-                new WerDataGridColumn("Total", "Total", 120),
-                new WerDataGridColumn("OrderDate", "Order Date", 130),
-            });
-
+            // Simulated DB result — just set DataSource, columns auto-generate from properties
             var products = new List<Product>
             {
                 new Product { Id = 1, Name = "MacBook Pro 16\"", Category = "Electronics", Qty = 2, Price = 125999.50m, Total = 251999.00m, OrderDate = new DateTime(2025, 9, 1), Status = "Delivered", Supplier = "Apple Inc.", Warehouse = "Manila" },
@@ -50,14 +38,17 @@ namespace Wer.Winforms.Demo
                 new Product { Id = 8, Name = "Webcam HD", Category = "Electronics", Qty = 8, Price = 2100.50m, Total = 16804.00m, OrderDate = new DateTime(2025, 8, 1), Status = "Shipped", Supplier = "Logitech", Warehouse = "Davao" },
             };
 
-            grid.PrimaryKeyColumn = "Id";
-            grid.ShowEditColumn = true;
-            grid.DataSource = products;
+            werDataGrid1.PrimaryKeyColumn = "Id";
+            werDataGrid1.ShowEditColumn = false;
+            werDataGrid1.FieldOptions = new[] { "Name", "Category", "Qty", "Price", "Total", "OrderDate", "Status" };
+            werDataGrid1.TotalAmountColumn = "Total";
+            werDataGrid1.PageSize = 5;
+            werDataGrid1.DataSource = products;
 
-            grid.EditClicked += (s, args) =>
+            werDataGrid1.EditClicked += (s, args) =>
                 MessageBox.Show("Edit: " + args.PrimaryKey, "Edit Clicked");
 
-            tabPage6.Controls.Add(grid);
+            tabPage6.Controls.Add(werDataGrid1);
         }
 
         private void MainForm_Load(object sender, System.EventArgs e)

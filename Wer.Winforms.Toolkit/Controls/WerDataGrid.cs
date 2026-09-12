@@ -6,6 +6,7 @@ using System.Data;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
 namespace Wer.Winforms.Toolkit.Controls
@@ -48,11 +49,28 @@ namespace Wer.Winforms.Toolkit.Controls
         private int _sortColumnIndex = -1;
         private bool _sortAscending = true;
         private int _hoverHeaderCol = -1;
+        private int[] _userColumnWidths;
+        private int _resizingCol = -1;
+        private int _resizeStartX;
+        private int _resizeStartWidth;
+
+        // --- Pagination ---
+        private int _pageSize = 25;
+        private int _currentPage = 0;
+        private string _totalAmountColumn;
+        private int _hoverNavBtn = -1; // 0=first,1=prev,2=next,3=last
+        private const int FooterHeight = 44;
+        private const int SearchBarHeight = 40;
+        private static readonly string[] NavLabels = { "|<", "<", ">", ">|" };
 
         private VScrollBar _vScroll;
+        private WerSearchField _searchBox;
+        private string _searchText = "";
+        private DataTable _filteredTable;
         private Font _headerFont;
         private Font _dataFont;
         private Font _editFont;
+        private Font _footerFont;
 
         public event EventHandler<WerDataGridEditEventArgs> EditClicked;
 
@@ -68,7 +86,7 @@ namespace Wer.Winforms.Toolkit.Controls
         public bool ShowEditColumn
         {
             get => _showEditColumn;
-            set { _showEditColumn = value; RecalcLayout(); Invalidate(); }
+            set { _showEditColumn = value; RecalcLayout(); InvalidateGrid(); }
         }
 
         [Category("Wer Data")]
@@ -77,6 +95,37 @@ namespace Wer.Winforms.Toolkit.Controls
         {
             get => _allowSorting;
             set => _allowSorting = value;
+        }
+
+        /// <summary>
+        /// Property names to display. null = show all. Empty = show none.
+        /// </summary>
+        [Category("Wer Data")]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        [Browsable(false)]
+        public string[] FieldOptions { get; set; }
+
+        /// <summary>
+        /// Rows per page. Default 25.
+        /// </summary>
+        [Category("Wer Data")]
+        [DefaultValue(25)]
+        public int PageSize
+        {
+            get => _pageSize;
+            set { _pageSize = Math.Max(1, value); _currentPage = 0; RecalcLayout(); InvalidateGrid(); }
+        }
+
+        /// <summary>
+        /// Property name to sum for "Total Amount" display. Must be numeric (int/decimal/double/float).
+        /// null = hidden. String columns are ignored.
+        /// </summary>
+        [Category("Wer Data")]
+        [DefaultValue(null)]
+        public string TotalAmountColumn
+        {
+            get => _totalAmountColumn;
+            set { _totalAmountColumn = value; InvalidateGrid(); }
         }
 
         [Browsable(false)]
@@ -98,8 +147,9 @@ namespace Wer.Winforms.Toolkit.Controls
                 _selectedRowIndex = 0;
                 _scrollOffset = 0;
                 _sortColumnIndex = -1;
+                _userColumnWidths = null;
                 RecalcLayout();
-                Invalidate();
+                InvalidateGrid();
             }
         }
 
@@ -166,63 +216,125 @@ namespace Wer.Winforms.Toolkit.Controls
             _headerFont = new Font(WerTheme.FontFamily, 10f, FontStyle.Bold);
             _dataFont = new Font(WerTheme.FontFamily, 9.75f, FontStyle.Regular);
             _editFont = new Font(WerTheme.FontFamily, 8.5f, FontStyle.Regular);
+            _footerFont = new Font(WerTheme.FontFamily, 9f, FontStyle.Regular);
 
             _vScroll = new VScrollBar();
             _vScroll.Dock = DockStyle.Right;
             _vScroll.Visible = false;
-            _vScroll.ValueChanged += (s, e) => { _scrollOffset = _vScroll.Value; Invalidate(); };
+            _vScroll.ValueChanged += (s, e) => { _scrollOffset = _vScroll.Value; InvalidateGrid(); };
             Controls.Add(_vScroll);
 
+            _searchBox = new WerSearchField();
+            _searchBox.Size = new Size(200, 30);
+            _searchBox.Text = "";
+            _searchBox.TextChanged += (s, ev) =>
+            {
+                _searchText = _searchBox.Text.Trim();
+                ApplySearch();
+                _currentPage = 0;
+                _selectedRowIndex = 0;
+                RecalcLayout();
+                InvalidateGrid();
+            };
+            Controls.Add(_searchBox);
+
             BackColor = Color.White;
+            PositionSearchBox();
         }
 
         public void SetColumns(WerDataGridColumn[] columns)
         {
             _columns = new List<WerDataGridColumn>(columns);
             RecalcLayout();
-            Invalidate();
+            InvalidateGrid();
         }
 
         private void AutoGenerateColumns()
         {
             _columns.Clear();
             if (_dataTable == null) return;
-            foreach (DataColumn dc in _dataTable.Columns)
+
+            if (FieldOptions != null)
             {
-                _columns.Add(new WerDataGridColumn(dc.ColumnName, dc.ColumnName));
+                // Only include specified fields, in order
+                foreach (var field in FieldOptions)
+                {
+                    if (_dataTable.Columns.Contains(field))
+                        _columns.Add(new WerDataGridColumn(field, field));
+                }
+            }
+            else
+            {
+                foreach (DataColumn dc in _dataTable.Columns)
+                    _columns.Add(new WerDataGridColumn(dc.ColumnName, dc.ColumnName));
             }
         }
 
-        private int RowCount => _dataTable?.Rows.Count ?? 0;
+        private DataTable ActiveTable => _filteredTable ?? _dataTable;
 
-        private int ContentAreaTop => CornerRadius + HeaderHeight;
+        private void ApplySearch()
+        {
+            if (_dataTable == null || string.IsNullOrEmpty(_searchText))
+            {
+                _filteredTable = null;
+                return;
+            }
+
+            var filtered = _dataTable.Clone(); // schema only
+            string search = _searchText.ToLowerInvariant();
+
+            foreach (DataRow dr in _dataTable.Rows)
+            {
+                foreach (var col in _columns)
+                {
+                    var val = dr[col.PropertyName];
+                    if (val != null && val != DBNull.Value)
+                    {
+                        string text = FormatValue(val).ToLowerInvariant();
+                        if (text.Contains(search))
+                        {
+                            filtered.ImportRow(dr);
+                            break;
+                        }
+                    }
+                }
+            }
+
+            _filteredTable = filtered;
+        }
+
+        private int RowCount => ActiveTable?.Rows.Count ?? 0;
+
+        private bool ShowFooter => (_dataTable?.Rows.Count ?? 0) > _pageSize;
+
+        private int ContentAreaTop => CornerRadius + HeaderHeight + SearchBarHeight;
+
+        private int FooterTop => Height - (ShowFooter ? FooterHeight + CornerRadius : CornerRadius);
+
+        private int TotalPages => RowCount > 0 ? (int)Math.Ceiling((double)RowCount / _pageSize) : 1;
+
+        private int PageStartRow => _currentPage * _pageSize;
+
+        private int PageEndRow => Math.Min(PageStartRow + _pageSize, RowCount);
 
         private int VisibleRowCount
         {
             get
             {
-                int available = Height - ContentAreaTop - CornerRadius;
+                int bottomReserve = (ShowFooter ? FooterHeight : 0) + CornerRadius + 4;
+                int available = Height - ContentAreaTop - bottomReserve;
                 return Math.Max(1, available / RowHeight);
             }
         }
 
         private void RecalcLayout()
         {
-            int totalRows = RowCount;
-            int visible = VisibleRowCount;
-            if (totalRows > visible)
-            {
-                _vScroll.Visible = true;
-                _vScroll.Minimum = 0;
-                _vScroll.Maximum = totalRows - 1;
-                _vScroll.LargeChange = Math.Max(1, visible);
-                _vScroll.SmallChange = 1;
-            }
-            else
-            {
-                _vScroll.Visible = false;
-                _scrollOffset = 0;
-            }
+            // Pagination replaces scrollbar
+            _vScroll.Visible = false;
+            _scrollOffset = 0;
+
+            if (_currentPage >= TotalPages)
+                _currentPage = Math.Max(0, TotalPages - 1);
         }
 
         private int[] GetColumnWidths()
@@ -230,27 +342,94 @@ namespace Wer.Winforms.Toolkit.Controls
             if (_columns.Count == 0) return new int[0];
 
             int scrollW = _vScroll.Visible ? _vScroll.Width : 0;
-            int totalW = Width - scrollW - 2; // 2 for border
+            int totalW = Width - scrollW - 2;
             int editColW = _showEditColumn ? 90 : 0;
             int available = totalW - editColW;
+            int colCount = _columns.Count;
 
-            int fixedTotal = 0;
-            int autoCount = 0;
-            foreach (var c in _columns)
+            int[] widths = new int[colCount + (_showEditColumn ? 1 : 0)];
+
+            // If user has resized, use those widths
+            if (_userColumnWidths != null && _userColumnWidths.Length == colCount)
             {
-                if (c.Width > 0) fixedTotal += c.Width;
-                else autoCount++;
+                Array.Copy(_userColumnWidths, widths, colCount);
+                if (_showEditColumn)
+                    widths[colCount] = editColW;
+                return widths;
             }
 
-            int autoWidth = autoCount > 0 ? Math.Max(60, (available - fixedTotal) / autoCount) : 0;
-            int[] widths = new int[_columns.Count + (_showEditColumn ? 1 : 0)];
-            for (int i = 0; i < _columns.Count; i++)
-                widths[i] = _columns[i].Width > 0 ? _columns[i].Width : autoWidth;
+            // Auto-fit: measure header + data content
+            using (var bmp = new Bitmap(1, 1))
+            using (var g = Graphics.FromImage(bmp))
+            {
+                g.TextRenderingHint = System.Drawing.Text.TextRenderingHint.ClearTypeGridFit;
+
+                for (int i = 0; i < colCount; i++)
+                {
+                    // Measure header
+                    string header = _columns[i].HeaderText ?? _columns[i].PropertyName;
+                    if (_sortColumnIndex == i)
+                        header += "  \u25B2";
+                    int maxW = TextRenderer.MeasureText(g, header, _headerFont).Width + CellPadding * 2 + 4;
+
+                    // Measure data (sample up to 50 rows)
+                    var measureTable = ActiveTable;
+                    if (measureTable != null)
+                    {
+                        int sampleCount = Math.Min(measureTable.Rows.Count, 50);
+                        for (int r = 0; r < sampleCount; r++)
+                        {
+                            var val = measureTable.Rows[r][_columns[i].PropertyName];
+                            string text = FormatValue(val);
+                            int tw = TextRenderer.MeasureText(g, text, _dataFont).Width + CellPadding * 2 + 4;
+                            if (tw > maxW) maxW = tw;
+                        }
+                    }
+
+                    widths[i] = Math.Max(50, maxW);
+                }
+            }
+
+            // Scale to fit available width
+            int totalMeasured = 0;
+            for (int i = 0; i < colCount; i++)
+                totalMeasured += widths[i];
+
+            if (totalMeasured < available)
+            {
+                // Distribute extra space proportionally
+                int extra = available - totalMeasured;
+                for (int i = 0; i < colCount; i++)
+                {
+                    int share = (int)((double)widths[i] / totalMeasured * extra);
+                    widths[i] += share;
+                }
+                // Absorb rounding remainder into last column
+                int sum = 0;
+                for (int i = 0; i < colCount; i++) sum += widths[i];
+                widths[colCount - 1] += available - sum;
+            }
 
             if (_showEditColumn)
-                widths[_columns.Count] = editColW;
+                widths[colCount] = editColW;
 
             return widths;
+        }
+
+        /// <summary>Invalidate only the grid area (below search bar) to avoid flickering the search box.</summary>
+        private void InvalidateGrid()
+        {
+            Invalidate(new Rectangle(0, SearchBarHeight, Width, Height - SearchBarHeight));
+        }
+
+        private static string FormatValue(object val)
+        {
+            if (val == null || val == DBNull.Value) return "";
+            if (val is decimal decVal) return decVal.ToString("#,##0.00");
+            if (val is double dblVal) return dblVal.ToString("#,##0.00");
+            if (val is float fltVal) return fltVal.ToString("#,##0.00");
+            if (val is DateTime dtVal) return dtVal.ToString("MMM. dd, yyyy");
+            return val.ToString();
         }
 
         protected override void OnPaint(PaintEventArgs e)
@@ -263,19 +442,31 @@ namespace Wer.Winforms.Toolkit.Controls
             int w = Width - scrollW;
             int h = Height;
 
-            // --- Outer rounded container ---
-            using (var path = RoundedRect(0, 0, w, h, CornerRadius))
+            // White background above grid (search area)
+            using (var brush = new SolidBrush(Color.White))
+                g.FillRectangle(brush, 0, 0, w, SearchBarHeight);
+
+            // --- Outer rounded container (below search) ---
+            using (var path = RoundedRect(0, SearchBarHeight, w, h - SearchBarHeight, CornerRadius))
             {
                 g.SetClip(path);
 
                 // White background
-                g.Clear(Color.White);
+                using (var brush = new SolidBrush(Color.White))
+                    g.FillRectangle(brush, 0, SearchBarHeight, w, h - SearchBarHeight);
 
                 // --- Header ---
                 DrawHeader(g, w);
 
                 // --- Data rows ---
-                DrawRows(g, w, h);
+                if (RowCount == 0)
+                    DrawNoRecords(g, w, h);
+                else
+                    DrawRows(g, w, h);
+
+                // --- Footer (pagination + total) ---
+                if (ShowFooter)
+                    DrawFooter(g, w, h);
 
                 g.ResetClip();
 
@@ -287,16 +478,16 @@ namespace Wer.Winforms.Toolkit.Controls
 
         private void DrawHeader(Graphics g, int totalWidth)
         {
+            int headerY = SearchBarHeight;
+
             // Header background with rounded top corners
-            using (var path = RoundedRectTop(1, 1, totalWidth - 2, HeaderHeight + CornerRadius, CornerRadius))
+            using (var path = RoundedRectTop(1, headerY, totalWidth - 2, HeaderHeight + CornerRadius, CornerRadius))
             using (var brush = new SolidBrush(HeaderBg))
-            {
                 g.FillPath(brush, path);
-            }
 
             // Header bottom line
             using (var pen = new Pen(HeaderSep, 1f))
-                g.DrawLine(pen, 1, HeaderHeight, totalWidth - 2, HeaderHeight);
+                g.DrawLine(pen, 1, headerY + HeaderHeight, totalWidth - 2, headerY + HeaderHeight);
 
             var widths = GetColumnWidths();
             int x = 1;
@@ -304,7 +495,7 @@ namespace Wer.Winforms.Toolkit.Controls
             for (int i = 0; i < _columns.Count; i++)
             {
                 int colW = widths[i];
-                var textRect = new Rectangle(x + CellPadding, 1, colW - CellPadding * 2, HeaderHeight);
+                var textRect = new Rectangle(x + CellPadding, headerY, colW - CellPadding * 2, HeaderHeight);
 
                 // Header text
                 var headerText = _columns[i].HeaderText ?? _columns[i].PropertyName;
@@ -318,7 +509,7 @@ namespace Wer.Winforms.Toolkit.Controls
                 if (i < _columns.Count - 1 || _showEditColumn)
                 {
                     using (var pen = new Pen(HeaderSep, 1f))
-                        g.DrawLine(pen, x + colW, 10, x + colW, HeaderHeight - 10);
+                        g.DrawLine(pen, x + colW, headerY + 10, x + colW, headerY + HeaderHeight - 10);
                 }
 
                 x += colW;
@@ -328,22 +519,36 @@ namespace Wer.Winforms.Toolkit.Controls
             if (_showEditColumn && widths.Length > _columns.Count)
             {
                 int editW = widths[_columns.Count];
-                var textRect = new Rectangle(x + CellPadding, 1, editW - CellPadding * 2, HeaderHeight);
+                var textRect = new Rectangle(x + CellPadding, headerY, editW - CellPadding * 2, HeaderHeight);
                 TextRenderer.DrawText(g, "Actions", _headerFont, textRect, HeaderText,
                     TextFormatFlags.Left | TextFormatFlags.VerticalCenter | TextFormatFlags.NoPrefix);
             }
         }
 
+        private void DrawNoRecords(Graphics g, int totalWidth, int totalHeight)
+        {
+            int maxY = ShowFooter ? FooterTop : (totalHeight - CornerRadius);
+            int areaHeight = maxY - ContentAreaTop;
+            var rect = new Rectangle(0, ContentAreaTop, totalWidth, areaHeight);
+            using (var font = new Font(WerTheme.FontFamily, 14f, FontStyle.Bold))
+                TextRenderer.DrawText(g, "No records found.", font, rect,
+                    Color.FromArgb(179, 58, 58),
+                    TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter | TextFormatFlags.NoPrefix);
+        }
+
         private void DrawRows(Graphics g, int totalWidth, int totalHeight)
         {
-            if (_dataTable == null || _columns.Count == 0) return;
+            if (ActiveTable == null || _columns.Count == 0) return;
 
             var widths = GetColumnWidths();
             int y = ContentAreaTop;
-            int maxY = totalHeight - CornerRadius;
+            int maxY = ShowFooter ? FooterTop : (totalHeight - CornerRadius);
             var view = GetSortedView();
 
-            for (int vi = _scrollOffset; vi < view.Length && y + RowHeight <= maxY; vi++)
+            int startRow = PageStartRow;
+            int endRow = Math.Min(PageEndRow, view.Length);
+
+            for (int vi = startRow; vi < endRow && y + RowHeight <= maxY; vi++)
             {
                 var row = view[vi];
                 bool selected = vi == _selectedRowIndex;
@@ -370,36 +575,13 @@ namespace Wer.Winforms.Toolkit.Controls
                     var textRect = new Rectangle(x + CellPadding, y, colW - CellPadding * 2, RowHeight);
 
                     var val = row[_columns[i].PropertyName];
-                    string text;
+                    string text = FormatValue(val);
                     var colAlign = _columns[i].Alignment;
 
-                    if (val == null || val == DBNull.Value)
-                    {
-                        text = "";
-                    }
-                    else if (val is decimal decVal)
-                    {
-                        text = decVal.ToString("#,##0.00");
-                        if (colAlign == HorizontalAlignment.Left) colAlign = HorizontalAlignment.Right;
-                    }
-                    else if (val is double dblVal)
-                    {
-                        text = dblVal.ToString("#,##0.00");
-                        if (colAlign == HorizontalAlignment.Left) colAlign = HorizontalAlignment.Right;
-                    }
-                    else if (val is float fltVal)
-                    {
-                        text = fltVal.ToString("#,##0.00");
-                        if (colAlign == HorizontalAlignment.Left) colAlign = HorizontalAlignment.Right;
-                    }
-                    else if (val is DateTime dtVal)
-                    {
-                        text = dtVal.ToString("MMM. dd, yyyy");
-                    }
-                    else
-                    {
-                        text = val.ToString();
-                    }
+                    // Auto right-align numeric types
+                    if (colAlign == HorizontalAlignment.Left &&
+                        (val is decimal || val is double || val is float))
+                        colAlign = HorizontalAlignment.Right;
 
                     var align = colAlign == HorizontalAlignment.Right
                         ? TextFormatFlags.Right
@@ -450,11 +632,96 @@ namespace Wer.Winforms.Toolkit.Controls
             }
         }
 
+        private void DrawFooter(Graphics g, int totalWidth, int totalHeight)
+        {
+            int footerY = FooterTop;
+
+            // Separator line
+            using (var pen = new Pen(HeaderSep, 1f))
+                g.DrawLine(pen, 1, footerY, totalWidth - 2, footerY);
+
+            // "1 – 25 of 229" on left
+            int from = PageStartRow + 1;
+            int to = PageEndRow;
+            int total = RowCount;
+            string pageText = from + " \u2013 " + to + " of " + total;
+
+            var pageRect = new Rectangle(CellPadding, footerY, 200, FooterHeight);
+            TextRenderer.DrawText(g, pageText, _footerFont, pageRect, DataText,
+                TextFormatFlags.Left | TextFormatFlags.VerticalCenter | TextFormatFlags.NoPrefix);
+
+            // Nav buttons: |<  <  >  >|  — centered
+            int btnW = 30;
+            int btnH = 28;
+            int btnGap = 6;
+            int navTotalW = btnW * 4 + btnGap * 3;
+            int navX = (totalWidth - navTotalW) / 2;
+            int navY = footerY + (FooterHeight - btnH) / 2;
+
+            for (int i = 0; i < 4; i++)
+            {
+                int bx = navX + i * (btnW + btnGap);
+                var btnRect = new Rectangle(bx, navY, btnW, btnH);
+
+                bool enabled = (i < 2) ? _currentPage > 0 : _currentPage < TotalPages - 1;
+                bool hovered = _hoverNavBtn == i && enabled;
+
+                using (var path = RoundedRect(bx, navY, btnW, btnH, 4))
+                {
+                    if (hovered)
+                    {
+                        using (var brush = new SolidBrush(Color.FromArgb(240, 242, 245)))
+                            g.FillPath(brush, path);
+                    }
+                    using (var pen = new Pen(enabled ? ContainerBorder : Color.FromArgb(230, 230, 230), 1f))
+                        g.DrawPath(pen, path);
+                }
+
+                var textColor = enabled ? DataText : Color.FromArgb(190, 190, 190);
+                TextRenderer.DrawText(g, NavLabels[i], _footerFont, btnRect, textColor,
+                    TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter | TextFormatFlags.NoPrefix);
+            }
+
+            // Total amount on right (if configured and numeric)
+            var amountTable = ActiveTable;
+            if (!string.IsNullOrEmpty(_totalAmountColumn) && amountTable != null && amountTable.Columns.Contains(_totalAmountColumn))
+            {
+                var colType = amountTable.Columns[_totalAmountColumn].DataType;
+                colType = Nullable.GetUnderlyingType(colType) ?? colType;
+
+                if (colType == typeof(decimal) || colType == typeof(double) || colType == typeof(float) ||
+                    colType == typeof(int) || colType == typeof(long) || colType == typeof(short))
+                {
+                    decimal sum = 0;
+                    foreach (DataRow dr in amountTable.Rows)
+                    {
+                        var v = dr[_totalAmountColumn];
+                        if (v != null && v != DBNull.Value)
+                            sum += Convert.ToDecimal(v);
+                    }
+
+                    string totalLabel = "Total Amount";
+                    string totalValue = "$" + sum.ToString("#,##0.00");
+
+                    var labelRect = new Rectangle(totalWidth - 220, footerY + 2, 200, FooterHeight / 2);
+                    var valueRect = new Rectangle(totalWidth - 220, footerY + FooterHeight / 2 - 2, 200, FooterHeight / 2);
+
+                    TextRenderer.DrawText(g, totalLabel, _footerFont, labelRect, DataText,
+                        TextFormatFlags.Right | TextFormatFlags.VerticalCenter | TextFormatFlags.NoPrefix);
+
+                    using (var boldFont = new Font(WerTheme.FontFamily, 10f, FontStyle.Bold))
+                        TextRenderer.DrawText(g, totalValue, boldFont, valueRect, DataText,
+                            TextFormatFlags.Right | TextFormatFlags.VerticalCenter | TextFormatFlags.NoPrefix);
+                }
+            }
+        }
+
         private DataRowView[] GetSortedView()
         {
-            if (_dataTable == null) return new DataRowView[0];
+            var table = ActiveTable;
+            if (table == null) return new DataRowView[0];
 
-            var dv = _dataTable.DefaultView;
+            var dv = table.DefaultView;
             if (_sortColumnIndex >= 0 && _sortColumnIndex < _columns.Count)
             {
                 string col = _columns[_sortColumnIndex].PropertyName;
@@ -476,6 +743,19 @@ namespace Wer.Winforms.Toolkit.Controls
         protected override void OnMouseMove(MouseEventArgs e)
         {
             base.OnMouseMove(e);
+
+            // Active resize drag
+            if (_resizingCol >= 0)
+            {
+                int delta = e.X - _resizeStartX;
+                int newWidth = Math.Max(40, _resizeStartWidth + delta);
+                if (_userColumnWidths == null)
+                    _userColumnWidths = GetColumnWidthsSnapshot();
+                _userColumnWidths[_resizingCol] = newWidth;
+                InvalidateGrid();
+                return;
+            }
+
             int oldHoverRow = _hoverRowIndex;
             int oldHoverEdit = _hoverEditRow;
             int oldHoverHeader = _hoverHeaderCol;
@@ -484,18 +764,33 @@ namespace Wer.Winforms.Toolkit.Controls
             _hoverEditRow = -1;
             _hoverHeaderCol = -1;
 
-            if (e.Y < HeaderHeight)
+            if (e.Y >= SearchBarHeight && e.Y < SearchBarHeight + HeaderHeight)
             {
-                // Header area — detect column for sort cursor
-                if (_allowSorting)
+                // Check if near a column border for resize
+                int resizeCol = GetResizeBorderAtX(e.X);
+                if (resizeCol >= 0)
+                {
+                    Cursor = Cursors.SizeWE;
+                }
+                else if (_allowSorting)
                 {
                     int col = GetColumnAtX(e.X);
                     if (col >= 0 && col < _columns.Count)
                         _hoverHeaderCol = col;
+                    Cursor = _hoverHeaderCol >= 0 ? Cursors.Hand : Cursors.Default;
                 }
+            }
+            else if (ShowFooter && e.Y >= FooterTop)
+            {
+                // Footer area — check nav buttons
+                int oldNav = _hoverNavBtn;
+                _hoverNavBtn = GetNavButtonAt(e.X, e.Y);
+                Cursor = _hoverNavBtn >= 0 ? Cursors.Hand : Cursors.Default;
+                if (oldNav != _hoverNavBtn) InvalidateGrid();
             }
             else
             {
+                _hoverNavBtn = -1;
                 int row = GetRowAtY(e.Y);
                 if (row >= 0 && row < RowCount)
                 {
@@ -504,24 +799,32 @@ namespace Wer.Winforms.Toolkit.Controls
                     if (_showEditColumn && IsOverEditButton(e.X, e.Y, row))
                         _hoverEditRow = row;
                 }
+                Cursor = _hoverEditRow >= 0 ? Cursors.Hand : Cursors.Default;
             }
 
-            Cursor = (_hoverEditRow >= 0 || _hoverHeaderCol >= 0) ? Cursors.Hand : Cursors.Default;
-
             if (oldHoverRow != _hoverRowIndex || oldHoverEdit != _hoverEditRow || oldHoverHeader != _hoverHeaderCol)
-                Invalidate();
+                InvalidateGrid();
         }
 
         protected override void OnMouseLeave(EventArgs e)
         {
             base.OnMouseLeave(e);
-            if (_hoverRowIndex != -1 || _hoverEditRow != -1 || _hoverHeaderCol != -1)
+            bool dirty = _hoverRowIndex != -1 || _hoverEditRow != -1 || _hoverHeaderCol != -1 || _hoverNavBtn != -1;
+            _hoverRowIndex = -1;
+            _hoverEditRow = -1;
+            _hoverHeaderCol = -1;
+            _hoverNavBtn = -1;
+            Cursor = Cursors.Default;
+            if (dirty) InvalidateGrid();
+        }
+
+        protected override void OnMouseUp(MouseEventArgs e)
+        {
+            base.OnMouseUp(e);
+            if (_resizingCol >= 0)
             {
-                _hoverRowIndex = -1;
-                _hoverEditRow = -1;
-                _hoverHeaderCol = -1;
+                _resizingCol = -1;
                 Cursor = Cursors.Default;
-                Invalidate();
             }
         }
 
@@ -530,8 +833,37 @@ namespace Wer.Winforms.Toolkit.Controls
             base.OnMouseDown(e);
             if (e.Button != MouseButtons.Left) return;
 
+            // Footer nav click?
+            if (ShowFooter && e.Y >= FooterTop)
+            {
+                int btn = GetNavButtonAt(e.X, e.Y);
+                if (btn == 0 && _currentPage > 0) { _currentPage = 0; _selectedRowIndex = PageStartRow; InvalidateGrid(); }
+                else if (btn == 1 && _currentPage > 0) { _currentPage--; _selectedRowIndex = PageStartRow; InvalidateGrid(); }
+                else if (btn == 2 && _currentPage < TotalPages - 1) { _currentPage++; _selectedRowIndex = PageStartRow; InvalidateGrid(); }
+                else if (btn == 3 && _currentPage < TotalPages - 1) { _currentPage = TotalPages - 1; _selectedRowIndex = PageStartRow; InvalidateGrid(); }
+                return;
+            }
+
+            // Remove focus from search when clicking grid body
+            if (_searchBox != null && _searchBox.Focused)
+                this.Focus();
+
+            // Start column resize?
+            if (e.Y >= SearchBarHeight && e.Y < SearchBarHeight + HeaderHeight)
+            {
+                int resizeCol = GetResizeBorderAtX(e.X);
+                if (resizeCol >= 0)
+                {
+                    _resizingCol = resizeCol;
+                    _resizeStartX = e.X;
+                    var widths = GetColumnWidths();
+                    _resizeStartWidth = widths[resizeCol];
+                    return;
+                }
+            }
+
             // Header click → sort
-            if (e.Y < HeaderHeight && _allowSorting)
+            if (e.Y >= SearchBarHeight && e.Y < SearchBarHeight + HeaderHeight && _allowSorting)
             {
                 int col = GetColumnAtX(e.X);
                 if (col >= 0 && col < _columns.Count)
@@ -543,7 +875,7 @@ namespace Wer.Winforms.Toolkit.Controls
                         _sortColumnIndex = col;
                         _sortAscending = true;
                     }
-                    Invalidate();
+                    InvalidateGrid();
                 }
                 return;
             }
@@ -567,7 +899,7 @@ namespace Wer.Winforms.Toolkit.Controls
                 if (_selectedRowIndex != row)
                 {
                     _selectedRowIndex = row;
-                    Invalidate();
+                    InvalidateGrid();
                 }
             }
         }
@@ -585,8 +917,18 @@ namespace Wer.Winforms.Toolkit.Controls
         protected override void OnResize(EventArgs e)
         {
             base.OnResize(e);
+            PositionSearchBox();
             RecalcLayout();
-            Invalidate();
+            InvalidateGrid();
+        }
+
+        private void PositionSearchBox()
+        {
+            if (_searchBox == null) return;
+            int scrollW = _vScroll != null && _vScroll.Visible ? _vScroll.Width : 0;
+            int searchY = (SearchBarHeight - _searchBox.Height) / 2;
+            _searchBox.Location = new Point(Width - scrollW - _searchBox.Width - 2, Math.Max(0, searchY));
+            _searchBox.BringToFront();
         }
 
         // --- Hit testing ---
@@ -630,6 +972,60 @@ namespace Wer.Winforms.Toolkit.Controls
             return mx >= btnX && mx <= btnX + EditBtnWidth && my >= btnY && my <= btnY + EditBtnHeight;
         }
 
+        /// <summary>Returns column index if x is near a column right edge (resize zone), or -1.</summary>
+        private int GetResizeBorderAtX(int x)
+        {
+            const int hitZone = 5;
+            var widths = GetColumnWidths();
+            int cx = 1;
+            for (int i = 0; i < _columns.Count; i++)
+            {
+                cx += widths[i];
+                if (Math.Abs(x - cx) <= hitZone)
+                    return i;
+            }
+            return -1;
+        }
+
+        /// <summary>Snapshot current computed widths (for starting a resize drag).</summary>
+        private int[] GetColumnWidthsSnapshot()
+        {
+            var widths = GetColumnWidths();
+            var snap = new int[_columns.Count];
+            Array.Copy(widths, snap, _columns.Count);
+            return snap;
+        }
+
+        private int GetNavButtonAt(int mx, int my)
+        {
+            if (!ShowFooter || my < FooterTop) return -1;
+            int scrollW = _vScroll.Visible ? _vScroll.Width : 0;
+            int totalWidth = Width - scrollW;
+            int btnW = 30;
+            int btnH = 28;
+            int btnGap = 6;
+            int navTotalW = btnW * 4 + btnGap * 3;
+            int navX = (totalWidth - navTotalW) / 2;
+            int navY = FooterTop + (FooterHeight - btnH) / 2;
+
+            if (my < navY || my > navY + btnH) return -1;
+
+            for (int i = 0; i < 4; i++)
+            {
+                int bx = navX + i * (btnW + btnGap);
+                if (mx >= bx && mx <= bx + btnW) return i;
+            }
+            return -1;
+        }
+
+        [DllImport("user32.dll", CharSet = CharSet.Unicode)]
+        private static extern IntPtr SendMessage(IntPtr hWnd, int msg, IntPtr wParam, string lParam);
+
+        private static void SetCueBanner(TextBox textBox, string text)
+        {
+            SendMessage(textBox.Handle, 0x1501, (IntPtr)1, text);
+        }
+
         // --- GraphicsPath helpers ---
 
         private static GraphicsPath RoundedRect(int x, int y, int w, int h, int r)
@@ -662,6 +1058,8 @@ namespace Wer.Winforms.Toolkit.Controls
                 _headerFont?.Dispose();
                 _dataFont?.Dispose();
                 _editFont?.Dispose();
+                _footerFont?.Dispose();
+                _searchBox?.Dispose();
             }
             base.Dispose(disposing);
         }

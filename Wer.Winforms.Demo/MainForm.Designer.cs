@@ -17,6 +17,7 @@ namespace Wer.Winforms.Demo
         {
             this.werTabControl1 = new Wer.Winforms.Toolkit.Controls.WerTabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.werDivider1 = new Wer.Winforms.Toolkit.Controls.WerDivider();
             this.werHeading1 = new Wer.Winforms.Toolkit.Controls.WerHeading();
             this.werLink1 = new Wer.Winforms.Toolkit.Controls.WerLink();
             this.werLabel2 = new Wer.Winforms.Toolkit.Controls.WerLabel();
@@ -42,6 +43,7 @@ namespace Wer.Winforms.Demo
             this.werNegativeBanner1 = new Wer.Winforms.Toolkit.Controls.WerNegativeBanner();
             this.werInfoBanner1 = new Wer.Winforms.Toolkit.Controls.WerInfoBanner();
             this.tabPage4 = new System.Windows.Forms.TabPage();
+            this.werPercentField1 = new Wer.Winforms.Toolkit.Controls.WerPercentField();
             this.werSearchField1 = new Wer.Winforms.Toolkit.Controls.WerSearchField();
             this.werTextField1 = new Wer.Winforms.Toolkit.Controls.WerTextField();
             this.werPhoneField1 = new Wer.Winforms.Toolkit.Controls.WerPhoneField();
@@ -53,16 +55,16 @@ namespace Wer.Winforms.Demo
             this.tabPage5 = new System.Windows.Forms.TabPage();
             this.werEmptyGroupBox1 = new Wer.Winforms.Toolkit.Controls.WerEmptyGroupBox();
             this.werGroupBox1 = new Wer.Winforms.Toolkit.Controls.WerGroupBox();
-            this.werLabel3 = new Wer.Winforms.Toolkit.Controls.WerLabel();
-            this.werDivider1 = new Wer.Winforms.Toolkit.Controls.WerDivider();
-            this.werPercentField1 = new Wer.Winforms.Toolkit.Controls.WerPercentField();
             this.tabPage6 = new System.Windows.Forms.TabPage();
+            this.werDataGrid1 = new Wer.Winforms.Toolkit.Controls.WerDataGrid();
+            this.werLabel3 = new Wer.Winforms.Toolkit.Controls.WerLabel();
             this.werTabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.tabPage2.SuspendLayout();
             this.tabPage3.SuspendLayout();
             this.tabPage4.SuspendLayout();
             this.tabPage5.SuspendLayout();
+            this.tabPage6.SuspendLayout();
             this.SuspendLayout();
             // 
             // werTabControl1
@@ -96,6 +98,16 @@ namespace Wer.Winforms.Demo
             this.tabPage1.Size = new System.Drawing.Size(940, 471);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "Labels";
+            // 
+            // werDivider1
+            // 
+            this.werDivider1.BackColor = System.Drawing.Color.Transparent;
+            this.werDivider1.LineColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.werDivider1.Location = new System.Drawing.Point(24, 193);
+            this.werDivider1.Name = "werDivider1";
+            this.werDivider1.Size = new System.Drawing.Size(544, 24);
+            this.werDivider1.TabIndex = 4;
+            this.werDivider1.Text = "werDivider1";
             // 
             // werHeading1
             // 
@@ -444,6 +456,16 @@ namespace Wer.Winforms.Demo
             this.tabPage4.TabIndex = 3;
             this.tabPage4.Text = "Text Fields";
             // 
+            // werPercentField1
+            // 
+            this.werPercentField1.BackColor = System.Drawing.Color.Transparent;
+            this.werPercentField1.Font = new System.Drawing.Font("Segoe UI", 9.75F);
+            this.werPercentField1.Location = new System.Drawing.Point(22, 359);
+            this.werPercentField1.Name = "werPercentField1";
+            this.werPercentField1.Size = new System.Drawing.Size(319, 60);
+            this.werPercentField1.TabIndex = 8;
+            this.werPercentField1.Value = null;
+            // 
             // werSearchField1
             // 
             this.werSearchField1.BackColor = System.Drawing.Color.Transparent;
@@ -573,17 +595,28 @@ namespace Wer.Winforms.Demo
             this.werGroupBox1.Name = "werGroupBox1";
             this.werGroupBox1.Size = new System.Drawing.Size(400, 160);
             this.werGroupBox1.TabIndex = 0;
-            //
+            // 
             // tabPage6
-            //
+            // 
             this.tabPage6.BackColor = System.Drawing.Color.White;
+            this.tabPage6.Controls.Add(this.werDataGrid1);
             this.tabPage6.Location = new System.Drawing.Point(4, 42);
             this.tabPage6.Name = "tabPage6";
             this.tabPage6.Padding = new System.Windows.Forms.Padding(12);
             this.tabPage6.Size = new System.Drawing.Size(940, 471);
             this.tabPage6.TabIndex = 5;
             this.tabPage6.Text = "DataGrid";
-            //
+            // 
+            // werDataGrid1
+            // 
+            this.werDataGrid1.BackColor = System.Drawing.Color.White;
+            this.werDataGrid1.DataSource = null;
+            this.werDataGrid1.Location = new System.Drawing.Point(15, 15);
+            this.werDataGrid1.Name = "werDataGrid1";
+            this.werDataGrid1.PrimaryKeyColumn = null;
+            this.werDataGrid1.Size = new System.Drawing.Size(910, 411);
+            this.werDataGrid1.TabIndex = 0;
+            // 
             // werLabel3
             // 
             this.werLabel3.AutoSize = true;
@@ -595,27 +628,6 @@ namespace Wer.Winforms.Demo
             this.werLabel3.Size = new System.Drawing.Size(142, 20);
             this.werLabel3.TabIndex = 2;
             this.werLabel3.Text = "Winforms Controls";
-            // 
-            // werDivider1
-            // 
-            this.werDivider1.BackColor = System.Drawing.Color.Transparent;
-            this.werDivider1.LineColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.werDivider1.Location = new System.Drawing.Point(24, 193);
-            this.werDivider1.Name = "werDivider1";
-            this.werDivider1.Size = new System.Drawing.Size(544, 24);
-            this.werDivider1.TabIndex = 4;
-            this.werDivider1.Text = "werDivider1";
-            // 
-            // werPercentField1
-            // 
-            this.werPercentField1.BackColor = System.Drawing.Color.Transparent;
-            this.werPercentField1.Font = new System.Drawing.Font("Segoe UI", 9.75F);
-            this.werPercentField1.Location = new System.Drawing.Point(22, 359);
-            this.werPercentField1.Name = "werPercentField1";
-            this.werPercentField1.Size = new System.Drawing.Size(319, 60);
-            this.werPercentField1.TabIndex = 8;
-            this.werPercentField1.Text = "werPercentField1";
-            this.werPercentField1.Value = null;
             // 
             // MainForm
             // 
@@ -637,6 +649,7 @@ namespace Wer.Winforms.Demo
             this.tabPage3.PerformLayout();
             this.tabPage4.ResumeLayout(false);
             this.tabPage5.ResumeLayout(false);
+            this.tabPage6.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -686,5 +699,6 @@ namespace Wer.Winforms.Demo
         private Toolkit.Controls.WerDivider werDivider1;
         private Toolkit.Controls.WerPercentField werPercentField1;
         private System.Windows.Forms.TabPage tabPage6;
+        private Toolkit.Controls.WerDataGrid werDataGrid1;
     }
 }
