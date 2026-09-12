@@ -39,7 +39,7 @@ namespace Wer.Winforms.Demo
             };
 
             werDataGrid1.PrimaryKeyColumn = "Id";
-            werDataGrid1.ShowEditColumn = false;
+            werDataGrid1.ShowEditColumn = true;
             werDataGrid1.FieldOptions = new[] { "Name", "Category", "Qty", "Price", "Total", "OrderDate", "Status" };
             werDataGrid1.TotalAmountColumn = "Total";
             werDataGrid1.PageSize = 5;
@@ -65,6 +65,11 @@ namespace Wer.Winforms.Demo
 
         private void werTabControl1_SelectedIndexChanged_1(object sender, System.EventArgs e)
         {
+        }
+
+        private void werDataGrid1_Load(object sender, EventArgs e)
+        {
+
         }
     }
 }

@@ -309,7 +309,7 @@ namespace Wer.Winforms.Toolkit.Controls
 
         private int ContentAreaTop => CornerRadius + HeaderHeight + SearchBarHeight;
 
-        private int FooterTop => Height - (ShowFooter ? FooterHeight + CornerRadius : CornerRadius);
+        private int FooterTop => Height - (ShowFooter ? FooterHeight + CornerRadius + 2 : CornerRadius + 2);
 
         private int TotalPages => RowCount > 0 ? (int)Math.Ceiling((double)RowCount / _pageSize) : 1;
 
@@ -447,7 +447,7 @@ namespace Wer.Winforms.Toolkit.Controls
                 g.FillRectangle(brush, 0, 0, w, SearchBarHeight);
 
             // --- Outer rounded container (below search) ---
-            using (var path = RoundedRect(0, SearchBarHeight, w, h - SearchBarHeight, CornerRadius))
+            using (var path = RoundedRect(0, SearchBarHeight, w - 1, h - SearchBarHeight - 1, CornerRadius))
             {
                 g.SetClip(path);
 

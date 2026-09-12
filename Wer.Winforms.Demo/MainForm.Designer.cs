@@ -614,8 +614,9 @@ namespace Wer.Winforms.Demo
             this.werDataGrid1.Location = new System.Drawing.Point(15, 15);
             this.werDataGrid1.Name = "werDataGrid1";
             this.werDataGrid1.PrimaryKeyColumn = null;
-            this.werDataGrid1.Size = new System.Drawing.Size(910, 411);
+            this.werDataGrid1.Size = new System.Drawing.Size(910, 385);
             this.werDataGrid1.TabIndex = 0;
+            this.werDataGrid1.Load += new System.EventHandler(this.werDataGrid1_Load);
             // 
             // werLabel3
             // 
