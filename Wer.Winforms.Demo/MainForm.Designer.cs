@@ -43,6 +43,7 @@ namespace Wer.Winforms.Demo
             this.werNegativeBanner1 = new Wer.Winforms.Toolkit.Controls.WerNegativeBanner();
             this.werInfoBanner1 = new Wer.Winforms.Toolkit.Controls.WerInfoBanner();
             this.tabPage4 = new System.Windows.Forms.TabPage();
+            this.werCurrencyField1 = new Wer.Winforms.Toolkit.Controls.WerCurrencyField();
             this.werButtonSuccess6 = new Wer.Winforms.Toolkit.Controls.WerButtonSuccess();
             this.werButtonSuccess5 = new Wer.Winforms.Toolkit.Controls.WerButtonSuccess();
             this.werButtonSuccess4 = new Wer.Winforms.Toolkit.Controls.WerButtonSuccess();
@@ -62,7 +63,6 @@ namespace Wer.Winforms.Demo
             this.tabPage6 = new System.Windows.Forms.TabPage();
             this.werDataGrid1 = new Wer.Winforms.Toolkit.Controls.WerDataGrid();
             this.werLabel3 = new Wer.Winforms.Toolkit.Controls.WerLabel();
-            this.werCurrencyField1 = new Wer.Winforms.Toolkit.Controls.WerCurrencyField();
             this.werTabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.tabPage2.SuspendLayout();
@@ -466,6 +466,21 @@ namespace Wer.Winforms.Demo
             this.tabPage4.TabIndex = 3;
             this.tabPage4.Text = "Text Fields";
             // 
+            // werCurrencyField1
+            // 
+            this.werCurrencyField1.BackColor = System.Drawing.Color.Transparent;
+            this.werCurrencyField1.Font = new System.Drawing.Font("Segoe UI", 9.75F);
+            this.werCurrencyField1.LabelText = "Currency Label";
+            this.werCurrencyField1.Location = new System.Drawing.Point(22, 111);
+            this.werCurrencyField1.Name = "werCurrencyField1";
+            this.werCurrencyField1.Size = new System.Drawing.Size(319, 59);
+            this.werCurrencyField1.TabIndex = 15;
+            this.werCurrencyField1.Value = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
+            // 
             // werButtonSuccess6
             // 
             this.werButtonSuccess6.BorderColor = System.Drawing.Color.Empty;
@@ -480,6 +495,7 @@ namespace Wer.Winforms.Demo
             this.werButtonSuccess6.Size = new System.Drawing.Size(73, 36);
             this.werButtonSuccess6.TabIndex = 14;
             this.werButtonSuccess6.Text = "Test";
+            this.werButtonSuccess6.Click += new System.EventHandler(this.werButtonSuccess6_Click);
             // 
             // werButtonSuccess5
             // 
@@ -495,6 +511,7 @@ namespace Wer.Winforms.Demo
             this.werButtonSuccess5.Size = new System.Drawing.Size(73, 36);
             this.werButtonSuccess5.TabIndex = 13;
             this.werButtonSuccess5.Text = "Test";
+            this.werButtonSuccess5.Click += new System.EventHandler(this.werButtonSuccess5_Click);
             // 
             // werButtonSuccess4
             // 
@@ -510,6 +527,7 @@ namespace Wer.Winforms.Demo
             this.werButtonSuccess4.Size = new System.Drawing.Size(73, 36);
             this.werButtonSuccess4.TabIndex = 12;
             this.werButtonSuccess4.Text = "Test";
+            this.werButtonSuccess4.Click += new System.EventHandler(this.werButtonSuccess4_Click);
             // 
             // werButtonSuccess3
             // 
@@ -551,7 +569,11 @@ namespace Wer.Winforms.Demo
             this.werPercentField1.Name = "werPercentField1";
             this.werPercentField1.Size = new System.Drawing.Size(319, 60);
             this.werPercentField1.TabIndex = 8;
-            this.werPercentField1.Value = null;
+            this.werPercentField1.Value = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
             // 
             // werSearchField1
             // 
@@ -601,7 +623,7 @@ namespace Wer.Winforms.Demo
             this.werIntegerField1.Placeholder = "0";
             this.werIntegerField1.Size = new System.Drawing.Size(319, 60);
             this.werIntegerField1.TabIndex = 3;
-            this.werIntegerField1.Value = null;
+            this.werIntegerField1.Value = 0;
             // 
             // werDatePicker1
             // 
@@ -704,18 +726,6 @@ namespace Wer.Winforms.Demo
             this.werLabel3.Size = new System.Drawing.Size(142, 20);
             this.werLabel3.TabIndex = 2;
             this.werLabel3.Text = "Winforms Controls";
-            // 
-            // werCurrencyField1
-            // 
-            this.werCurrencyField1.BackColor = System.Drawing.Color.Transparent;
-            this.werCurrencyField1.Font = new System.Drawing.Font("Segoe UI", 9.75F);
-            this.werCurrencyField1.LabelText = "Currency Label";
-            this.werCurrencyField1.Location = new System.Drawing.Point(22, 111);
-            this.werCurrencyField1.Name = "werCurrencyField1";
-            this.werCurrencyField1.Size = new System.Drawing.Size(319, 59);
-            this.werCurrencyField1.TabIndex = 15;
-            this.werCurrencyField1.Text = "werCurrencyField1";
-            this.werCurrencyField1.Value = null;
             // 
             // MainForm
             // 

@@ -80,7 +80,25 @@ namespace Wer.Winforms.Demo
 
         private void werButtonSuccess3_Click(object sender, EventArgs e)
         {
-            var val = decimal.Parse(werCurrencyField1.Text);
+            var val = werCurrencyField1.Value;
+            MessageBox.Show("Selected value: " + val, "ComboBox Value");
+        }
+
+        private void werButtonSuccess4_Click(object sender, EventArgs e)
+        {
+            var val = werDatePicker1.Value;
+            MessageBox.Show("Selected value: " + val, "ComboBox Value");
+        }
+
+        private void werButtonSuccess5_Click(object sender, EventArgs e)
+        {
+            var val = werIntegerField1.Value;
+            MessageBox.Show("Selected value: " + val, "ComboBox Value");
+        }
+
+        private void werButtonSuccess6_Click(object sender, EventArgs e)
+        {
+            var val = werPercentField1.Value;
             MessageBox.Show("Selected value: " + val, "ComboBox Value");
         }
     }

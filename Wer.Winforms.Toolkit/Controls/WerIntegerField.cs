@@ -159,15 +159,21 @@ namespace Wer.Winforms.Toolkit.Controls
             set => _maxValue = value;
         }
 
+        /// <summary>
+        /// Returns the current value as int. Default is 0.
+        /// No parsing needed — just use: int qty = werIntegerField1.Value;
+        /// </summary>
         [Category("WerIntegerField")]
         [Browsable(false)]
-        [Description("The current integer value, or null if empty/invalid.")]
-        public int? Value
+        [Description("The current integer value. Returns 0 if empty or invalid. No parsing needed.")]
+        public int Value
         {
-            get => int.TryParse(_input.Text, out int v) ? (int?)v : null;
+            get => int.TryParse(_input.Text, out int v) ? v : 0;
             set
             {
-                _input.Text = value?.ToString() ?? string.Empty;
+                _input.Text = value != 0 ? value.ToString() : string.Empty;
+                _input.Visible = !string.IsNullOrEmpty(_input.Text);
+                _inputBorder.Invalidate();
                 ValueChanged?.Invoke(this, EventArgs.Empty);
             }
         }

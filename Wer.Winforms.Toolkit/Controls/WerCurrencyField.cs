@@ -168,23 +168,26 @@ namespace Wer.Winforms.Toolkit.Controls
             set => _maxValue = value;
         }
 
+        /// <summary>
+        /// Returns the current value as decimal. Default is 0.
+        /// No parsing needed — just use: decimal amount = werCurrencyField1.Value;
+        /// </summary>
         [Category("WerCurrencyField")]
         [Browsable(false)]
-        [Description("The current decimal value, or null if empty/invalid.")]
-        public decimal? Value
+        [Description("The current decimal value. Returns 0 if empty or invalid. No parsing needed.")]
+        public decimal Value
         {
             get
             {
                 var raw = _input.Text.Replace(",", "");
                 return decimal.TryParse(raw, NumberStyles.Number, CultureInfo.InvariantCulture, out decimal v)
-                    ? (decimal?)v : null;
+                    ? v : 0m;
             }
             set
             {
-                if (value.HasValue)
-                    _input.Text = FormatForDisplay(value.Value);
-                else
-                    _input.Text = string.Empty;
+                _input.Text = value != 0m ? FormatForDisplay(value) : string.Empty;
+                _input.Visible = !string.IsNullOrEmpty(_input.Text);
+                _inputBorder.Invalidate();
                 ValueChanged?.Invoke(this, EventArgs.Empty);
             }
         }
