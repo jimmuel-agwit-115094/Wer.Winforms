@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd">
+  <metadata>
+    <id>Wer.Winforms.Toolkit</id>
+    <version>1.0.0</version>
+    <title>Wer.Winforms.Toolkit</title>
+    <authors>Jimmuel Agwit</authors>
+    <owners>Jimmuel Agwit</owners>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <license type="expression">MIT</license>
+    <description>Modern owner-drawn WinForms UI toolkit for .NET Framework 4.7.2. Provides 30+ styled controls including buttons, text fields, currency/integer/percent inputs, date picker, time picker, combo box, toggle, data grid with search/pagination/tabs, banners, status indicators, and more. All controls feature consistent theming with rounded corners, clean typography, and modern visual design.</description>
+    <summary>Modern WinForms UI toolkit with 30+ styled controls for business applications.</summary>
+    <tags>winforms ui toolkit controls modern datagrid buttons textfield datepicker timepicker combobox toggle banner dotnet framework</tags>
+    <projectUrl>https://github.com/jagwit/Wer.Winforms</projectUrl>
+    <releaseNotes>Initial release - 30+ modern WinForms controls with consistent theming.</releaseNotes>
+    <copyright>Copyright 2025 Jimmuel Agwit</copyright>
+    <dependencies>
+      <group targetFramework=".NETFramework4.7.2" />
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="bin\Release\Wer.Winforms.Toolkit.dll" target="lib\net472\" />
+    <file src="bin\Release\Wer.Winforms.Toolkit.pdb" target="lib\net472\" />
+    <file src="..\README.md" target="" />
+  </files>
+</package>
