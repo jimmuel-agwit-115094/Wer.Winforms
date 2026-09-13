@@ -131,6 +131,10 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Design\WerTabControlDesigner.cs" />
+    <Compile Include="Controls\DateRangeResult.cs" />
+    <Compile Include="Controls\WerDateRange.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Controls\WerCopyTextField.cs">
       <SubType>Component</SubType>
     </Compile>

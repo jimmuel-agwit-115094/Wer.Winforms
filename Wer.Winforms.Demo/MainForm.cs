@@ -110,10 +110,17 @@ namespace Wer.Winforms.Demo
 
         private void werToggle1_CheckedChanged(object sender, EventArgs e)
         {
-            
-                var val = werToggle1.Checked;
-                MessageBox.Show("Selected value: " + val, "ComboBox Value");
-            
+
+            var val = werToggle1.Checked;
+            MessageBox.Show("Selected value: " + val, "ComboBox Value");
+
+        }
+
+        private void werDateRange1_RangeChanged(object sender, EventArgs e)
+        {
+            var start = werDateRange1.Result.StartDate;
+            var end = werDateRange1.Result.EndDate;
+            MessageBox.Show($"Selected range: {start.ToShortDateString()} - {end.ToShortDateString()}", "Date Range Value");
         }
     }
 }

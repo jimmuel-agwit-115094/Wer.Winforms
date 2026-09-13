@@ -68,10 +68,11 @@ namespace Wer.Winforms.Demo
             this.werIntegerField2 = new Wer.Winforms.Toolkit.Controls.WerIntegerField();
             this.werDatePicker2 = new Wer.Winforms.Toolkit.Controls.WerDatePicker();
             this.werComboBox2 = new Wer.Winforms.Toolkit.Controls.WerComboBox();
-            this.werLabel3 = new Wer.Winforms.Toolkit.Controls.WerLabel();
             this.tabPage8 = new System.Windows.Forms.TabPage();
             this.werTimePicker1 = new Wer.Winforms.Toolkit.Controls.WerTimePicker();
             this.werDatePicker1 = new Wer.Winforms.Toolkit.Controls.WerDatePicker();
+            this.werLabel3 = new Wer.Winforms.Toolkit.Controls.WerLabel();
+            this.werDateRange1 = new Wer.Winforms.Toolkit.Controls.WerDateRange();
             this.werTabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.tabPage2.SuspendLayout();
@@ -802,21 +803,10 @@ namespace Wer.Winforms.Demo
             this.werComboBox2.Size = new System.Drawing.Size(319, 60);
             this.werComboBox2.TabIndex = 16;
             // 
-            // werLabel3
-            // 
-            this.werLabel3.AutoSize = true;
-            this.werLabel3.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Bold);
-            this.werLabel3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(33)))), ((int)(((byte)(37)))), ((int)(((byte)(41)))));
-            this.werLabel3.LabelStyle = Wer.Winforms.Toolkit.Controls.WerLabelStyle.Subheading;
-            this.werLabel3.Location = new System.Drawing.Point(12, 9);
-            this.werLabel3.Name = "werLabel3";
-            this.werLabel3.Size = new System.Drawing.Size(142, 20);
-            this.werLabel3.TabIndex = 2;
-            this.werLabel3.Text = "Winforms Controls";
-            // 
             // tabPage8
             // 
             this.tabPage8.BackColor = System.Drawing.Color.White;
+            this.tabPage8.Controls.Add(this.werDateRange1);
             this.tabPage8.Controls.Add(this.werTimePicker1);
             this.tabPage8.Controls.Add(this.werDatePicker1);
             this.tabPage8.Location = new System.Drawing.Point(4, 42);
@@ -848,6 +838,30 @@ namespace Wer.Winforms.Demo
             this.werDatePicker1.TabIndex = 19;
             this.werDatePicker1.Text = "werDatePicker1";
             this.werDatePicker1.Value = null;
+            // 
+            // werLabel3
+            // 
+            this.werLabel3.AutoSize = true;
+            this.werLabel3.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Bold);
+            this.werLabel3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(33)))), ((int)(((byte)(37)))), ((int)(((byte)(41)))));
+            this.werLabel3.LabelStyle = Wer.Winforms.Toolkit.Controls.WerLabelStyle.Subheading;
+            this.werLabel3.Location = new System.Drawing.Point(12, 9);
+            this.werLabel3.Name = "werLabel3";
+            this.werLabel3.Size = new System.Drawing.Size(142, 20);
+            this.werLabel3.TabIndex = 2;
+            this.werLabel3.Text = "Winforms Controls";
+            // 
+            // werDateRange1
+            // 
+            this.werDateRange1.BackColor = System.Drawing.Color.Transparent;
+            this.werDateRange1.Font = new System.Drawing.Font("Segoe UI", 9.75F);
+            this.werDateRange1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(33)))), ((int)(((byte)(37)))), ((int)(((byte)(41)))));
+            this.werDateRange1.Location = new System.Drawing.Point(26, 172);
+            this.werDateRange1.Name = "werDateRange1";
+            this.werDateRange1.Size = new System.Drawing.Size(319, 60);
+            this.werDateRange1.TabIndex = 21;
+            this.werDateRange1.Text = "werDateRange1";
+            this.werDateRange1.RangeChanged += new System.EventHandler(this.werDateRange1_RangeChanged);
             // 
             // MainForm
             // 
@@ -937,5 +951,6 @@ namespace Wer.Winforms.Demo
         private System.Windows.Forms.TabPage tabPage8;
         private Toolkit.Controls.WerTimePicker werTimePicker1;
         private Toolkit.Controls.WerDatePicker werDatePicker1;
+        private Toolkit.Controls.WerDateRange werDateRange1;
     }
 }
