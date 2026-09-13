@@ -37,7 +37,7 @@ namespace Wer.Winforms.Toolkit.Controls
         private bool   _isAm = true;
 
         // ── Layout ──────────────────────────────────────────────
-        private const int LabelHeight   = 20;
+        private int LabelHeight => Math.Max(20, (int)(Font.GetHeight() + 4));
         private const int LabelGap      = 4;
         private const int BorderRadius  = 8;
         private const int InputPadH     = 8;
@@ -164,6 +164,17 @@ namespace Wer.Winforms.Toolkit.Controls
 
         // ── Properties ──────────────────────────────────────────
 
+        private bool _showLabel = true;
+
+        [Category("WerTimePicker")]
+        [DefaultValue(true)]
+        [Description("Show or hide the label above the input.")]
+        public bool ShowLabel
+        {
+            get => _showLabel;
+            set { _showLabel = value; LayoutInternals(); Invalidate(); }
+        }
+
         [Category("WerTimePicker")]
         [DefaultValue("TimePicker Label")]
         public string LabelText
@@ -253,11 +264,20 @@ namespace Wer.Winforms.Toolkit.Controls
             LayoutInternals();
         }
 
+        protected override void OnFontChanged(EventArgs e)
+        {
+            base.OnFontChanged(e);
+            if (_hourCombo == null) return;
+            _hourCombo.Font = Font;
+            _minuteCombo.Font = Font;
+            LayoutInternals();
+        }
+
         private void LayoutInternals()
         {
             if (_hourBorder == null) return;
 
-            int borderTop = LabelHeight + LabelGap;
+            int borderTop = _showLabel ? LabelHeight + LabelGap : 0;
             int borderH   = Height - borderTop;
             int x = 0;
 
@@ -291,25 +311,28 @@ namespace Wer.Winforms.Toolkit.Controls
             g.TextRenderingHint = TextRenderingHint.ClearTypeGridFit;
 
             // Label
-            Color labelColor;
-            if (!Enabled)          labelColor = LabelDisabled;
-            else if (_readOnly)    labelColor = LabelRequired;
-            else                   labelColor = LabelNormal;
-
-            var labelRect = new Rectangle(0, 0, Width, LabelHeight);
-            TextRenderer.DrawText(g, _labelText, Font, labelRect, labelColor,
-                TextFormatFlags.Left | TextFormatFlags.VerticalCenter | TextFormatFlags.SingleLine);
-
-            if (_required && Enabled)
+            if (_showLabel)
             {
-                int lw = TextRenderer.MeasureText(g, _labelText, Font).Width;
-                TextRenderer.DrawText(g, "*", Font, new Rectangle(lw + 2, 0, 12, LabelHeight),
-                    RequiredStar, TextFormatFlags.Left | TextFormatFlags.VerticalCenter);
+                Color labelColor;
+                if (!Enabled)          labelColor = LabelDisabled;
+                else if (_readOnly)    labelColor = LabelRequired;
+                else                   labelColor = LabelNormal;
+
+                var labelRect = new Rectangle(0, 0, Width, LabelHeight);
+                TextRenderer.DrawText(g, _labelText, Font, labelRect, labelColor,
+                    TextFormatFlags.Left | TextFormatFlags.VerticalCenter | TextFormatFlags.SingleLine);
+
+                if (_required && Enabled)
+                {
+                    int lw = TextRenderer.MeasureText(g, _labelText, Font).Width;
+                    TextRenderer.DrawText(g, "*", Font, new Rectangle(lw + 2, 0, 12, LabelHeight),
+                        RequiredStar, TextFormatFlags.Left | TextFormatFlags.VerticalCenter);
+                }
             }
 
             // Colon between hour and minute
             int colonX = DropW;
-            int borderTop = LabelHeight + LabelGap;
+            int borderTop = _showLabel ? LabelHeight + LabelGap : 0;
             int borderH = Height - borderTop;
             var colonRect = new Rectangle(colonX, borderTop, ColonW, borderH);
             using (var font = new Font(WerTheme.FontFamily, 11f, FontStyle.Bold))

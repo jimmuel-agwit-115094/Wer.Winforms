@@ -30,7 +30,7 @@ namespace Wer.Winforms.Toolkit.Controls
         private bool   _readOnly;
         private bool   _hasFocus;
 
-        private const int LabelHeight  = 20;
+        private int LabelHeight => Math.Max(20, (int)(Font.GetHeight() + 4));
         private const int LabelGap     = 4;
         private const int BorderRadius = 8;
         private const int InputPadH    = 10;
@@ -111,6 +111,17 @@ namespace Wer.Winforms.Toolkit.Controls
         }
 
         // ── Properties ──────────────────────────────────────────
+
+        private bool _showLabel = true;
+
+        [Category("WerDateRange")]
+        [DefaultValue(true)]
+        [Description("Show or hide the label above the input.")]
+        public bool ShowLabel
+        {
+            get => _showLabel;
+            set { _showLabel = value; LayoutInternals(); Invalidate(); }
+        }
 
         [Category("WerDateRange")]
         [DefaultValue("View By")]
@@ -221,11 +232,19 @@ namespace Wer.Winforms.Toolkit.Controls
             LayoutInternals();
         }
 
+        protected override void OnFontChanged(EventArgs e)
+        {
+            base.OnFontChanged(e);
+            if (_combo == null) return;
+            _combo.Font = Font;
+            LayoutInternals();
+        }
+
         private void LayoutInternals()
         {
             if (_inputBorder == null || _combo == null) return;
 
-            int borderTop = LabelHeight + LabelGap;
+            int borderTop = _showLabel ? LabelHeight + LabelGap : 0;
             int borderH   = Height - borderTop;
 
             _inputBorder.SetBounds(0, borderTop, Width, borderH);
@@ -239,6 +258,8 @@ namespace Wer.Winforms.Toolkit.Controls
         {
             var g = e.Graphics;
             g.TextRenderingHint = TextRenderingHint.ClearTypeGridFit;
+
+            if (!_showLabel) return;
 
             Color labelColor;
             if (!Enabled)          labelColor = LabelDisabled;

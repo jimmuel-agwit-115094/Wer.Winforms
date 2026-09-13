@@ -29,11 +29,11 @@ namespace Wer.Winforms.Toolkit.Controls
         private decimal? _maxValue;
 
         // ── Layout ───────────────────────────────────────────────────
-        private const int LabelHeight  = 20;
+        private int LabelHeight => Math.Max(20, (int)(Font.GetHeight() + 4));
         private const int LabelGap     = 4;
         private const int BorderRadius = 8;
         private const int InputPadH    = 10;
-        private const int PrefixWidth  = 18;
+        private int PrefixWidth => TextRenderer.MeasureText(_currencySymbol, Font).Width + 2;
 
         // ── Colors (same as WerTextField) ────────────────────────────
         private static readonly Color LabelNormal      = Color.Black;
@@ -89,6 +89,17 @@ namespace Wer.Winforms.Toolkit.Controls
         }
 
         // ── Public properties ────────────────────────────────────────
+
+        private bool _showLabel = true;
+
+        [Category("WerCurrencyField")]
+        [DefaultValue(true)]
+        [Description("Show or hide the label above the input.")]
+        public bool ShowLabel
+        {
+            get => _showLabel;
+            set { _showLabel = value; LayoutInternals(); Invalidate(); }
+        }
 
         [Category("WerCurrencyField")]
         [DefaultValue("Label")]
@@ -319,7 +330,7 @@ namespace Wer.Winforms.Toolkit.Controls
         {
             if (_inputBorder == null || _input == null) return;
 
-            int borderTop = LabelHeight + LabelGap;
+            int borderTop = _showLabel ? LabelHeight + LabelGap : 0;
             int borderH   = Height - borderTop;
             _inputBorder.SetBounds(0, borderTop, Width, borderH);
 
@@ -336,6 +347,8 @@ namespace Wer.Winforms.Toolkit.Controls
         {
             var g = e.Graphics;
             g.TextRenderingHint = System.Drawing.Text.TextRenderingHint.ClearTypeGridFit;
+
+            if (!_showLabel) return;
 
             Color labelColor;
             if (!Enabled)                    labelColor = LabelDisabled;

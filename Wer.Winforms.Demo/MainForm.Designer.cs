@@ -23,6 +23,7 @@ namespace Wer.Winforms.Demo
             this.werLabel2 = new Wer.Winforms.Toolkit.Controls.WerLabel();
             this.werCheckbox1 = new Wer.Winforms.Toolkit.Controls.WerCheckbox();
             this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.werButtonPrimary2 = new Wer.Winforms.Toolkit.Controls.WerButtonPrimary();
             this.werToggle1 = new Wer.Winforms.Toolkit.Controls.WerToggle();
             this.werButtonWarning2 = new Wer.Winforms.Toolkit.Controls.WerButtonWarning();
             this.werButtonWarning1 = new Wer.Winforms.Toolkit.Controls.WerButtonWarning();
@@ -44,6 +45,7 @@ namespace Wer.Winforms.Demo
             this.werNegativeBanner1 = new Wer.Winforms.Toolkit.Controls.WerNegativeBanner();
             this.werInfoBanner1 = new Wer.Winforms.Toolkit.Controls.WerInfoBanner();
             this.tabPage4 = new System.Windows.Forms.TabPage();
+            this.werCurrencyField3 = new Wer.Winforms.Toolkit.Controls.WerCurrencyField();
             this.werCopyTextField1 = new Wer.Winforms.Toolkit.Controls.WerCopyTextField();
             this.werCurrencyField1 = new Wer.Winforms.Toolkit.Controls.WerCurrencyField();
             this.werPercentField1 = new Wer.Winforms.Toolkit.Controls.WerPercentField();
@@ -55,18 +57,19 @@ namespace Wer.Winforms.Demo
             this.werComboBox1 = new Wer.Winforms.Toolkit.Controls.WerComboBox();
             this.tabPage5 = new System.Windows.Forms.TabPage();
             this.werEmptyGroupBox1 = new Wer.Winforms.Toolkit.Controls.WerEmptyGroupBox();
+            this.werTextField2 = new Wer.Winforms.Toolkit.Controls.WerTextField();
             this.werGroupBox1 = new Wer.Winforms.Toolkit.Controls.WerGroupBox();
             this.tabPage6 = new System.Windows.Forms.TabPage();
             this.werDataGrid1 = new Wer.Winforms.Toolkit.Controls.WerDataGrid();
             this.tabPage7 = new System.Windows.Forms.TabPage();
-            this.werGroupBox2 = new Wer.Winforms.Toolkit.Controls.WerGroupBox();
-            this.werInfoBanner2 = new Wer.Winforms.Toolkit.Controls.WerInfoBanner();
-            this.werPositiveBanner2 = new Wer.Winforms.Toolkit.Controls.WerPositiveBanner();
-            this.werButtonSuccess8 = new Wer.Winforms.Toolkit.Controls.WerButtonSuccess();
+            this.werCopyTextField2 = new Wer.Winforms.Toolkit.Controls.WerCopyTextField();
             this.werCurrencyField2 = new Wer.Winforms.Toolkit.Controls.WerCurrencyField();
             this.werPercentField2 = new Wer.Winforms.Toolkit.Controls.WerPercentField();
+            this.werSearchField2 = new Wer.Winforms.Toolkit.Controls.WerSearchField();
+            this.werTextField3 = new Wer.Winforms.Toolkit.Controls.WerTextField();
+            this.werPhoneField2 = new Wer.Winforms.Toolkit.Controls.WerPhoneField();
+            this.werTelephoneField2 = new Wer.Winforms.Toolkit.Controls.WerTelephoneField();
             this.werIntegerField2 = new Wer.Winforms.Toolkit.Controls.WerIntegerField();
-            this.werDatePicker2 = new Wer.Winforms.Toolkit.Controls.WerDatePicker();
             this.werComboBox2 = new Wer.Winforms.Toolkit.Controls.WerComboBox();
             this.tabPage8 = new System.Windows.Forms.TabPage();
             this.werDateRange1 = new Wer.Winforms.Toolkit.Controls.WerDateRange();
@@ -79,9 +82,9 @@ namespace Wer.Winforms.Demo
             this.tabPage3.SuspendLayout();
             this.tabPage4.SuspendLayout();
             this.tabPage5.SuspendLayout();
+            this.werEmptyGroupBox1.SuspendLayout();
             this.tabPage6.SuspendLayout();
             this.tabPage7.SuspendLayout();
-            this.werGroupBox2.SuspendLayout();
             this.tabPage8.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -115,7 +118,7 @@ namespace Wer.Winforms.Demo
             this.tabPage1.Location = new System.Drawing.Point(4, 42);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(940, 471);
+            this.tabPage1.Size = new System.Drawing.Size(1230, 517);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "Labels";
             // 
@@ -181,6 +184,7 @@ namespace Wer.Winforms.Demo
             // tabPage2
             // 
             this.tabPage2.BackColor = System.Drawing.Color.White;
+            this.tabPage2.Controls.Add(this.werButtonPrimary2);
             this.tabPage2.Controls.Add(this.werToggle1);
             this.tabPage2.Controls.Add(this.werButtonWarning2);
             this.tabPage2.Controls.Add(this.werButtonWarning1);
@@ -194,9 +198,24 @@ namespace Wer.Winforms.Demo
             this.tabPage2.Location = new System.Drawing.Point(4, 42);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(940, 471);
+            this.tabPage2.Size = new System.Drawing.Size(1230, 517);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Buttons";
+            // 
+            // werButtonPrimary2
+            // 
+            this.werButtonPrimary2.BorderColor = System.Drawing.Color.Empty;
+            this.werButtonPrimary2.ButtonColor = System.Drawing.Color.FromArgb(((int)(((byte)(12)))), ((int)(((byte)(124)))), ((int)(((byte)(146)))));
+            this.werButtonPrimary2.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.werButtonPrimary2.Font = new System.Drawing.Font("Segoe UI", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.werButtonPrimary2.ForeColor = System.Drawing.Color.White;
+            this.werButtonPrimary2.HoverColor = System.Drawing.Color.FromArgb(((int)(((byte)(10)))), ((int)(((byte)(105)))), ((int)(((byte)(124)))));
+            this.werButtonPrimary2.Location = new System.Drawing.Point(29, 300);
+            this.werButtonPrimary2.Name = "werButtonPrimary2";
+            this.werButtonPrimary2.PressedColor = System.Drawing.Color.FromArgb(((int)(((byte)(8)))), ((int)(((byte)(86)))), ((int)(((byte)(102)))));
+            this.werButtonPrimary2.Size = new System.Drawing.Size(216, 46);
+            this.werButtonPrimary2.TabIndex = 10;
+            this.werButtonPrimary2.Text = "Pay";
             // 
             // werToggle1
             // 
@@ -365,7 +384,7 @@ namespace Wer.Winforms.Demo
             this.tabPage3.Location = new System.Drawing.Point(4, 42);
             this.tabPage3.Name = "tabPage3";
             this.tabPage3.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage3.Size = new System.Drawing.Size(940, 471);
+            this.tabPage3.Size = new System.Drawing.Size(1230, 517);
             this.tabPage3.TabIndex = 2;
             this.tabPage3.Text = "Banners";
             // 
@@ -473,6 +492,7 @@ namespace Wer.Winforms.Demo
             // tabPage4
             // 
             this.tabPage4.BackColor = System.Drawing.Color.White;
+            this.tabPage4.Controls.Add(this.werCurrencyField3);
             this.tabPage4.Controls.Add(this.werCopyTextField1);
             this.tabPage4.Controls.Add(this.werCurrencyField1);
             this.tabPage4.Controls.Add(this.werPercentField1);
@@ -485,9 +505,24 @@ namespace Wer.Winforms.Demo
             this.tabPage4.Location = new System.Drawing.Point(4, 42);
             this.tabPage4.Name = "tabPage4";
             this.tabPage4.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage4.Size = new System.Drawing.Size(940, 471);
+            this.tabPage4.Size = new System.Drawing.Size(1230, 517);
             this.tabPage4.TabIndex = 3;
             this.tabPage4.Text = "Text Fields";
+            // 
+            // werCurrencyField3
+            // 
+            this.werCurrencyField3.BackColor = System.Drawing.Color.Transparent;
+            this.werCurrencyField3.Font = new System.Drawing.Font("Segoe UI", 21.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.werCurrencyField3.LabelText = "Currency Label";
+            this.werCurrencyField3.Location = new System.Drawing.Point(387, 318);
+            this.werCurrencyField3.Name = "werCurrencyField3";
+            this.werCurrencyField3.Size = new System.Drawing.Size(400, 98);
+            this.werCurrencyField3.TabIndex = 20;
+            this.werCurrencyField3.Value = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
             // 
             // werCopyTextField1
             // 
@@ -519,9 +554,10 @@ namespace Wer.Winforms.Demo
             // 
             this.werPercentField1.BackColor = System.Drawing.Color.Transparent;
             this.werPercentField1.Font = new System.Drawing.Font("Segoe UI", 9.75F);
-            this.werPercentField1.Location = new System.Drawing.Point(22, 235);
+            this.werPercentField1.Location = new System.Drawing.Point(22, 257);
             this.werPercentField1.Name = "werPercentField1";
-            this.werPercentField1.Size = new System.Drawing.Size(319, 60);
+            this.werPercentField1.ShowLabel = false;
+            this.werPercentField1.Size = new System.Drawing.Size(319, 38);
             this.werPercentField1.TabIndex = 8;
             this.werPercentField1.Value = new decimal(new int[] {
             0,
@@ -598,7 +634,7 @@ namespace Wer.Winforms.Demo
             this.tabPage5.Location = new System.Drawing.Point(4, 42);
             this.tabPage5.Name = "tabPage5";
             this.tabPage5.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage5.Size = new System.Drawing.Size(940, 471);
+            this.tabPage5.Size = new System.Drawing.Size(1230, 517);
             this.tabPage5.TabIndex = 4;
             this.tabPage5.Text = "GroupBox";
             // 
@@ -606,11 +642,22 @@ namespace Wer.Winforms.Demo
             // 
             this.werEmptyGroupBox1.BackColor = System.Drawing.Color.Transparent;
             this.werEmptyGroupBox1.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(200)))), ((int)(((byte)(210)))), ((int)(((byte)(220)))));
+            this.werEmptyGroupBox1.Controls.Add(this.werTextField2);
             this.werEmptyGroupBox1.Location = new System.Drawing.Point(22, 200);
             this.werEmptyGroupBox1.Name = "werEmptyGroupBox1";
             this.werEmptyGroupBox1.Padding = new System.Windows.Forms.Padding(10);
-            this.werEmptyGroupBox1.Size = new System.Drawing.Size(400, 200);
+            this.werEmptyGroupBox1.Size = new System.Drawing.Size(400, 95);
             this.werEmptyGroupBox1.TabIndex = 1;
+            // 
+            // werTextField2
+            // 
+            this.werTextField2.BackColor = System.Drawing.Color.Transparent;
+            this.werTextField2.Font = new System.Drawing.Font("Segoe UI", 9.75F);
+            this.werTextField2.LabelText = "TextField Label";
+            this.werTextField2.Location = new System.Drawing.Point(13, 13);
+            this.werTextField2.Name = "werTextField2";
+            this.werTextField2.Size = new System.Drawing.Size(300, 60);
+            this.werTextField2.TabIndex = 7;
             // 
             // werGroupBox1
             // 
@@ -664,94 +711,42 @@ namespace Wer.Winforms.Demo
             // tabPage7
             // 
             this.tabPage7.BackColor = System.Drawing.Color.White;
-            this.tabPage7.Controls.Add(this.werGroupBox2);
+            this.tabPage7.Controls.Add(this.werCopyTextField2);
+            this.tabPage7.Controls.Add(this.werCurrencyField2);
+            this.tabPage7.Controls.Add(this.werPercentField2);
+            this.tabPage7.Controls.Add(this.werSearchField2);
+            this.tabPage7.Controls.Add(this.werTextField3);
+            this.tabPage7.Controls.Add(this.werPhoneField2);
+            this.tabPage7.Controls.Add(this.werTelephoneField2);
+            this.tabPage7.Controls.Add(this.werIntegerField2);
+            this.tabPage7.Controls.Add(this.werComboBox2);
             this.tabPage7.Location = new System.Drawing.Point(4, 42);
             this.tabPage7.Name = "tabPage7";
             this.tabPage7.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage7.Size = new System.Drawing.Size(940, 471);
+            this.tabPage7.Size = new System.Drawing.Size(1230, 517);
             this.tabPage7.TabIndex = 6;
             this.tabPage7.Text = "Test";
             // 
-            // werGroupBox2
+            // werCopyTextField2
             // 
-            this.werGroupBox2.BackColor = System.Drawing.Color.Transparent;
-            this.werGroupBox2.BodyBackColor = System.Drawing.Color.White;
-            // 
-            // 
-            // 
-            this.werGroupBox2.BodyPanel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.werGroupBox2.BodyPanel.BackColor = System.Drawing.Color.White;
-            this.werGroupBox2.BodyPanel.Location = new System.Drawing.Point(2, 62);
-            this.werGroupBox2.BodyPanel.Name = "";
-            this.werGroupBox2.BodyPanel.Size = new System.Drawing.Size(822, 354);
-            this.werGroupBox2.BodyPanel.TabIndex = 0;
-            this.werGroupBox2.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(200)))), ((int)(((byte)(210)))), ((int)(((byte)(220)))));
-            this.werGroupBox2.Controls.Add(this.werInfoBanner2);
-            this.werGroupBox2.Controls.Add(this.werPositiveBanner2);
-            this.werGroupBox2.Controls.Add(this.werButtonSuccess8);
-            this.werGroupBox2.Controls.Add(this.werCurrencyField2);
-            this.werGroupBox2.Controls.Add(this.werPercentField2);
-            this.werGroupBox2.Controls.Add(this.werIntegerField2);
-            this.werGroupBox2.Controls.Add(this.werDatePicker2);
-            this.werGroupBox2.Controls.Add(this.werComboBox2);
-            this.werGroupBox2.DividerColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.werGroupBox2.HeaderBackColor = System.Drawing.Color.White;
-            this.werGroupBox2.HeadingText = "Customer";
-            this.werGroupBox2.Location = new System.Drawing.Point(62, 28);
-            this.werGroupBox2.Name = "werGroupBox2";
-            this.werGroupBox2.Size = new System.Drawing.Size(826, 419);
-            this.werGroupBox2.SubheadingText = "List of custoemrs";
-            this.werGroupBox2.TabIndex = 1;
-            // 
-            // werInfoBanner2
-            // 
-            this.werInfoBanner2.BackColor = System.Drawing.Color.Transparent;
-            this.werInfoBanner2.Font = new System.Drawing.Font("Segoe UI", 9.75F);
-            this.werInfoBanner2.Location = new System.Drawing.Point(15, 77);
-            this.werInfoBanner2.Name = "werInfoBanner2";
-            this.werInfoBanner2.Size = new System.Drawing.Size(400, 70);
-            this.werInfoBanner2.TabIndex = 23;
-            this.werInfoBanner2.Text = "werInfoBanner2";
-            this.werInfoBanner2.Title = "Informative";
-            // 
-            // werPositiveBanner2
-            // 
-            this.werPositiveBanner2.BackColor = System.Drawing.Color.Transparent;
-            this.werPositiveBanner2.BannerType = Wer.Winforms.Toolkit.Controls.WerBannerType.Positive;
-            this.werPositiveBanner2.Font = new System.Drawing.Font("Segoe UI", 9.75F);
-            this.werPositiveBanner2.Location = new System.Drawing.Point(354, 153);
-            this.werPositiveBanner2.Name = "werPositiveBanner2";
-            this.werPositiveBanner2.Size = new System.Drawing.Size(400, 71);
-            this.werPositiveBanner2.TabIndex = 22;
-            this.werPositiveBanner2.Text = "werPositiveBanner2";
-            this.werPositiveBanner2.Title = "Positive";
-            // 
-            // werButtonSuccess8
-            // 
-            this.werButtonSuccess8.BorderColor = System.Drawing.Color.Empty;
-            this.werButtonSuccess8.ButtonColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(167)))), ((int)(((byte)(69)))));
-            this.werButtonSuccess8.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.werButtonSuccess8.Font = new System.Drawing.Font("Segoe UI", 9.75F);
-            this.werButtonSuccess8.ForeColor = System.Drawing.Color.White;
-            this.werButtonSuccess8.HoverColor = System.Drawing.Color.FromArgb(((int)(((byte)(34)))), ((int)(((byte)(141)))), ((int)(((byte)(58)))));
-            this.werButtonSuccess8.Location = new System.Drawing.Point(354, 99);
-            this.werButtonSuccess8.Name = "werButtonSuccess8";
-            this.werButtonSuccess8.PressedColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(116)))), ((int)(((byte)(48)))));
-            this.werButtonSuccess8.Size = new System.Drawing.Size(73, 36);
-            this.werButtonSuccess8.TabIndex = 21;
-            this.werButtonSuccess8.Text = "Test";
+            this.werCopyTextField2.BackColor = System.Drawing.Color.Transparent;
+            this.werCopyTextField2.Font = new System.Drawing.Font("Segoe UI", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.werCopyTextField2.Location = new System.Drawing.Point(471, 312);
+            this.werCopyTextField2.Name = "werCopyTextField2";
+            this.werCopyTextField2.Size = new System.Drawing.Size(300, 84);
+            this.werCopyTextField2.TabIndex = 28;
+            this.werCopyTextField2.Text = "werCopyTextField2";
+            this.werCopyTextField2.Value = "werCopyTextField2";
             // 
             // werCurrencyField2
             // 
             this.werCurrencyField2.BackColor = System.Drawing.Color.Transparent;
-            this.werCurrencyField2.Font = new System.Drawing.Font("Segoe UI", 9.75F);
+            this.werCurrencyField2.Font = new System.Drawing.Font("Segoe UI", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.werCurrencyField2.LabelText = "Currency Label";
-            this.werCurrencyField2.Location = new System.Drawing.Point(15, 141);
+            this.werCurrencyField2.Location = new System.Drawing.Point(22, 98);
             this.werCurrencyField2.Name = "werCurrencyField2";
-            this.werCurrencyField2.Size = new System.Drawing.Size(319, 59);
-            this.werCurrencyField2.TabIndex = 20;
+            this.werCurrencyField2.Size = new System.Drawing.Size(346, 83);
+            this.werCurrencyField2.TabIndex = 27;
             this.werCurrencyField2.Value = new decimal(new int[] {
             0,
             0,
@@ -761,51 +756,77 @@ namespace Wer.Winforms.Demo
             // werPercentField2
             // 
             this.werPercentField2.BackColor = System.Drawing.Color.Transparent;
-            this.werPercentField2.Font = new System.Drawing.Font("Segoe UI", 9.75F);
-            this.werPercentField2.Location = new System.Drawing.Point(15, 338);
+            this.werPercentField2.Font = new System.Drawing.Font("Segoe UI", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.werPercentField2.Location = new System.Drawing.Point(22, 261);
             this.werPercentField2.Name = "werPercentField2";
-            this.werPercentField2.Size = new System.Drawing.Size(319, 60);
-            this.werPercentField2.TabIndex = 19;
+            this.werPercentField2.Size = new System.Drawing.Size(346, 77);
+            this.werPercentField2.TabIndex = 26;
             this.werPercentField2.Value = new decimal(new int[] {
             0,
             0,
             0,
             0});
             // 
+            // werSearchField2
+            // 
+            this.werSearchField2.BackColor = System.Drawing.Color.Transparent;
+            this.werSearchField2.Font = new System.Drawing.Font("Segoe UI", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.werSearchField2.Location = new System.Drawing.Point(22, 344);
+            this.werSearchField2.Name = "werSearchField2";
+            this.werSearchField2.Size = new System.Drawing.Size(346, 52);
+            this.werSearchField2.TabIndex = 25;
+            this.werSearchField2.Text = "werSearchField2";
+            // 
+            // werTextField3
+            // 
+            this.werTextField3.BackColor = System.Drawing.Color.Transparent;
+            this.werTextField3.Font = new System.Drawing.Font("Segoe UI", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.werTextField3.LabelText = "TextField Label";
+            this.werTextField3.Location = new System.Drawing.Point(471, 196);
+            this.werTextField3.Name = "werTextField3";
+            this.werTextField3.Size = new System.Drawing.Size(300, 80);
+            this.werTextField3.TabIndex = 24;
+            // 
+            // werPhoneField2
+            // 
+            this.werPhoneField2.BackColor = System.Drawing.Color.Transparent;
+            this.werPhoneField2.Font = new System.Drawing.Font("Segoe UI", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.werPhoneField2.Location = new System.Drawing.Point(471, 107);
+            this.werPhoneField2.Name = "werPhoneField2";
+            this.werPhoneField2.Size = new System.Drawing.Size(300, 83);
+            this.werPhoneField2.TabIndex = 23;
+            // 
+            // werTelephoneField2
+            // 
+            this.werTelephoneField2.BackColor = System.Drawing.Color.Transparent;
+            this.werTelephoneField2.Font = new System.Drawing.Font("Segoe UI", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.werTelephoneField2.Location = new System.Drawing.Point(471, 15);
+            this.werTelephoneField2.Name = "werTelephoneField2";
+            this.werTelephoneField2.Size = new System.Drawing.Size(300, 77);
+            this.werTelephoneField2.TabIndex = 22;
+            // 
             // werIntegerField2
             // 
             this.werIntegerField2.BackColor = System.Drawing.Color.Transparent;
-            this.werIntegerField2.Font = new System.Drawing.Font("Segoe UI", 9.75F);
+            this.werIntegerField2.Font = new System.Drawing.Font("Segoe UI", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.werIntegerField2.LabelText = "Integer Label";
-            this.werIntegerField2.Location = new System.Drawing.Point(15, 272);
+            this.werIntegerField2.Location = new System.Drawing.Point(22, 175);
             this.werIntegerField2.Name = "werIntegerField2";
             this.werIntegerField2.Placeholder = "0";
-            this.werIntegerField2.Size = new System.Drawing.Size(319, 60);
-            this.werIntegerField2.TabIndex = 18;
+            this.werIntegerField2.Size = new System.Drawing.Size(346, 80);
+            this.werIntegerField2.TabIndex = 21;
             this.werIntegerField2.Value = 0;
-            // 
-            // werDatePicker2
-            // 
-            this.werDatePicker2.BackColor = System.Drawing.Color.Transparent;
-            this.werDatePicker2.Font = new System.Drawing.Font("Segoe UI", 9.75F);
-            this.werDatePicker2.LabelText = "DatePicker Label";
-            this.werDatePicker2.Location = new System.Drawing.Point(15, 206);
-            this.werDatePicker2.Name = "werDatePicker2";
-            this.werDatePicker2.Size = new System.Drawing.Size(319, 60);
-            this.werDatePicker2.TabIndex = 17;
-            this.werDatePicker2.Text = "werDatePicker2";
-            this.werDatePicker2.Value = null;
             // 
             // werComboBox2
             // 
             this.werComboBox2.BackColor = System.Drawing.Color.Transparent;
-            this.werComboBox2.Font = new System.Drawing.Font("Segoe UI", 9.75F);
+            this.werComboBox2.Font = new System.Drawing.Font("Segoe UI", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.werComboBox2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(33)))), ((int)(((byte)(37)))), ((int)(((byte)(41)))));
             this.werComboBox2.ItemsArray = new string[0];
-            this.werComboBox2.Location = new System.Drawing.Point(15, 75);
+            this.werComboBox2.Location = new System.Drawing.Point(22, 15);
             this.werComboBox2.Name = "werComboBox2";
-            this.werComboBox2.Size = new System.Drawing.Size(319, 60);
-            this.werComboBox2.TabIndex = 16;
+            this.werComboBox2.Size = new System.Drawing.Size(346, 77);
+            this.werComboBox2.TabIndex = 20;
             // 
             // tabPage8
             // 
@@ -816,7 +837,7 @@ namespace Wer.Winforms.Demo
             this.tabPage8.Location = new System.Drawing.Point(4, 42);
             this.tabPage8.Name = "tabPage8";
             this.tabPage8.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage8.Size = new System.Drawing.Size(940, 471);
+            this.tabPage8.Size = new System.Drawing.Size(1230, 517);
             this.tabPage8.TabIndex = 7;
             this.tabPage8.Text = "Dates";
             // 
@@ -887,9 +908,9 @@ namespace Wer.Winforms.Demo
             this.tabPage3.PerformLayout();
             this.tabPage4.ResumeLayout(false);
             this.tabPage5.ResumeLayout(false);
+            this.werEmptyGroupBox1.ResumeLayout(false);
             this.tabPage6.ResumeLayout(false);
             this.tabPage7.ResumeLayout(false);
-            this.werGroupBox2.ResumeLayout(false);
             this.tabPage8.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -941,20 +962,23 @@ namespace Wer.Winforms.Demo
         private Toolkit.Controls.WerDataGrid werDataGrid1;
         private Toolkit.Controls.WerCurrencyField werCurrencyField1;
         private System.Windows.Forms.TabPage tabPage7;
-        private Toolkit.Controls.WerGroupBox werGroupBox2;
-        private Toolkit.Controls.WerPositiveBanner werPositiveBanner2;
-        private Toolkit.Controls.WerButtonSuccess werButtonSuccess8;
-        private Toolkit.Controls.WerCurrencyField werCurrencyField2;
-        private Toolkit.Controls.WerPercentField werPercentField2;
-        private Toolkit.Controls.WerIntegerField werIntegerField2;
-        private Toolkit.Controls.WerDatePicker werDatePicker2;
-        private Toolkit.Controls.WerComboBox werComboBox2;
-        private Toolkit.Controls.WerInfoBanner werInfoBanner2;
         private Toolkit.Controls.WerToggle werToggle1;
         private Toolkit.Controls.WerCopyTextField werCopyTextField1;
         private System.Windows.Forms.TabPage tabPage8;
         private Toolkit.Controls.WerTimePicker werTimePicker1;
         private Toolkit.Controls.WerDatePicker werDatePicker1;
         private Toolkit.Controls.WerDateRange werDateRange1;
+        private Toolkit.Controls.WerCurrencyField werCurrencyField3;
+        private Toolkit.Controls.WerTextField werTextField2;
+        private Toolkit.Controls.WerCopyTextField werCopyTextField2;
+        private Toolkit.Controls.WerCurrencyField werCurrencyField2;
+        private Toolkit.Controls.WerPercentField werPercentField2;
+        private Toolkit.Controls.WerSearchField werSearchField2;
+        private Toolkit.Controls.WerTextField werTextField3;
+        private Toolkit.Controls.WerPhoneField werPhoneField2;
+        private Toolkit.Controls.WerTelephoneField werTelephoneField2;
+        private Toolkit.Controls.WerIntegerField werIntegerField2;
+        private Toolkit.Controls.WerComboBox werComboBox2;
+        private Toolkit.Controls.WerButtonPrimary werButtonPrimary2;
     }
 }
