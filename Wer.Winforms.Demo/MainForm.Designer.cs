@@ -216,6 +216,7 @@ namespace Wer.Winforms.Demo
             this.werButtonPrimary2.Size = new System.Drawing.Size(216, 46);
             this.werButtonPrimary2.TabIndex = 10;
             this.werButtonPrimary2.Text = "Pay";
+            this.werButtonPrimary2.Click += new System.EventHandler(this.werButtonPrimary2_Click);
             // 
             // werToggle1
             // 
@@ -259,6 +260,7 @@ namespace Wer.Winforms.Demo
             this.werButtonWarning1.Size = new System.Drawing.Size(158, 36);
             this.werButtonWarning1.TabIndex = 7;
             this.werButtonWarning1.Text = "werButtonWarning1";
+            this.werButtonWarning1.Click += new System.EventHandler(this.werButtonWarning1_Click);
             // 
             // werButtonSuccess1
             // 
@@ -274,6 +276,7 @@ namespace Wer.Winforms.Demo
             this.werButtonSuccess1.Size = new System.Drawing.Size(158, 36);
             this.werButtonSuccess1.TabIndex = 6;
             this.werButtonSuccess1.Text = "werButtonSuccess1";
+            this.werButtonSuccess1.Click += new System.EventHandler(this.werButtonSuccess1_Click);
             // 
             // werButtonPrimary1
             // 
@@ -289,6 +292,7 @@ namespace Wer.Winforms.Demo
             this.werButtonPrimary1.Size = new System.Drawing.Size(158, 36);
             this.werButtonPrimary1.TabIndex = 5;
             this.werButtonPrimary1.Text = "werButtonPrimary1";
+            this.werButtonPrimary1.Click += new System.EventHandler(this.werButtonPrimary1_Click_1);
             // 
             // werButtonOutlinedWarning1
             // 
@@ -368,6 +372,7 @@ namespace Wer.Winforms.Demo
             this.werButtonOrange1.Size = new System.Drawing.Size(158, 36);
             this.werButtonOrange1.TabIndex = 0;
             this.werButtonOrange1.Text = "werButtonOrange1";
+            this.werButtonOrange1.Click += new System.EventHandler(this.werButtonOrange1_Click);
             // 
             // tabPage3
             // 

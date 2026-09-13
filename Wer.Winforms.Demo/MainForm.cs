@@ -128,5 +128,30 @@ new Product { Id = 13, Name = "Office Laptop", Category = "Electronics", Qty = 6
             var end = werDateRange1.Result.EndDate;
             MessageBox.Show($"Selected range: {start.ToShortDateString()} - {end.ToShortDateString()}", "Date Range Value");
         }
+
+        private void werButtonPrimary2_Click(object sender, EventArgs e)
+        {
+            WerMessageBox.Info.Show("Info message");
+        }
+
+        private void werButtonOrange1_Click(object sender, EventArgs e)
+        {
+            WerMessageBox.Error.Show("Something went wrong.");
+        }
+
+        private void werButtonPrimary1_Click_1(object sender, EventArgs e)
+        {
+            WerMessageBox.Error.Show("Something went wrong.", "Oops");
+        }
+
+        private void werButtonSuccess1_Click(object sender, EventArgs e)
+        {
+            WerMessageBox.Warning.Show("Continue?", "Confirm", WerMessageButtons.OKCancel);
+        }
+
+        private void werButtonWarning1_Click(object sender, EventArgs e)
+        {
+            WerMessageBox.Success.Show("Record saved successfully.");
+        }
     }
 }
