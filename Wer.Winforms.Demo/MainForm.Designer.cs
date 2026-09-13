@@ -69,10 +69,10 @@ namespace Wer.Winforms.Demo
             this.werDatePicker2 = new Wer.Winforms.Toolkit.Controls.WerDatePicker();
             this.werComboBox2 = new Wer.Winforms.Toolkit.Controls.WerComboBox();
             this.tabPage8 = new System.Windows.Forms.TabPage();
+            this.werDateRange1 = new Wer.Winforms.Toolkit.Controls.WerDateRange();
             this.werTimePicker1 = new Wer.Winforms.Toolkit.Controls.WerTimePicker();
             this.werDatePicker1 = new Wer.Winforms.Toolkit.Controls.WerDatePicker();
             this.werLabel3 = new Wer.Winforms.Toolkit.Controls.WerLabel();
-            this.werDateRange1 = new Wer.Winforms.Toolkit.Controls.WerDateRange();
             this.werTabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.tabPage2.SuspendLayout();
@@ -101,7 +101,7 @@ namespace Wer.Winforms.Demo
             this.werTabControl1.Name = "werTabControl1";
             this.werTabControl1.Padding = new System.Drawing.Point(16, 0);
             this.werTabControl1.SelectedIndex = 0;
-            this.werTabControl1.Size = new System.Drawing.Size(948, 517);
+            this.werTabControl1.Size = new System.Drawing.Size(1238, 563);
             this.werTabControl1.TabIndex = 0;
             // 
             // tabPage1
@@ -642,7 +642,7 @@ namespace Wer.Winforms.Demo
             this.tabPage6.Location = new System.Drawing.Point(4, 42);
             this.tabPage6.Name = "tabPage6";
             this.tabPage6.Padding = new System.Windows.Forms.Padding(12);
-            this.tabPage6.Size = new System.Drawing.Size(940, 471);
+            this.tabPage6.Size = new System.Drawing.Size(1230, 517);
             this.tabPage6.TabIndex = 5;
             this.tabPage6.Text = "DataGrid";
             // 
@@ -653,8 +653,12 @@ namespace Wer.Winforms.Demo
             this.werDataGrid1.Location = new System.Drawing.Point(15, 15);
             this.werDataGrid1.Name = "werDataGrid1";
             this.werDataGrid1.PrimaryKeyColumn = null;
-            this.werDataGrid1.Size = new System.Drawing.Size(910, 385);
+            this.werDataGrid1.Size = new System.Drawing.Size(1200, 487);
             this.werDataGrid1.TabIndex = 0;
+            this.werDataGrid1.TabOptions = new string[] {
+        "All",
+        "Active",
+        "Settings"};
             this.werDataGrid1.Load += new System.EventHandler(this.werDataGrid1_Load);
             // 
             // tabPage7
@@ -816,6 +820,18 @@ namespace Wer.Winforms.Demo
             this.tabPage8.TabIndex = 7;
             this.tabPage8.Text = "Dates";
             // 
+            // werDateRange1
+            // 
+            this.werDateRange1.BackColor = System.Drawing.Color.Transparent;
+            this.werDateRange1.Font = new System.Drawing.Font("Segoe UI", 9.75F);
+            this.werDateRange1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(33)))), ((int)(((byte)(37)))), ((int)(((byte)(41)))));
+            this.werDateRange1.Location = new System.Drawing.Point(26, 172);
+            this.werDateRange1.Name = "werDateRange1";
+            this.werDateRange1.Size = new System.Drawing.Size(319, 60);
+            this.werDateRange1.TabIndex = 21;
+            this.werDateRange1.Text = "werDateRange1";
+            this.werDateRange1.RangeChanged += new System.EventHandler(this.werDateRange1_RangeChanged);
+            // 
             // werTimePicker1
             // 
             this.werTimePicker1.BackColor = System.Drawing.Color.Transparent;
@@ -851,24 +867,12 @@ namespace Wer.Winforms.Demo
             this.werLabel3.TabIndex = 2;
             this.werLabel3.Text = "Winforms Controls";
             // 
-            // werDateRange1
-            // 
-            this.werDateRange1.BackColor = System.Drawing.Color.Transparent;
-            this.werDateRange1.Font = new System.Drawing.Font("Segoe UI", 9.75F);
-            this.werDateRange1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(33)))), ((int)(((byte)(37)))), ((int)(((byte)(41)))));
-            this.werDateRange1.Location = new System.Drawing.Point(26, 172);
-            this.werDateRange1.Name = "werDateRange1";
-            this.werDateRange1.Size = new System.Drawing.Size(319, 60);
-            this.werDateRange1.TabIndex = 21;
-            this.werDateRange1.Text = "werDateRange1";
-            this.werDateRange1.RangeChanged += new System.EventHandler(this.werDateRange1_RangeChanged);
-            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
-            this.ClientSize = new System.Drawing.Size(969, 593);
+            this.ClientSize = new System.Drawing.Size(1293, 657);
             this.Controls.Add(this.werLabel3);
             this.Controls.Add(this.werTabControl1);
             this.Name = "MainForm";

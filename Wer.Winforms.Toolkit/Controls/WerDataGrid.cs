@@ -54,16 +54,27 @@ namespace Wer.Winforms.Toolkit.Controls
         private int _resizeStartX;
         private int _resizeStartWidth;
 
+        // --- Tabs ---
+        private string[] _tabOptions;
+        private int _tabSelected = 0;
+        private int _hoverTab = -1;
+
         // --- Pagination ---
         private int _pageSize = 25;
         private int _currentPage = 0;
         private string _totalAmountColumn;
-        private int _hoverNavBtn = -1; // 0=first,1=prev,2=next,3=last
+        private int _hoverNavBtn = -1;
         private const int FooterHeight = 44;
-        private const int SearchBarHeight = 40;
+        private const int SearchBarHeight = 42;
+        private const int TabHeight = 30;
+        private const int TabPadH = 14;
+        private const int TabGap = 2;
         private static readonly string[] NavLabels = { "|<", "<", ">", ">|" };
 
         private VScrollBar _vScroll;
+        private HScrollBar _hScroll;
+        private bool _horizontalScroll;
+        private int _hScrollOffset;
         private WerSearchField _searchBox;
         private string _searchText = "";
         private DataTable _filteredTable;
@@ -73,6 +84,47 @@ namespace Wer.Winforms.Toolkit.Controls
         private Font _footerFont;
 
         public event EventHandler<WerDataGridEditEventArgs> EditClicked;
+
+        /// <summary>Fired when a tab is clicked.</summary>
+        public event EventHandler TabChanged;
+
+        /// <summary>
+        /// Tab labels shown at the top-left of the grid.
+        /// Set via Properties panel (collection editor) or code.
+        /// Usage: dgUsers.TabOptions = new[] { "All", "Active", "On Hold" };
+        /// null or empty = no tabs shown.
+        /// </summary>
+        [Category("Wer Data")]
+        [Description("Tab labels displayed at the top-left of the grid.")]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
+        [Editor("System.Windows.Forms.Design.StringArrayEditor, System.Design", typeof(System.Drawing.Design.UITypeEditor))]
+        public string[] TabOptions
+        {
+            get => _tabOptions ?? new string[0];
+            set { _tabOptions = (value != null && value.Length > 0) ? value : null; _tabSelected = 0; InvalidateGrid(); }
+        }
+
+        /// <summary>
+        /// Index of the currently selected tab (0-based).
+        /// Usage: if (dgUsers.TabSelected == 0) { /* All */ }
+        /// </summary>
+        [Category("Wer Data")]
+        [DefaultValue(0)]
+        public int TabSelected
+        {
+            get => _tabSelected;
+            set
+            {
+                if (_tabOptions == null || value < 0 || value >= _tabOptions.Length) return;
+                _tabSelected = value;
+                InvalidateGrid();
+                TabChanged?.Invoke(this, EventArgs.Empty);
+            }
+        }
+
+        /// <summary>The text of the currently selected tab.</summary>
+        [Browsable(false)]
+        public string TabSelectedText => _tabOptions != null && _tabSelected < _tabOptions.Length ? _tabOptions[_tabSelected] : "";
 
         [Category("Wer Data")]
         public string PrimaryKeyColumn
@@ -95,6 +147,25 @@ namespace Wer.Winforms.Toolkit.Controls
         {
             get => _allowSorting;
             set => _allowSorting = value;
+        }
+
+        /// <summary>
+        /// Enable horizontal scrollbar when columns exceed control width.
+        /// </summary>
+        [Category("Wer Data")]
+        [DefaultValue(false)]
+        [Description("Enable horizontal scroll when columns exceed control width.")]
+        public bool ShowHorizontalScroll
+        {
+            get => _horizontalScroll;
+            set
+            {
+                _horizontalScroll = value;
+                _hScroll.Visible = value;
+                _hScrollOffset = 0;
+                RecalcLayout();
+                InvalidateGrid();
+            }
         }
 
         /// <summary>
@@ -213,7 +284,7 @@ namespace Wer.Winforms.Toolkit.Controls
             SetStyle(ControlStyles.AllPaintingInWmPaint | ControlStyles.OptimizedDoubleBuffer |
                      ControlStyles.ResizeRedraw | ControlStyles.UserPaint, true);
 
-            _headerFont = new Font(WerTheme.FontFamily, 10f, FontStyle.Bold);
+            _headerFont = new Font(WerTheme.FontFamily, 9.75f, FontStyle.Regular);
             _dataFont = new Font(WerTheme.FontFamily, 9.75f, FontStyle.Regular);
             _editFont = new Font(WerTheme.FontFamily, 8.5f, FontStyle.Regular);
             _footerFont = new Font(WerTheme.FontFamily, 9f, FontStyle.Regular);
@@ -223,6 +294,12 @@ namespace Wer.Winforms.Toolkit.Controls
             _vScroll.Visible = false;
             _vScroll.ValueChanged += (s, e) => { _scrollOffset = _vScroll.Value; InvalidateGrid(); };
             Controls.Add(_vScroll);
+
+            _hScroll = new HScrollBar();
+            _hScroll.Dock = DockStyle.Bottom;
+            _hScroll.Visible = false;
+            _hScroll.ValueChanged += (s, e) => { _hScrollOffset = _hScroll.Value; InvalidateGrid(); };
+            Controls.Add(_hScroll);
 
             _searchBox = new WerSearchField();
             _searchBox.Size = new Size(260, 30);
@@ -305,11 +382,18 @@ namespace Wer.Winforms.Toolkit.Controls
 
         private int RowCount => ActiveTable?.Rows.Count ?? 0;
 
-        private bool ShowFooter => (_dataTable?.Rows.Count ?? 0) > _pageSize;
+        private bool ShowFooter => (_dataTable?.Rows.Count ?? 0) > 0;
 
         private int ContentAreaTop => CornerRadius + HeaderHeight + SearchBarHeight;
 
-        private int FooterTop => Height - (ShowFooter ? FooterHeight + CornerRadius + 2 : CornerRadius + 2);
+        private int FooterTop
+        {
+            get
+            {
+                int hScrollH = (_hScroll != null && _hScroll.Visible) ? _hScroll.Height : 0;
+                return Height - hScrollH - (ShowFooter ? FooterHeight + CornerRadius + 2 : CornerRadius + 2);
+            }
+        }
 
         private int TotalPages => RowCount > 0 ? (int)Math.Ceiling((double)RowCount / _pageSize) : 1;
 
@@ -329,12 +413,57 @@ namespace Wer.Winforms.Toolkit.Controls
 
         private void RecalcLayout()
         {
-            // Pagination replaces scrollbar
-            _vScroll.Visible = false;
-            _scrollOffset = 0;
-
             if (_currentPage >= TotalPages)
                 _currentPage = Math.Max(0, TotalPages - 1);
+
+            // Vertical scroll: when page rows exceed visible pixel rows
+            int pageRows = PageEndRow - PageStartRow;
+            int visibleRows = VisibleRowCount;
+            if (pageRows > visibleRows)
+            {
+                _vScroll.Visible = true;
+                _vScroll.Minimum = 0;
+                _vScroll.Maximum = pageRows - 1;
+                _vScroll.LargeChange = Math.Max(1, visibleRows);
+                _vScroll.SmallChange = 1;
+            }
+            else
+            {
+                _vScroll.Visible = false;
+                _scrollOffset = 0;
+            }
+
+            // Horizontal scroll
+            if (_horizontalScroll && _columns.Count > 0)
+            {
+                var widths = GetColumnWidths();
+                int totalColW = 0;
+                for (int i = 0; i < widths.Length; i++) totalColW += widths[i];
+
+                int scrollW = _vScroll.Visible ? _vScroll.Width : 0;
+                int viewW = Width - scrollW - 2;
+
+                if (totalColW > viewW)
+                {
+                    _hScroll.Visible = true;
+                    _hScroll.Minimum = 0;
+                    _hScroll.Maximum = totalColW;
+                    _hScroll.LargeChange = Math.Max(1, viewW);
+                    _hScroll.SmallChange = 30;
+                    if (_hScrollOffset > _hScroll.Maximum - _hScroll.LargeChange)
+                        _hScrollOffset = Math.Max(0, _hScroll.Maximum - _hScroll.LargeChange);
+                }
+                else
+                {
+                    _hScroll.Visible = false;
+                    _hScrollOffset = 0;
+                }
+            }
+            else
+            {
+                if (_hScroll != null) _hScroll.Visible = false;
+                _hScrollOffset = 0;
+            }
         }
 
         private int[] GetColumnWidths()
@@ -390,21 +519,19 @@ namespace Wer.Winforms.Toolkit.Controls
                 }
             }
 
-            // Scale to fit available width
+            // Scale to fit available width (only when horizontal scroll is off)
             int totalMeasured = 0;
             for (int i = 0; i < colCount; i++)
                 totalMeasured += widths[i];
 
             if (totalMeasured < available)
             {
-                // Distribute extra space proportionally
                 int extra = available - totalMeasured;
                 for (int i = 0; i < colCount; i++)
                 {
                     int share = (int)((double)widths[i] / totalMeasured * extra);
                     widths[i] += share;
                 }
-                // Absorb rounding remainder into last column
                 int sum = 0;
                 for (int i = 0; i < colCount; i++) sum += widths[i];
                 widths[colCount - 1] += available - sum;
@@ -419,6 +546,11 @@ namespace Wer.Winforms.Toolkit.Controls
         /// <summary>Invalidate only the grid area (below search bar) to avoid flickering the search box.</summary>
         private void InvalidateGrid()
         {
+            // Tab area (left side of search bar row)
+            int searchLeft = _searchBox != null ? _searchBox.Left - 4 : Width;
+            Invalidate(new Rectangle(0, 0, searchLeft, SearchBarHeight));
+
+            // Grid area (below search bar)
             Invalidate(new Rectangle(0, SearchBarHeight, Width, Height - SearchBarHeight));
         }
 
@@ -442,9 +574,13 @@ namespace Wer.Winforms.Toolkit.Controls
             int w = Width - scrollW;
             int h = Height;
 
-            // White background above grid (search area)
+            // White background above grid (search + tabs area)
             using (var brush = new SolidBrush(Color.White))
                 g.FillRectangle(brush, 0, 0, w, SearchBarHeight);
+
+            // --- Tabs ---
+            if (_tabOptions != null && _tabOptions.Length > 0)
+                DrawTabs(g);
 
             // --- Outer rounded container (below search) ---
             using (var path = RoundedRect(0, SearchBarHeight, w - 1, h - SearchBarHeight - 1, CornerRadius))
@@ -476,6 +612,71 @@ namespace Wer.Winforms.Toolkit.Controls
             }
         }
 
+        private void DrawTabs(Graphics g)
+        {
+            int containerY = (SearchBarHeight - TabHeight) / 2;
+            int innerPad = 4;
+
+            // Measure total width of all tabs
+            using (var measureFont = new Font(WerTheme.FontFamily, 9.75f, FontStyle.Regular))
+            {
+                int totalTabsW = innerPad;
+                var tabWidths = new int[_tabOptions.Length];
+                for (int i = 0; i < _tabOptions.Length; i++)
+                {
+                    tabWidths[i] = TextRenderer.MeasureText(g, _tabOptions[i], measureFont).Width + TabPadH * 2;
+                    totalTabsW += tabWidths[i];
+                }
+                totalTabsW += innerPad;
+
+                // Outer rounded container — aligned to grid left edge
+                var containerRect = new Rectangle(0, containerY, totalTabsW, TabHeight);
+                using (var path = RoundedRect(containerRect.X, containerRect.Y, containerRect.Width, containerRect.Height, 8))
+                {
+                    using (var brush = new SolidBrush(Color.White))
+                        g.FillPath(brush, path);
+                    using (var pen = new Pen(Color.FromArgb(210, 215, 222), 1f))
+                        g.DrawPath(pen, path);
+                }
+
+                // Draw each tab inside
+                int x = containerRect.X + innerPad;
+                for (int i = 0; i < _tabOptions.Length; i++)
+                {
+                    string text = _tabOptions[i];
+                    int tabW = tabWidths[i];
+                    var tabRect = new Rectangle(x, containerY + 2, tabW, TabHeight - 4);
+
+                    bool selected = i == _tabSelected;
+                    bool hovered = i == _hoverTab && !selected;
+
+                    if (selected)
+                    {
+                        using (var path = RoundedRect(tabRect.X, tabRect.Y, tabRect.Width, tabRect.Height, 6))
+                        using (var brush = new SolidBrush(Color.FromArgb(245, 247, 250)))
+                            g.FillPath(brush, path);
+                    }
+                    else if (hovered)
+                    {
+                        using (var path = RoundedRect(tabRect.X, tabRect.Y, tabRect.Width, tabRect.Height, 6))
+                        using (var brush = new SolidBrush(Color.FromArgb(250, 251, 252)))
+                            g.FillPath(brush, path);
+                    }
+
+                    var textColor = selected ? Color.FromArgb(12, 124, 146)
+                                  : hovered ? Color.FromArgb(60, 65, 75)
+                                  : Color.FromArgb(120, 130, 140);
+
+                    var fontStyle = selected ? FontStyle.Bold : FontStyle.Regular;
+                    using (var font = new Font(WerTheme.FontFamily, 9.75f, fontStyle))
+                        TextRenderer.DrawText(g, text, font, tabRect, textColor,
+                            TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter | TextFormatFlags.NoPrefix);
+
+                    x += tabW;
+                }
+            }
+        }
+
         private void DrawHeader(Graphics g, int totalWidth)
         {
             int headerY = SearchBarHeight;
@@ -490,7 +691,7 @@ namespace Wer.Winforms.Toolkit.Controls
                 g.DrawLine(pen, 1, headerY + HeaderHeight, totalWidth - 2, headerY + HeaderHeight);
 
             var widths = GetColumnWidths();
-            int x = 1;
+            int x = 1 - _hScrollOffset;
 
             for (int i = 0; i < _columns.Count; i++)
             {
@@ -530,9 +731,9 @@ namespace Wer.Winforms.Toolkit.Controls
             int maxY = ShowFooter ? FooterTop : (totalHeight - CornerRadius);
             int areaHeight = maxY - ContentAreaTop;
             var rect = new Rectangle(0, ContentAreaTop, totalWidth, areaHeight);
-            using (var font = new Font(WerTheme.FontFamily, 14f, FontStyle.Bold))
-                TextRenderer.DrawText(g, "No records found.", font, rect,
-                    Color.FromArgb(179, 58, 58),
+            using (var font = new Font(WerTheme.FontFamily, 12f, FontStyle.Italic))
+                TextRenderer.DrawText(g, "No Records Found", font, rect,
+                    Color.FromArgb(180, 180, 180),
                     TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter | TextFormatFlags.NoPrefix);
         }
 
@@ -545,7 +746,7 @@ namespace Wer.Winforms.Toolkit.Controls
             int maxY = ShowFooter ? FooterTop : (totalHeight - CornerRadius);
             var view = GetSortedView();
 
-            int startRow = PageStartRow;
+            int startRow = PageStartRow + _scrollOffset;
             int endRow = Math.Min(PageEndRow, view.Length);
 
             for (int vi = startRow; vi < endRow && y + RowHeight <= maxY; vi++)
@@ -568,7 +769,7 @@ namespace Wer.Winforms.Toolkit.Controls
                 }
 
                 // Cell text
-                int x = 1;
+                int x = 1 - _hScrollOffset;
                 for (int i = 0; i < _columns.Count; i++)
                 {
                     int colW = widths[i];
@@ -764,6 +965,20 @@ namespace Wer.Winforms.Toolkit.Controls
             _hoverEditRow = -1;
             _hoverHeaderCol = -1;
 
+            // Tab hover (in search bar area, left side)
+            if (e.Y < SearchBarHeight && _tabOptions != null && _tabOptions.Length > 0)
+            {
+                int oldHoverTab = _hoverTab;
+                _hoverTab = GetTabAtX(e.X, e.Y);
+                Cursor = _hoverTab >= 0 ? Cursors.Hand : Cursors.Default;
+                if (oldHoverTab != _hoverTab) InvalidateGrid();
+                return;
+            }
+            else
+            {
+                _hoverTab = -1;
+            }
+
             if (e.Y >= SearchBarHeight && e.Y < SearchBarHeight + HeaderHeight)
             {
                 // Check if near a column border for resize
@@ -809,11 +1024,12 @@ namespace Wer.Winforms.Toolkit.Controls
         protected override void OnMouseLeave(EventArgs e)
         {
             base.OnMouseLeave(e);
-            bool dirty = _hoverRowIndex != -1 || _hoverEditRow != -1 || _hoverHeaderCol != -1 || _hoverNavBtn != -1;
+            bool dirty = _hoverRowIndex != -1 || _hoverEditRow != -1 || _hoverHeaderCol != -1 || _hoverNavBtn != -1 || _hoverTab != -1;
             _hoverRowIndex = -1;
             _hoverEditRow = -1;
             _hoverHeaderCol = -1;
             _hoverNavBtn = -1;
+            _hoverTab = -1;
             Cursor = Cursors.Default;
             if (dirty) InvalidateGrid();
         }
@@ -832,6 +1048,21 @@ namespace Wer.Winforms.Toolkit.Controls
         {
             base.OnMouseDown(e);
             if (e.Button != MouseButtons.Left) return;
+
+            // Tab click?
+            if (e.Y < SearchBarHeight && _tabOptions != null && _tabOptions.Length > 0)
+            {
+                int tab = GetTabAtX(e.X, e.Y);
+                if (tab >= 0 && tab != _tabSelected)
+                {
+                    _tabSelected = tab;
+                    _currentPage = 0;
+                    _selectedRowIndex = 0;
+                    InvalidateGrid();
+                    TabChanged?.Invoke(this, EventArgs.Empty);
+                }
+                return;
+            }
 
             // Footer nav click?
             if (ShowFooter && e.Y >= FooterTop)
@@ -887,6 +1118,8 @@ namespace Wer.Winforms.Toolkit.Controls
                 // Edit button?
                 if (_showEditColumn && IsOverEditButton(e.X, e.Y, row))
                 {
+                    _selectedRowIndex = row;
+                    InvalidateGrid();
                     var view = GetSortedView();
                     if (row < view.Length && _primaryKeyColumn != null)
                     {
@@ -943,7 +1176,7 @@ namespace Wer.Winforms.Toolkit.Controls
         private int GetColumnAtX(int x)
         {
             var widths = GetColumnWidths();
-            int cx = 1;
+            int cx = 1 - _hScrollOffset;
             for (int i = 0; i < _columns.Count; i++)
             {
                 if (x >= cx && x < cx + widths[i])
@@ -958,12 +1191,12 @@ namespace Wer.Winforms.Toolkit.Controls
             var widths = GetColumnWidths();
             if (widths.Length <= _columns.Count) return false;
 
-            int x = 1;
+            int x = 1 - _hScrollOffset;
             for (int i = 0; i < _columns.Count; i++)
                 x += widths[i];
 
             int editColW = widths[_columns.Count];
-            int visualRow = rowIndex - _scrollOffset;
+            int visualRow = rowIndex - PageStartRow - _scrollOffset;
             int rowY = ContentAreaTop + visualRow * RowHeight;
 
             int btnX = x + (editColW - EditBtnWidth) / 2;
@@ -977,7 +1210,7 @@ namespace Wer.Winforms.Toolkit.Controls
         {
             const int hitZone = 5;
             var widths = GetColumnWidths();
-            int cx = 1;
+            int cx = 1 - _hScrollOffset;
             for (int i = 0; i < _columns.Count; i++)
             {
                 cx += widths[i];
@@ -994,6 +1227,26 @@ namespace Wer.Winforms.Toolkit.Controls
             var snap = new int[_columns.Count];
             Array.Copy(widths, snap, _columns.Count);
             return snap;
+        }
+
+        private int GetTabAtX(int mx, int my)
+        {
+            if (_tabOptions == null || _tabOptions.Length == 0) return -1;
+            int y = (SearchBarHeight - TabHeight) / 2;
+            if (my < y || my > y + TabHeight) return -1;
+
+            using (var bmp = new Bitmap(1, 1))
+            using (var g = Graphics.FromImage(bmp))
+            {
+                int x = 4;
+                for (int i = 0; i < _tabOptions.Length; i++)
+                {
+                    int textW = TextRenderer.MeasureText(g, _tabOptions[i], _dataFont).Width + TabPadH * 2;
+                    if (mx >= x && mx < x + textW) return i;
+                    x += textW + TabGap;
+                }
+            }
+            return -1;
         }
 
         private int GetNavButtonAt(int mx, int my)

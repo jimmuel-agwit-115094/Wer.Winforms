@@ -14,5 +14,10 @@ namespace Wer.Winforms.Demo
         public string Status { get; set; }
         public string Supplier { get; set; }
         public string Warehouse { get; set; }
+        public string PaymentMethod { get; set; }
+        public string SalesRep { get; set; }
+        public decimal Discount { get; set; }
+        public decimal Tax { get; set; }
+        public string Priority { get; set; }
     }
 }
