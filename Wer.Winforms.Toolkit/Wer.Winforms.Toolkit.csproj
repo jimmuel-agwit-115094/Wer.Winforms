@@ -135,6 +135,15 @@
     <Compile Include="Controls\WerDateRange.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Controls\WerLeftNavMenu.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\WerMenuButton.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\WerTopNav.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Controls\WerMessageBox.cs" />
     <Compile Include="Controls\WerCopyTextField.cs">
       <SubType>Component</SubType>

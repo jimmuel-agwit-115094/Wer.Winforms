@@ -131,7 +131,8 @@ new Product { Id = 13, Name = "Office Laptop", Category = "Electronics", Qty = 6
 
         private void werButtonPrimary2_Click(object sender, EventArgs e)
         {
-            WerMessageBox.Info.Show("Info message");
+            var form = new MenuForm();
+            form.ShowDialog();
         }
 
         private void werButtonOrange1_Click(object sender, EventArgs e)

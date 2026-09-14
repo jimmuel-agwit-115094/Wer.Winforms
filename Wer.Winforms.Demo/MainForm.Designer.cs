@@ -17,6 +17,7 @@ namespace Wer.Winforms.Demo
         {
             this.werTabControl1 = new Wer.Winforms.Toolkit.Controls.WerTabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.werHeading2 = new Wer.Winforms.Toolkit.Controls.WerHeading();
             this.werDivider1 = new Wer.Winforms.Toolkit.Controls.WerDivider();
             this.werHeading1 = new Wer.Winforms.Toolkit.Controls.WerHeading();
             this.werLink1 = new Wer.Winforms.Toolkit.Controls.WerLink();
@@ -110,6 +111,7 @@ namespace Wer.Winforms.Demo
             // tabPage1
             // 
             this.tabPage1.BackColor = System.Drawing.Color.White;
+            this.tabPage1.Controls.Add(this.werHeading2);
             this.tabPage1.Controls.Add(this.werDivider1);
             this.tabPage1.Controls.Add(this.werHeading1);
             this.tabPage1.Controls.Add(this.werLink1);
@@ -121,6 +123,17 @@ namespace Wer.Winforms.Demo
             this.tabPage1.Size = new System.Drawing.Size(1230, 517);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "Labels";
+            // 
+            // werHeading2
+            // 
+            this.werHeading2.AutoSize = true;
+            this.werHeading2.Font = new System.Drawing.Font("Segoe UI", 20F, System.Drawing.FontStyle.Bold);
+            this.werHeading2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(33)))), ((int)(((byte)(37)))), ((int)(((byte)(41)))));
+            this.werHeading2.Location = new System.Drawing.Point(411, 10);
+            this.werHeading2.Name = "werHeading2";
+            this.werHeading2.Size = new System.Drawing.Size(190, 37);
+            this.werHeading2.TabIndex = 7;
+            this.werHeading2.Text = "werHeading2";
             // 
             // werDivider1
             // 
@@ -389,7 +402,7 @@ namespace Wer.Winforms.Demo
             this.tabPage3.Location = new System.Drawing.Point(4, 42);
             this.tabPage3.Name = "tabPage3";
             this.tabPage3.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage3.Size = new System.Drawing.Size(1230, 517);
+            this.tabPage3.Size = new System.Drawing.Size(159, 517);
             this.tabPage3.TabIndex = 2;
             this.tabPage3.Text = "Banners";
             // 
@@ -510,7 +523,7 @@ namespace Wer.Winforms.Demo
             this.tabPage4.Location = new System.Drawing.Point(4, 42);
             this.tabPage4.Name = "tabPage4";
             this.tabPage4.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage4.Size = new System.Drawing.Size(1230, 517);
+            this.tabPage4.Size = new System.Drawing.Size(159, 517);
             this.tabPage4.TabIndex = 3;
             this.tabPage4.Text = "Text Fields";
             // 
@@ -639,7 +652,7 @@ namespace Wer.Winforms.Demo
             this.tabPage5.Location = new System.Drawing.Point(4, 42);
             this.tabPage5.Name = "tabPage5";
             this.tabPage5.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage5.Size = new System.Drawing.Size(1230, 517);
+            this.tabPage5.Size = new System.Drawing.Size(159, 517);
             this.tabPage5.TabIndex = 4;
             this.tabPage5.Text = "GroupBox";
             // 
@@ -694,7 +707,7 @@ namespace Wer.Winforms.Demo
             this.tabPage6.Location = new System.Drawing.Point(4, 42);
             this.tabPage6.Name = "tabPage6";
             this.tabPage6.Padding = new System.Windows.Forms.Padding(12);
-            this.tabPage6.Size = new System.Drawing.Size(1230, 517);
+            this.tabPage6.Size = new System.Drawing.Size(159, 517);
             this.tabPage6.TabIndex = 5;
             this.tabPage6.Text = "DataGrid";
             // 
@@ -728,7 +741,7 @@ namespace Wer.Winforms.Demo
             this.tabPage7.Location = new System.Drawing.Point(4, 42);
             this.tabPage7.Name = "tabPage7";
             this.tabPage7.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage7.Size = new System.Drawing.Size(1230, 517);
+            this.tabPage7.Size = new System.Drawing.Size(159, 517);
             this.tabPage7.TabIndex = 6;
             this.tabPage7.Text = "Test";
             // 
@@ -842,7 +855,7 @@ namespace Wer.Winforms.Demo
             this.tabPage8.Location = new System.Drawing.Point(4, 42);
             this.tabPage8.Name = "tabPage8";
             this.tabPage8.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage8.Size = new System.Drawing.Size(1230, 517);
+            this.tabPage8.Size = new System.Drawing.Size(159, 517);
             this.tabPage8.TabIndex = 7;
             this.tabPage8.Text = "Dates";
             // 
@@ -985,5 +998,6 @@ namespace Wer.Winforms.Demo
         private Toolkit.Controls.WerIntegerField werIntegerField2;
         private Toolkit.Controls.WerComboBox werComboBox2;
         private Toolkit.Controls.WerButtonPrimary werButtonPrimary2;
+        private Toolkit.Controls.WerHeading werHeading2;
     }
 }
