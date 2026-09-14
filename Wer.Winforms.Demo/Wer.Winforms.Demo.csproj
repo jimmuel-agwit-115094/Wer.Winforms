@@ -38,11 +38,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ButtonsForm.cs">
+    <Compile Include="SubForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="ButtonsForm.Designer.cs">
-      <DependentUpon>ButtonsForm.cs</DependentUpon>
+    <Compile Include="SubForm.Designer.cs">
+      <DependentUpon>SubForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="MainForm.cs">
@@ -69,8 +69,8 @@
     <Compile Include="UsersForm.Designer.cs">
       <DependentUpon>UsersForm.cs</DependentUpon>
     </Compile>
-    <EmbeddedResource Include="ButtonsForm.resx">
-      <DependentUpon>ButtonsForm.cs</DependentUpon>
+    <EmbeddedResource Include="SubForm.resx">
+      <DependentUpon>SubForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>

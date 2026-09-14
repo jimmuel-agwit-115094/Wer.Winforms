@@ -126,6 +126,20 @@ namespace Wer.Winforms.Toolkit.Controls
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
         public Panel BodyPanel => _bodyPanel;
 
+        // ── Redirect children into body panel ─────────────────────
+
+        protected override void OnControlAdded(ControlEventArgs e)
+        {
+            base.OnControlAdded(e);
+
+            // Any control added to GroupBox (except _bodyPanel) gets moved into _bodyPanel
+            if (e.Control != _bodyPanel && e.Control.Parent == this)
+            {
+                Controls.Remove(e.Control);
+                _bodyPanel.Controls.Add(e.Control);
+            }
+        }
+
         // ── Layout ────────────────────────────────────────────────
 
         protected override void OnResize(EventArgs eventargs)

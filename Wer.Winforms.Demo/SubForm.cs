@@ -11,9 +11,9 @@ using Wer.Winforms.Toolkit.Controls;
 
 namespace Wer.Winforms.Demo
 {
-    public partial class ButtonsForm : WerForm
+    public partial class SubForm : WerForm
     {
-        public ButtonsForm()
+        public SubForm()
         {
             InitializeComponent();
         }

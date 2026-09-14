@@ -140,7 +140,7 @@ namespace Wer.Winforms.Demo
 
         private void werMenuButton1_Click(object sender, EventArgs e)
         {
-             werLeftNavMenu1.ShowForm<ButtonsForm>(); 
+             werLeftNavMenu1.ShowForm<SubForm>(); 
         }
 
         private void werMenuButton3_Click(object sender, EventArgs e)
