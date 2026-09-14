@@ -7,20 +7,20 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Wer.Winforms.Toolkit.Controls;
 
 namespace Wer.Winforms.Demo
 {
-    public partial class UsersForm : Form
+    public partial class DForm : WerForm
     {
-        public UsersForm()
+        public DForm()
         {
             InitializeComponent();
         }
 
-        private void werButtonOrange1_Click(object sender, EventArgs e)
+        private void DForm_Load(object sender, EventArgs e)
         {
-            var d = new DForm();
-            d.ShowDialog();
+
         }
     }
 }

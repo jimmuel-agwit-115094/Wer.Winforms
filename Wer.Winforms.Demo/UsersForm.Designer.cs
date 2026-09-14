@@ -202,6 +202,7 @@
             this.werButtonOrange1.Size = new System.Drawing.Size(160, 36);
             this.werButtonOrange1.TabIndex = 26;
             this.werButtonOrange1.Text = "werButtonOrange1";
+            this.werButtonOrange1.Click += new System.EventHandler(this.werButtonOrange1_Click);
             // 
             // UsersForm
             // 
