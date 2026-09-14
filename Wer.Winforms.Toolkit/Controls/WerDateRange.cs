@@ -71,7 +71,7 @@ namespace Wer.Winforms.Toolkit.Controls
             Font      = WerTheme.BodyFont;
             ForeColor = WerTheme.TextColor;
             BackColor = Color.Transparent;
-            Size      = new Size(220, LabelHeight + LabelGap + 36);
+            Size      = new Size(350, 60);
 
             // Painted input face
             _inputBorder = new Panel { BackColor = Color.Transparent, Cursor = Cursors.Hand };

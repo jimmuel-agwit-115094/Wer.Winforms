@@ -61,8 +61,7 @@ All controls reference `WerTheme` for consistent styling. When creating new cont
 | `InputBg` | `White` | Input background |
 | `InputBgDisabled` | `RGB(242, 242, 242)` | Disabled/read-only background |
 | `PlaceholderColor` | `RGB(160, 170, 180)` | Placeholder text |
-| `LabelColor` | `Black` | Normal label text |
-| `LabelReadOnlyColor` | `RGB(200, 100, 20)` | Read-only label |
+| `LabelColor` | `Black` | Normal label text (also read-only) |
 | `LabelDisabledColor` | `RGB(150, 150, 150)` | Disabled label |
 | `RequiredStarColor` | `RGB(210, 50, 50)` | Required asterisk |
 | `IconColor` | `RGB(140, 150, 160)` | Chevrons, icons |
@@ -70,7 +69,7 @@ All controls reference `WerTheme` for consistent styling. When creating new cont
 ### Shared Layout Constants
 | Constant | Value | Usage |
 |----------|-------|-------|
-| `LabelHeight` | `20px` | Label height above input |
+| `LabelHeight` | dynamic (`Font.GetHeight() + 4`, min 20px) | Label height above input — scales with font |
 | `LabelGap` | `4px` | Gap between label and input |
 | `InputBorderRadius` | `8px` | Rounded corners on all inputs |
 | `InputPadH` | `10px` | Horizontal padding inside inputs |
@@ -85,15 +84,16 @@ All controls reference `WerTheme` for consistent styling. When creating new cont
 | `ButtonFont` | Segoe UI 9.75pt Regular | Button text |
 
 ### Visual Pattern (all form controls follow this)
-- Label above input (black, 9.75pt)
+- Label above input (black, 9.75pt) — `ShowLabel` property to hide (default true)
 - Required: red asterisk after label
-- Read-only: orange label, gray background
+- Read-only: **black label** (not orange), gray background, no editing
 - Disabled: gray label, gray background
 - Input: white bg, rounded 8px border, `RGB(200, 210, 220)` border
 - Focus: border changes to teal `RGB(12, 124, 146)`, 1.5px width
 - Placeholder: gray `RGB(160, 170, 180)` text when empty
 - Chevron: `▾` or `▼` for dropdowns, teal on focus
-- Default control height: `LabelHeight + LabelGap + 36 = 60px`
+- Default control size: `350 × 60px`
+- Font property scales label height, prefix width, and inner TextBox automatically
 
 ## WerDataGrid
 
@@ -124,10 +124,14 @@ grid.DataSource = products;        // List<T>, DataTable, IEnumerable
 | `TotalAmountColumn` | `string` | `null` | Numeric property to sum in footer. String columns ignored |
 | `PageSize` | `int` | `25` | Rows per page. Footer with pagination shown when rows > PageSize |
 | `AllowSorting` | `bool` | `true` | Click header to sort |
+| `ShowHorizontalScroll` | `bool` | `false` | Horizontal scrollbar when columns exceed width |
+| `TabOptions` | `string[]` | `null` | Filter tabs above grid (via Properties collection editor) |
+| `TabSelected` | `int` | `0` | Selected tab index |
 | `DataSource` | `object` | `null` | Accepts `List<T>`, `DataTable`, `IEnumerable` |
 
 ### Events
 - `EditClicked` → `WerDataGridEditEventArgs { PrimaryKey, RowIndex }`
+- `TabChanged` → tab selection changed
 
 ### Features
 - Auto-fit column widths from content measurement
@@ -136,11 +140,70 @@ grid.DataSource = products;        // List<T>, DataTable, IEnumerable
 - Pagination footer with "1 – 25 of N", nav buttons, optional total amount
 - Auto-formatting: `decimal`/`double`/`float` → `#,##0.00` (right-aligned), `DateTime` → `MMM. dd, yyyy`
 - Rounded container, rounded selection highlight, subtle row separators
-- "No records found." in red when empty/no search results
+- "No Records Found" in light gray italic when empty/no search results
+- Tab filter options in rounded group box above grid
+- Vertical scroll when page rows exceed visible area
 
 ### Supporting files
 - `WerDataGridColumn.cs` — Column definition (PropertyName, HeaderText, Width, Alignment)
 - `WerDataGridEditEventArgs.cs` — Event args (PrimaryKey, RowIndex)
+
+## Navigation System
+
+### WerLeftNavMenu
+Left navigation panel (`Panel` subclass, auto Dock=Left). Holds `WerMenuButton` controls. Manages form hosting in a content panel.
+
+```csharp
+// Setup
+werLeftNavMenu1.ContentPanel = panel1;  // panel with Dock=Fill
+werLeftNavMenu1.LogoText = "MyApp";
+
+// In each button's Click handler:
+werLeftNavMenu1.ShowForm<UsersForm>();
+```
+
+**Properties:** `ContentPanel`, `LogoText`, `LogoHeight` (default 60), `NavWidth`  
+**Event:** `NavigationChanged`  
+**Form lifecycle:** Forms cached by Type — created once, reused. All disposed on control Dispose(). No memory leaks.
+
+### WerMenuButton
+Navigation button control — drag into `WerLeftNavMenu`. Double-click in designer to add Click handler. Auto-docks top. Shows active state (teal highlight + left indicator bar).
+
+### WerTopNav
+Top navigation bar (Dock=Top, 48px). Shows avatar circle with user initials, username, logout link.
+
+```csharp
+werTopNav1.UserName = "Jim Cruz";  // avatar shows "JC"
+werTopNav1.PageTitle = "Dashboard";
+werTopNav1.LogoutClicked += (s, e) => Application.Exit();
+```
+
+### Layout pattern (dock order matters)
+```csharp
+// Add order in Controls: Fill first, Top second, Left last
+this.Controls.Add(panel1);           // Dock=Fill (content)
+this.Controls.Add(werTopNav1);       // Dock=Top
+this.Controls.Add(werLeftNavMenu1);  // Dock=Left (full height)
+```
+
+## WerForm
+Base form class with theme defaults. Inherit instead of `Form` for consistent styling.
+
+```csharp
+public partial class UsersForm : WerForm { ... }
+```
+
+**Defaults:** White bg, Segoe UI 9.75pt, 16px padding, double-buffered, no icon, no minimize/maximize (configurable via Properties).
+
+## WerMessageBox
+Modern styled message box with dimmed overlay.
+
+```csharp
+WerMessageBox.Success.Show("Record saved.");
+WerMessageBox.Error.Show("Something went wrong.", "Oops");
+WerMessageBox.Warning.Show("Continue?", "Confirm", WerMessageButtons.OKCancel);
+WerMessageBox.Info.Show("Version 1.0");
+```
 
 ## Numeric Control Value Types
 
@@ -159,12 +222,14 @@ decimal pct    = werPercentField1.Value;   // decimal, default 0
 ## .NET Framework 4.7.2 Gotchas
 
 - `FontStyle.SemiBold` does not exist — use `FontStyle.Bold`
-- `TextBox.PlaceholderText` does not exist — use Win32 `EM_SETCUEBANNER` (0x1501) via P/Invoke, or hide TextBox and paint placeholder
+- `TextBox.PlaceholderText` does not exist — hide TextBox and paint placeholder in OnBorderPaint
 - `DataGridView.DoubleBuffered` is protected — set via reflection
 - Old-style `.csproj` files — manually list all `<Compile>` entries with `<SubType>`
 - Designer serialization: VS designer serializes property values into `.Designer.cs` that override constructor settings. For complex controls, create in code (not designer) to maintain full control.
 - Keep model/POCO classes in separate `.cs` files — VS designer cannot parse Form files that contain non-Form classes
 - When changing `Value` property from nullable to non-nullable, fix designer `.Designer.cs` entries (e.g. `.Value = null` → `.Value = 0`)
+- Dock order in `Controls.Add()` matters — Fill first, then Top, then Left for correct layout
+- `PrefixWidth` on currency/phone/telephone fields uses `TextRenderer.MeasureText` for font scaling
 
 ## Controls Catalog
 
@@ -173,6 +238,8 @@ decimal pct    = werPercentField1.Value;   // decimal, default 0
 
 ### Form Fields
 `WerTextField`, `WerCurrencyField`, `WerIntegerField`, `WerPercentField`, `WerDatePicker`, `WerTimePicker`, `WerPhoneField`, `WerTelephoneField`, `WerSearchField`, `WerComboBox`, `WerRichTextField`, `WerCopyTextField`
+
+All form fields share: `LabelText`, `Required`, `ReadOnly`, `ShowLabel` (default true), `Font` scaling
 
 ### Selectors
 `WerDateRange` — Predefined date range dropdown (Past 7/30/60/90 Days, 6 Months, 1 Year). Access via `Result.StartDate` / `Result.EndDate`
@@ -183,5 +250,11 @@ decimal pct    = werPercentField1.Value;   // decimal, default 0
 ### Layout
 `WerGroupBox`, `WerEmptyGroupBox`, `WerTabControl`, `WerTabPage`
 
+### Navigation
+`WerLeftNavMenu` (left nav panel), `WerMenuButton` (nav item), `WerTopNav` (top bar with user info)
+
 ### Data
-`WerDataGrid` (owner-drawn data grid with search, pagination, edit buttons)
+`WerDataGrid` (owner-drawn data grid with search, pagination, tabs, edit buttons, horizontal scroll)
+
+### Dialogs
+`WerMessageBox` (modern message box: Success/Error/Warning/Info), `WerForm` (themed base form)

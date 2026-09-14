@@ -57,6 +57,12 @@
     <Compile Include="SubMenu.Designer.cs">
       <DependentUpon>SubMenu.cs</DependentUpon>
     </Compile>
+    <Compile Include="TextFieldsForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="TextFieldsForm.Designer.cs">
+      <DependentUpon>TextFieldsForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="UsersForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -73,6 +79,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="SubMenu.resx">
       <DependentUpon>SubMenu.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="TextFieldsForm.resx">
+      <DependentUpon>TextFieldsForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UsersForm.resx">
       <DependentUpon>UsersForm.cs</DependentUpon>

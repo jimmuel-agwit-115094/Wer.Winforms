@@ -13,7 +13,7 @@ namespace Wer.Winforms.Demo
 
             werLeftNavMenu1.ContentPanel = panel1;
             werLeftNavMenu1.LogoText = "MyApp";
-            werTopNav1.UserName = "Jim Cruz";
+            werTopNav1.UserName = "Agwit Jim";
             werTopNav1.LogoutClicked += (s, e) => Application.Exit();
             SetupDataGrid();
         }
@@ -141,6 +141,11 @@ namespace Wer.Winforms.Demo
         private void werMenuButton1_Click(object sender, EventArgs e)
         {
              werLeftNavMenu1.ShowForm<ButtonsForm>(); 
+        }
+
+        private void werMenuButton3_Click(object sender, EventArgs e)
+        {
+            werLeftNavMenu1.ShowForm<TextFieldsForm>();
         }
     }
 }

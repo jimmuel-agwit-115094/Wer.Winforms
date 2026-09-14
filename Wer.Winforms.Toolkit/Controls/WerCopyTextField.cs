@@ -55,7 +55,7 @@ namespace Wer.Winforms.Toolkit.Controls
 
             BackColor = Color.Transparent;
             Font      = WerTheme.BodyFont;
-            Size      = new Size(300, LabelHeight + LabelGap + 36);
+            Size      = new Size(350, 60);
 
             _inputBorder = new Panel { BackColor = Color.Transparent };
             _inputBorder.Paint += OnBorderPaint;

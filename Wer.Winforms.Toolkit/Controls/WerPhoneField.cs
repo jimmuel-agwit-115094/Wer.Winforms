@@ -46,7 +46,7 @@ namespace Wer.Winforms.Toolkit.Controls
 
             BackColor = Color.Transparent;
             Font      = WerTheme.BodyFont;
-            Size      = new Size(220, LabelHeight + LabelGap + 36);
+            Size      = new Size(350, 60);
 
             _inputBorder = new Panel { BackColor = Color.Transparent };
             _inputBorder.Paint += OnBorderPaint;
@@ -235,7 +235,7 @@ namespace Wer.Winforms.Toolkit.Controls
 
             Color labelColor;
             if (!Enabled)                    labelColor = LabelDisabled;
-            else if (_readOnly) labelColor = LabelRequired;
+            else if (_readOnly) labelColor = LabelNormal;
             else                             labelColor = LabelNormal;
 
             var labelRect = new Rectangle(0, 0, Width, LabelHeight);

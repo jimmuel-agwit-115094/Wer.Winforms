@@ -56,7 +56,7 @@ namespace Wer.Winforms.Toolkit.Controls
             Font      = WerTheme.BodyFont;
             ForeColor = WerTheme.TextColor;
             BackColor = Color.Transparent;
-            Size      = new Size(220, LabelHeight + LabelGap + 36);
+            Size      = new Size(350, 60);
 
             // Custom-painted input face
             _inputBorder = new Panel { BackColor = Color.Transparent, Cursor = Cursors.Hand };
@@ -253,7 +253,7 @@ namespace Wer.Winforms.Toolkit.Controls
 
             Color labelColor;
             if (!Enabled)                    labelColor = LabelDisabled;
-            else if (_readOnly) labelColor = LabelRequired;
+            else if (_readOnly) labelColor = LabelNormal;
             else                             labelColor = LabelNormal;
 
             var labelRect = new Rectangle(0, 0, Width, LabelHeight);
