@@ -28,7 +28,10 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.label1 = new System.Windows.Forms.Label();
+            this.werStatusIndicator7 = new Wer.Winforms.Toolkit.Controls.WerStatusIndicator();
+            this.werStatusIndicator8 = new Wer.Winforms.Toolkit.Controls.WerStatusIndicator();
+            this.werStatusIndicator9 = new Wer.Winforms.Toolkit.Controls.WerStatusIndicator();
+            this.werStatusIndicator10 = new Wer.Winforms.Toolkit.Controls.WerStatusIndicator();
             this.werStatusIndicator5 = new Wer.Winforms.Toolkit.Controls.WerStatusIndicator();
             this.werStatusIndicator3 = new Wer.Winforms.Toolkit.Controls.WerStatusIndicator();
             this.werStatusIndicator4 = new Wer.Winforms.Toolkit.Controls.WerStatusIndicator();
@@ -38,26 +41,51 @@
             this.werPositiveBanner1 = new Wer.Winforms.Toolkit.Controls.WerPositiveBanner();
             this.werNegativeBanner1 = new Wer.Winforms.Toolkit.Controls.WerNegativeBanner();
             this.werInfoBanner1 = new Wer.Winforms.Toolkit.Controls.WerInfoBanner();
-            this.werStatusIndicator6 = new Wer.Winforms.Toolkit.Controls.WerStatusIndicator();
-            this.werStatusIndicator7 = new Wer.Winforms.Toolkit.Controls.WerStatusIndicator();
-            this.werStatusIndicator8 = new Wer.Winforms.Toolkit.Controls.WerStatusIndicator();
-            this.werStatusIndicator9 = new Wer.Winforms.Toolkit.Controls.WerStatusIndicator();
-            this.werStatusIndicator10 = new Wer.Winforms.Toolkit.Controls.WerStatusIndicator();
-            this.werNoticeBanner2 = new Wer.Winforms.Toolkit.Controls.WerNoticeBanner();
-            this.werPositiveBanner2 = new Wer.Winforms.Toolkit.Controls.WerPositiveBanner();
-            this.werNegativeBanner2 = new Wer.Winforms.Toolkit.Controls.WerNegativeBanner();
-            this.werInfoBanner2 = new Wer.Winforms.Toolkit.Controls.WerInfoBanner();
+            this.werButtonOrange1 = new Wer.Winforms.Toolkit.Controls.WerButtonOrange();
             this.SuspendLayout();
             // 
-            // label1
+            // werStatusIndicator7
             // 
-            this.label1.AutoSize = true;
-            this.label1.Font = new System.Drawing.Font("Segoe UI", 16F, System.Drawing.FontStyle.Bold);
-            this.label1.Location = new System.Drawing.Point(284, 189);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(214, 30);
-            this.label1.TabIndex = 0;
-            this.label1.Text = "Users Management";
+            this.werStatusIndicator7.BackColor = System.Drawing.Color.Transparent;
+            this.werStatusIndicator7.Font = new System.Drawing.Font("Segoe UI", 9.75F);
+            this.werStatusIndicator7.Location = new System.Drawing.Point(817, 270);
+            this.werStatusIndicator7.Name = "werStatusIndicator7";
+            this.werStatusIndicator7.Size = new System.Drawing.Size(158, 26);
+            this.werStatusIndicator7.Status = Wer.Winforms.Toolkit.Controls.WerStatus.Notice;
+            this.werStatusIndicator7.TabIndex = 25;
+            this.werStatusIndicator7.Text = "werStatusIndicator7";
+            // 
+            // werStatusIndicator8
+            // 
+            this.werStatusIndicator8.BackColor = System.Drawing.Color.Transparent;
+            this.werStatusIndicator8.Font = new System.Drawing.Font("Segoe UI", 9.75F);
+            this.werStatusIndicator8.Location = new System.Drawing.Point(817, 238);
+            this.werStatusIndicator8.Name = "werStatusIndicator8";
+            this.werStatusIndicator8.Size = new System.Drawing.Size(158, 26);
+            this.werStatusIndicator8.Status = Wer.Winforms.Toolkit.Controls.WerStatus.Positive;
+            this.werStatusIndicator8.TabIndex = 24;
+            this.werStatusIndicator8.Text = "werStatusIndicator8";
+            // 
+            // werStatusIndicator9
+            // 
+            this.werStatusIndicator9.BackColor = System.Drawing.Color.Transparent;
+            this.werStatusIndicator9.Font = new System.Drawing.Font("Segoe UI", 9.75F);
+            this.werStatusIndicator9.Location = new System.Drawing.Point(817, 206);
+            this.werStatusIndicator9.Name = "werStatusIndicator9";
+            this.werStatusIndicator9.Size = new System.Drawing.Size(158, 26);
+            this.werStatusIndicator9.Status = Wer.Winforms.Toolkit.Controls.WerStatus.Negative;
+            this.werStatusIndicator9.TabIndex = 23;
+            this.werStatusIndicator9.Text = "werStatusIndicator9";
+            // 
+            // werStatusIndicator10
+            // 
+            this.werStatusIndicator10.BackColor = System.Drawing.Color.Transparent;
+            this.werStatusIndicator10.Font = new System.Drawing.Font("Segoe UI", 9.75F);
+            this.werStatusIndicator10.Location = new System.Drawing.Point(817, 174);
+            this.werStatusIndicator10.Name = "werStatusIndicator10";
+            this.werStatusIndicator10.Size = new System.Drawing.Size(165, 26);
+            this.werStatusIndicator10.TabIndex = 22;
+            this.werStatusIndicator10.Text = "werStatusIndicator10";
             // 
             // werStatusIndicator5
             // 
@@ -160,106 +188,20 @@
             this.werInfoBanner1.Text = "werInfoBanner1";
             this.werInfoBanner1.Title = "Informative";
             // 
-            // werStatusIndicator6
+            // werButtonOrange1
             // 
-            this.werStatusIndicator6.BackColor = System.Drawing.Color.Transparent;
-            this.werStatusIndicator6.Font = new System.Drawing.Font("Segoe UI", 9.75F);
-            this.werStatusIndicator6.Location = new System.Drawing.Point(817, 302);
-            this.werStatusIndicator6.Name = "werStatusIndicator6";
-            this.werStatusIndicator6.Size = new System.Drawing.Size(158, 26);
-            this.werStatusIndicator6.Status = Wer.Winforms.Toolkit.Controls.WerStatus.Informative;
-            this.werStatusIndicator6.TabIndex = 26;
-            this.werStatusIndicator6.Text = "werStatusIndicator6";
-            // 
-            // werStatusIndicator7
-            // 
-            this.werStatusIndicator7.BackColor = System.Drawing.Color.Transparent;
-            this.werStatusIndicator7.Font = new System.Drawing.Font("Segoe UI", 9.75F);
-            this.werStatusIndicator7.Location = new System.Drawing.Point(817, 270);
-            this.werStatusIndicator7.Name = "werStatusIndicator7";
-            this.werStatusIndicator7.Size = new System.Drawing.Size(158, 26);
-            this.werStatusIndicator7.Status = Wer.Winforms.Toolkit.Controls.WerStatus.Notice;
-            this.werStatusIndicator7.TabIndex = 25;
-            this.werStatusIndicator7.Text = "werStatusIndicator7";
-            // 
-            // werStatusIndicator8
-            // 
-            this.werStatusIndicator8.BackColor = System.Drawing.Color.Transparent;
-            this.werStatusIndicator8.Font = new System.Drawing.Font("Segoe UI", 9.75F);
-            this.werStatusIndicator8.Location = new System.Drawing.Point(817, 238);
-            this.werStatusIndicator8.Name = "werStatusIndicator8";
-            this.werStatusIndicator8.Size = new System.Drawing.Size(158, 26);
-            this.werStatusIndicator8.Status = Wer.Winforms.Toolkit.Controls.WerStatus.Positive;
-            this.werStatusIndicator8.TabIndex = 24;
-            this.werStatusIndicator8.Text = "werStatusIndicator8";
-            // 
-            // werStatusIndicator9
-            // 
-            this.werStatusIndicator9.BackColor = System.Drawing.Color.Transparent;
-            this.werStatusIndicator9.Font = new System.Drawing.Font("Segoe UI", 9.75F);
-            this.werStatusIndicator9.Location = new System.Drawing.Point(817, 206);
-            this.werStatusIndicator9.Name = "werStatusIndicator9";
-            this.werStatusIndicator9.Size = new System.Drawing.Size(158, 26);
-            this.werStatusIndicator9.Status = Wer.Winforms.Toolkit.Controls.WerStatus.Negative;
-            this.werStatusIndicator9.TabIndex = 23;
-            this.werStatusIndicator9.Text = "werStatusIndicator9";
-            // 
-            // werStatusIndicator10
-            // 
-            this.werStatusIndicator10.BackColor = System.Drawing.Color.Transparent;
-            this.werStatusIndicator10.Font = new System.Drawing.Font("Segoe UI", 9.75F);
-            this.werStatusIndicator10.Location = new System.Drawing.Point(817, 174);
-            this.werStatusIndicator10.Name = "werStatusIndicator10";
-            this.werStatusIndicator10.Size = new System.Drawing.Size(165, 26);
-            this.werStatusIndicator10.TabIndex = 22;
-            this.werStatusIndicator10.Text = "werStatusIndicator10";
-            // 
-            // werNoticeBanner2
-            // 
-            this.werNoticeBanner2.BackColor = System.Drawing.Color.Transparent;
-            this.werNoticeBanner2.BannerType = Wer.Winforms.Toolkit.Controls.WerBannerType.Notice;
-            this.werNoticeBanner2.Font = new System.Drawing.Font("Segoe UI", 9.75F);
-            this.werNoticeBanner2.Location = new System.Drawing.Point(390, 448);
-            this.werNoticeBanner2.Name = "werNoticeBanner2";
-            this.werNoticeBanner2.Size = new System.Drawing.Size(400, 70);
-            this.werNoticeBanner2.TabIndex = 21;
-            this.werNoticeBanner2.Text = "werNoticeBanner2";
-            this.werNoticeBanner2.Title = "Notice";
-            // 
-            // werPositiveBanner2
-            // 
-            this.werPositiveBanner2.BackColor = System.Drawing.Color.Transparent;
-            this.werPositiveBanner2.BannerType = Wer.Winforms.Toolkit.Controls.WerBannerType.Positive;
-            this.werPositiveBanner2.Font = new System.Drawing.Font("Segoe UI", 9.75F);
-            this.werPositiveBanner2.Location = new System.Drawing.Point(390, 355);
-            this.werPositiveBanner2.Name = "werPositiveBanner2";
-            this.werPositiveBanner2.Size = new System.Drawing.Size(400, 71);
-            this.werPositiveBanner2.TabIndex = 20;
-            this.werPositiveBanner2.Text = "werPositiveBanner2";
-            this.werPositiveBanner2.Title = "Positive";
-            // 
-            // werNegativeBanner2
-            // 
-            this.werNegativeBanner2.BackColor = System.Drawing.Color.Transparent;
-            this.werNegativeBanner2.BannerType = Wer.Winforms.Toolkit.Controls.WerBannerType.Negative;
-            this.werNegativeBanner2.Font = new System.Drawing.Font("Segoe UI", 9.75F);
-            this.werNegativeBanner2.Location = new System.Drawing.Point(390, 263);
-            this.werNegativeBanner2.Name = "werNegativeBanner2";
-            this.werNegativeBanner2.Size = new System.Drawing.Size(400, 70);
-            this.werNegativeBanner2.TabIndex = 19;
-            this.werNegativeBanner2.Text = "werNegativeBanner2";
-            this.werNegativeBanner2.Title = "Negative";
-            // 
-            // werInfoBanner2
-            // 
-            this.werInfoBanner2.BackColor = System.Drawing.Color.Transparent;
-            this.werInfoBanner2.Font = new System.Drawing.Font("Segoe UI", 9.75F);
-            this.werInfoBanner2.Location = new System.Drawing.Point(390, 174);
-            this.werInfoBanner2.Name = "werInfoBanner2";
-            this.werInfoBanner2.Size = new System.Drawing.Size(400, 70);
-            this.werInfoBanner2.TabIndex = 18;
-            this.werInfoBanner2.Text = "werInfoBanner2";
-            this.werInfoBanner2.Title = "Informative";
+            this.werButtonOrange1.BorderColor = System.Drawing.Color.Empty;
+            this.werButtonOrange1.ButtonColor = System.Drawing.Color.FromArgb(((int)(((byte)(230)))), ((int)(((byte)(126)))), ((int)(((byte)(34)))));
+            this.werButtonOrange1.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.werButtonOrange1.Font = new System.Drawing.Font("Segoe UI", 9.75F);
+            this.werButtonOrange1.ForeColor = System.Drawing.Color.White;
+            this.werButtonOrange1.HoverColor = System.Drawing.Color.FromArgb(((int)(((byte)(195)))), ((int)(((byte)(107)))), ((int)(((byte)(28)))));
+            this.werButtonOrange1.Location = new System.Drawing.Point(263, 402);
+            this.werButtonOrange1.Name = "werButtonOrange1";
+            this.werButtonOrange1.PressedColor = System.Drawing.Color.FromArgb(((int)(((byte)(161)))), ((int)(((byte)(88)))), ((int)(((byte)(23)))));
+            this.werButtonOrange1.Size = new System.Drawing.Size(160, 36);
+            this.werButtonOrange1.TabIndex = 26;
+            this.werButtonOrange1.Text = "werButtonOrange1";
             // 
             // UsersForm
             // 
@@ -267,15 +209,11 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
             this.ClientSize = new System.Drawing.Size(998, 539);
-            this.Controls.Add(this.werStatusIndicator6);
+            this.Controls.Add(this.werButtonOrange1);
             this.Controls.Add(this.werStatusIndicator7);
             this.Controls.Add(this.werStatusIndicator8);
             this.Controls.Add(this.werStatusIndicator9);
             this.Controls.Add(this.werStatusIndicator10);
-            this.Controls.Add(this.werNoticeBanner2);
-            this.Controls.Add(this.werPositiveBanner2);
-            this.Controls.Add(this.werNegativeBanner2);
-            this.Controls.Add(this.werInfoBanner2);
             this.Controls.Add(this.werStatusIndicator5);
             this.Controls.Add(this.werStatusIndicator3);
             this.Controls.Add(this.werStatusIndicator4);
@@ -285,7 +223,6 @@
             this.Controls.Add(this.werPositiveBanner1);
             this.Controls.Add(this.werNegativeBanner1);
             this.Controls.Add(this.werInfoBanner1);
-            this.Controls.Add(this.label1);
             this.Name = "UsersForm";
             this.Text = "UsersForm";
             this.ResumeLayout(false);
@@ -294,8 +231,6 @@
         }
 
         #endregion
-
-        private System.Windows.Forms.Label label1;
         private Toolkit.Controls.WerStatusIndicator werStatusIndicator5;
         private Toolkit.Controls.WerStatusIndicator werStatusIndicator3;
         private Toolkit.Controls.WerStatusIndicator werStatusIndicator4;
@@ -305,14 +240,10 @@
         private Toolkit.Controls.WerPositiveBanner werPositiveBanner1;
         private Toolkit.Controls.WerNegativeBanner werNegativeBanner1;
         private Toolkit.Controls.WerInfoBanner werInfoBanner1;
-        private Toolkit.Controls.WerStatusIndicator werStatusIndicator6;
         private Toolkit.Controls.WerStatusIndicator werStatusIndicator7;
         private Toolkit.Controls.WerStatusIndicator werStatusIndicator8;
         private Toolkit.Controls.WerStatusIndicator werStatusIndicator9;
         private Toolkit.Controls.WerStatusIndicator werStatusIndicator10;
-        private Toolkit.Controls.WerNoticeBanner werNoticeBanner2;
-        private Toolkit.Controls.WerPositiveBanner werPositiveBanner2;
-        private Toolkit.Controls.WerNegativeBanner werNegativeBanner2;
-        private Toolkit.Controls.WerInfoBanner werInfoBanner2;
+        private Toolkit.Controls.WerButtonOrange werButtonOrange1;
     }
 }

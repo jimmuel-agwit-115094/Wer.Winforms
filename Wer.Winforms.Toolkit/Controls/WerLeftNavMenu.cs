@@ -167,12 +167,15 @@ namespace Wer.Winforms.Toolkit.Controls
         {
             if (_currentForm == form) return;
 
-            // Remove current (don't dispose — cached)
+            // Remove current (don't dispose — cached for reuse)
             if (_currentForm != null)
             {
                 _currentForm.Hide();
                 _contentPanel.Controls.Remove(_currentForm);
             }
+
+            // Clear any stale controls left in panel
+            _contentPanel.Controls.Clear();
 
             form.TopLevel = false;
             form.FormBorderStyle = FormBorderStyle.None;
