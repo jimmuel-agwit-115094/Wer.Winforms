@@ -2,17 +2,17 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd">
   <metadata>
     <id>Wer.Winforms.Toolkit</id>
-    <version>1.0.0</version>
+    <version>1.1.0</version>
     <title>Wer.Winforms.Toolkit</title>
     <authors>Jimmuel Agwit</authors>
     <owners>Jimmuel Agwit</owners>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <license type="expression">MIT</license>
-    <description>Modern owner-drawn WinForms UI toolkit for .NET Framework 4.7.2. Provides 30+ styled controls including buttons, text fields, currency/integer/percent inputs, date picker, time picker, combo box, toggle, data grid with search/pagination/tabs, banners, status indicators, and more. All controls feature consistent theming with rounded corners, clean typography, and modern visual design.</description>
-    <summary>Modern WinForms UI toolkit with 30+ styled controls for business applications.</summary>
-    <tags>winforms ui toolkit controls modern datagrid buttons textfield datepicker timepicker combobox toggle banner dotnet framework</tags>
+    <description>Modern owner-drawn WinForms UI toolkit for .NET Framework 4.7.2. Provides 40+ styled controls including buttons (solid + outlined variants), text fields, currency/integer/percent inputs, date picker, time picker, combo box, toggle, data grid with search/pagination/sort/tabs/edit buttons, snackbar toasts, message box, spinner, progress bar, badges, cards, banners, status indicators, navigation (left nav + top nav), and more. All controls feature consistent theming with rounded corners, clean typography, and modern visual design.</description>
+    <summary>Modern WinForms UI toolkit with 40+ styled controls for business applications targeting .NET Framework 4.7.2.</summary>
+    <tags>winforms ui toolkit controls modern datagrid buttons textfield datepicker timepicker combobox toggle banner snackbar messagebox spinner badge card navigation dotnet framework</tags>
     <projectUrl>https://github.com/jagwit/Wer.Winforms</projectUrl>
-    <releaseNotes>Initial release - 30+ modern WinForms controls with consistent theming.</releaseNotes>
+    <releaseNotes>v1.1.0 — Added WerSnackbar, WerMessageBox, WerSpinner, WerProgressBar, WerBadge, WerCard, WerToggle, WerTimePicker, WerCopyTextField, WerDateRangePicker, WerIcon, WerDataGrid (owner-drawn with search/pagination/tabs/sort/edit), WerLeftNavMenu, WerMenuButton, WerTopNav, WerForm. Memory leak fixes on all timer-based controls.</releaseNotes>
     <copyright>Copyright 2025 Jimmuel Agwit</copyright>
     <dependencies>
       <group targetFramework=".NETFramework4.7.2" />
