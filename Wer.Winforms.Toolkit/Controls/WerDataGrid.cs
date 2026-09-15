@@ -76,6 +76,8 @@ namespace Wer.Winforms.Toolkit.Controls
         private bool _horizontalScroll;
         private int _hScrollOffset;
         private WerSearchField _searchBox;
+        private WerButtonPrimary _addButton;
+        private bool _showAddButton;
         private string _searchText = "";
         private DataTable _filteredTable;
         private Font _headerFont;
@@ -87,6 +89,25 @@ namespace Wer.Winforms.Toolkit.Controls
 
         /// <summary>Fired when a tab is clicked.</summary>
         public event EventHandler TabChanged;
+
+        /// <summary>Fired when the Add button is clicked.</summary>
+        public event EventHandler AddClicked;
+
+        /// <summary>Show an Add button to the left of the search bar.</summary>
+        [Category("Wer Data")]
+        [DefaultValue(false)]
+        [Description("Show an Add button to the left of the search bar.")]
+        public bool ShowAddButton
+        {
+            get => _showAddButton;
+            set
+            {
+                _showAddButton = value;
+                if (_addButton != null) _addButton.Visible = value;
+                PositionSearchBox();
+                InvalidateGrid();
+            }
+        }
 
         /// <summary>
         /// Tab labels shown at the top-left of the grid.
@@ -314,6 +335,14 @@ namespace Wer.Winforms.Toolkit.Controls
                 InvalidateGrid();
             };
             Controls.Add(_searchBox);
+
+            _addButton = new WerButtonPrimary();
+            _addButton.Text = "Add";
+            _addButton.Font = new Font(WerTheme.FontFamily, 9.75f, FontStyle.Bold);
+            _addButton.Size = new Size(80, 30);
+            _addButton.Visible = false;
+            _addButton.Click += (s, ev) => AddClicked?.Invoke(this, EventArgs.Empty);
+            Controls.Add(_addButton);
 
             BackColor = Color.White;
             PositionSearchBox();
@@ -1261,6 +1290,18 @@ namespace Wer.Winforms.Toolkit.Controls
             int searchY = (SearchBarHeight - _searchBox.Height) / 2;
             _searchBox.Location = new Point(Width - scrollW - _searchBox.Width - 2, Math.Max(0, searchY));
             _searchBox.BringToFront();
+
+            // Add button to the left of search bar
+            if (_addButton != null)
+            {
+                _addButton.Visible = _showAddButton;
+                if (_showAddButton)
+                {
+                    int btnY = (SearchBarHeight - _addButton.Height) / 2;
+                    _addButton.Location = new Point(_searchBox.Left - _addButton.Width - 8, Math.Max(0, btnY));
+                    _addButton.BringToFront();
+                }
+            }
 
             // Position vScroll below search bar
             if (_vScroll != null && _vScroll.Visible)

@@ -142,7 +142,7 @@ namespace Wer.Winforms.Toolkit.Controls
                 {
                     case WerBannerType.Informative:
                         // "i" — dot + line
-                        g.FillEllipse(new SolidBrush(color), cx - 1, cy - 5, 3, 3);
+                        using (var b = new SolidBrush(color)) g.FillEllipse(b, cx - 1, cy - 5, 3, 3);
                         g.DrawLine(pen, cx, cy - 1, cx, cy + 6);
                         break;
 
@@ -160,13 +160,13 @@ namespace Wer.Winforms.Toolkit.Controls
                     case WerBannerType.Notice:
                         // "!" — line + dot (triangle would be complex; circle with ! matches)
                         g.DrawLine(pen, cx, cy - 5, cx, cy + 1);
-                        g.FillEllipse(new SolidBrush(color), cx - 1, cy + 4, 3, 3);
+                        using (var b = new SolidBrush(color)) g.FillEllipse(b, cx - 1, cy + 4, 3, 3);
                         break;
 
                     case WerBannerType.Negative:
                         // "!" — same exclamation
                         g.DrawLine(pen, cx, cy - 5, cx, cy + 1);
-                        g.FillEllipse(new SolidBrush(color), cx - 1, cy + 4, 3, 3);
+                        using (var b = new SolidBrush(color)) g.FillEllipse(b, cx - 1, cy + 4, 3, 3);
                         break;
                 }
             }

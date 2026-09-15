@@ -157,10 +157,10 @@ namespace Wer.Winforms.Toolkit.Controls
                 rx -= 8; // gap
             }
 
-            // Avatar circle
+            // Avatar circle — color based on first letter
             int ay = (Height - AvatarSize) / 2;
             rx -= AvatarSize;
-            using (var brush = new SolidBrush(AvatarBg))
+            using (var brush = new SolidBrush(GetAvatarColor(_userName)))
                 g.FillEllipse(brush, rx, ay, AvatarSize, AvatarSize);
 
             // Initials
@@ -178,6 +178,45 @@ namespace Wer.Winforms.Toolkit.Controls
             if (parts.Length >= 2)
                 return (parts[0][0].ToString() + parts[parts.Length - 1][0].ToString()).ToUpper();
             return parts[0][0].ToString().ToUpper();
+        }
+
+        private static readonly Color[] AvatarColors = new[]
+        {
+            Color.FromArgb(211, 47, 47),    // A - Red
+            Color.FromArgb(56, 142, 60),    // B - Green
+            Color.FromArgb(25, 118, 210),   // C - Blue
+            Color.FromArgb(230, 126, 34),   // D - Orange
+            Color.FromArgb(142, 68, 173),   // E - Purple
+            Color.FromArgb(0, 151, 136),    // F - Teal
+            Color.FromArgb(194, 24, 91),    // G - Pink
+            Color.FromArgb(121, 85, 72),    // H - Brown
+            Color.FromArgb(38, 166, 154),   // I - Sea green
+            Color.FromArgb(255, 143, 0),    // J - Amber
+            Color.FromArgb(103, 58, 183),   // K - Deep purple
+            Color.FromArgb(0, 137, 123),    // L - Dark teal
+            Color.FromArgb(216, 67, 21),    // M - Deep orange
+            Color.FromArgb(46, 125, 50),    // N - Dark green
+            Color.FromArgb(21, 101, 192),   // O - Dark blue
+            Color.FromArgb(156, 39, 176),   // P - Violet
+            Color.FromArgb(244, 67, 54),    // Q - Bright red
+            Color.FromArgb(33, 150, 243),   // R - Light blue
+            Color.FromArgb(76, 175, 80),    // S - Light green
+            Color.FromArgb(255, 87, 34),    // T - Orange red
+            Color.FromArgb(63, 81, 181),    // U - Indigo
+            Color.FromArgb(0, 188, 212),    // V - Cyan
+            Color.FromArgb(139, 195, 74),   // W - Lime green
+            Color.FromArgb(233, 30, 99),    // X - Deep pink
+            Color.FromArgb(205, 220, 57),   // Y - Yellow green
+            Color.FromArgb(96, 125, 139),   // Z - Blue grey
+        };
+
+        private static Color GetAvatarColor(string name)
+        {
+            if (string.IsNullOrWhiteSpace(name)) return AvatarColors[0];
+            char first = char.ToUpper(name.Trim()[0]);
+            int index = first - 'A';
+            if (index < 0 || index >= 26) return AvatarColors[0];
+            return AvatarColors[index];
         }
     }
 }

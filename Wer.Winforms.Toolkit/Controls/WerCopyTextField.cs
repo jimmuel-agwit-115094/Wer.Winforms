@@ -225,7 +225,7 @@ namespace Wer.Winforms.Toolkit.Controls
 
             // Vertical separator before copy button
             int sepX = panel.Width - CopyBtnW;
-            g.DrawLine(new Pen(BorderNormal, 1f), sepX, 6, sepX, panel.Height - 6);
+            using (var pen = new Pen(BorderNormal, 1f)) g.DrawLine(pen, sepX, 6, sepX, panel.Height - 6);
 
             // Copy button area
             if (_showCopied)

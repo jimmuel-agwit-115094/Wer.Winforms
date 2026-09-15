@@ -48,7 +48,17 @@ namespace Wer.Winforms.Demo
             FilterByTab();
 
             dgUsers.EditClicked += (s, args) =>
-                WerMessageBox.Info.Show("Edit user ID: " + args.PrimaryKey);
+            {
+                var user = _allUsers.FirstOrDefault(u => u.Id == (int)args.PrimaryKey);
+                if (user == null) return;
+
+                var form = new UserForm();
+                form.LoadUser(user);
+                form.ShowDialog();
+
+                // Refresh grid after edit
+                FilterByTab();
+            };
         }
 
         private void FilterByTab()
@@ -76,6 +86,8 @@ namespace Wer.Winforms.Demo
 
         private void ButtonsForm_Load(object sender, EventArgs e)
         {
+            werButtonOrange1.IconCode = WerIcons.Delete;
+            werButtonOrange1.Text = "Add User";
         }
     }
 }

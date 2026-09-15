@@ -147,6 +147,9 @@
     <Compile Include="Controls\WerForm.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="Controls\WerIcon.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Controls\WerMessageBox.cs" />
     <Compile Include="Controls\WerCopyTextField.cs">
       <SubType>Component</SubType>

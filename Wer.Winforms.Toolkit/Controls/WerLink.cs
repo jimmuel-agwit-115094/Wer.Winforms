@@ -97,7 +97,11 @@ namespace Wer.Winforms.Toolkit.Controls
             bool show = _underline || (_underlineOnHover && _isHovering);
             var style = show ? FontStyle.Underline : FontStyle.Regular;
             if (Font.Style != style)
+            {
+                var old = Font;
                 Font = new Font(Font.FontFamily, Font.Size, style);
+                if (old != null && old != Font) old.Dispose();
+            }
         }
     }
 }

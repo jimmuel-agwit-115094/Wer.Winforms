@@ -40,18 +40,16 @@ namespace Wer.Winforms.Toolkit.Controls
 
         private void ApplyLevel()
         {
+            float size;
             switch (_level)
             {
-                case WerHeadingLevel.H1:
-                    Font = new Font(WerTheme.FontFamily, SizeH1, FontStyle.Bold);
-                    break;
-                case WerHeadingLevel.H2:
-                    Font = new Font(WerTheme.FontFamily, SizeH2, FontStyle.Bold);
-                    break;
-                case WerHeadingLevel.H3:
-                    Font = new Font(WerTheme.FontFamily, SizeH3, FontStyle.Bold);
-                    break;
+                case WerHeadingLevel.H1: size = SizeH1; break;
+                case WerHeadingLevel.H2: size = SizeH2; break;
+                default:                 size = SizeH3; break;
             }
+            var old = Font;
+            Font = new Font(WerTheme.FontFamily, size, FontStyle.Bold);
+            if (old != null && old != Font) old.Dispose();
         }
     }
 }

@@ -30,24 +30,26 @@
         {
             this.werTabControl1 = new Wer.Winforms.Toolkit.Controls.WerTabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
-            this.tabPage2 = new System.Windows.Forms.TabPage();
             this.dgUsers = new Wer.Winforms.Toolkit.Controls.WerDataGrid();
+            this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.werButtonOrange1 = new Wer.Winforms.Toolkit.Controls.WerButtonOrange();
             this.werTabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
+            this.tabPage2.SuspendLayout();
             this.SuspendLayout();
             // 
             // werTabControl1
             // 
             this.werTabControl1.Controls.Add(this.tabPage1);
             this.werTabControl1.Controls.Add(this.tabPage2);
-            this.werTabControl1.Font = new System.Drawing.Font("Segoe UI", 9.75F);
             this.werTabControl1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.werTabControl1.Font = new System.Drawing.Font("Segoe UI", 9.75F);
             this.werTabControl1.ItemSize = new System.Drawing.Size(0, 38);
-            this.werTabControl1.Location = new System.Drawing.Point(0, 0);
+            this.werTabControl1.Location = new System.Drawing.Point(19, 21);
             this.werTabControl1.Name = "werTabControl1";
             this.werTabControl1.Padding = new System.Drawing.Point(16, 0);
             this.werTabControl1.SelectedIndex = 0;
-            this.werTabControl1.Size = new System.Drawing.Size(1218, 558);
+            this.werTabControl1.Size = new System.Drawing.Size(1237, 593);
             this.werTabControl1.TabIndex = 0;
             // 
             // tabPage1
@@ -57,19 +59,9 @@
             this.tabPage1.Location = new System.Drawing.Point(4, 42);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(1210, 512);
+            this.tabPage1.Size = new System.Drawing.Size(1229, 547);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "Users";
-            // 
-            // tabPage2
-            // 
-            this.tabPage2.BackColor = System.Drawing.Color.White;
-            this.tabPage2.Location = new System.Drawing.Point(4, 42);
-            this.tabPage2.Name = "tabPage2";
-            this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(1210, 512);
-            this.tabPage2.TabIndex = 1;
-            this.tabPage2.Text = "Products";
             // 
             // dgUsers
             // 
@@ -79,12 +71,39 @@
             this.dgUsers.Location = new System.Drawing.Point(3, 3);
             this.dgUsers.Name = "dgUsers";
             this.dgUsers.PrimaryKeyColumn = null;
-            this.dgUsers.Size = new System.Drawing.Size(1204, 506);
+            this.dgUsers.ShowAddButton = true;
+            this.dgUsers.Size = new System.Drawing.Size(1223, 541);
             this.dgUsers.TabIndex = 0;
             this.dgUsers.TabOptions = new string[] {
         "Active",
         "Inactive",
         "Blocked"};
+            // 
+            // tabPage2
+            // 
+            this.tabPage2.BackColor = System.Drawing.Color.White;
+            this.tabPage2.Controls.Add(this.werButtonOrange1);
+            this.tabPage2.Location = new System.Drawing.Point(4, 42);
+            this.tabPage2.Name = "tabPage2";
+            this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage2.Size = new System.Drawing.Size(1229, 547);
+            this.tabPage2.TabIndex = 1;
+            this.tabPage2.Text = "Products";
+            // 
+            // werButtonOrange1
+            // 
+            this.werButtonOrange1.BorderColor = System.Drawing.Color.Empty;
+            this.werButtonOrange1.ButtonColor = System.Drawing.Color.FromArgb(((int)(((byte)(230)))), ((int)(((byte)(126)))), ((int)(((byte)(34)))));
+            this.werButtonOrange1.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.werButtonOrange1.Font = new System.Drawing.Font("Segoe UI", 9.75F);
+            this.werButtonOrange1.ForeColor = System.Drawing.Color.White;
+            this.werButtonOrange1.HoverColor = System.Drawing.Color.FromArgb(((int)(((byte)(195)))), ((int)(((byte)(107)))), ((int)(((byte)(28)))));
+            this.werButtonOrange1.Location = new System.Drawing.Point(273, 113);
+            this.werButtonOrange1.Name = "werButtonOrange1";
+            this.werButtonOrange1.PressedColor = System.Drawing.Color.FromArgb(((int)(((byte)(161)))), ((int)(((byte)(88)))), ((int)(((byte)(23)))));
+            this.werButtonOrange1.Size = new System.Drawing.Size(224, 36);
+            this.werButtonOrange1.TabIndex = 0;
+            this.werButtonOrange1.Text = "werButtonOrange1";
             // 
             // SubForm
             // 
@@ -99,6 +118,7 @@
             this.Load += new System.EventHandler(this.ButtonsForm_Load);
             this.werTabControl1.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
+            this.tabPage2.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -109,5 +129,6 @@
         private System.Windows.Forms.TabPage tabPage1;
         private System.Windows.Forms.TabPage tabPage2;
         private Toolkit.Controls.WerDataGrid dgUsers;
+        private Toolkit.Controls.WerButtonOrange werButtonOrange1;
     }
 }

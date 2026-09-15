@@ -85,9 +85,8 @@ namespace Wer.Winforms.Toolkit.Controls
                     g.FillRectangle(brush, bounds);
 
             // Label
-            var font = selected
-                ? new Font(Font.FontFamily, Font.Size, FontStyle.Bold)
-                : Font;
+            Font selectedFont = selected ? new Font(Font.FontFamily, Font.Size, FontStyle.Bold) : null;
+            Font font = selectedFont ?? Font;
             Color color;
             if (selected)
                 color = Color.FromArgb(33, 37, 41);
@@ -107,7 +106,7 @@ namespace Wer.Winforms.Toolkit.Controls
                         bounds.X, bounds.Bottom - IndicatorH,
                         bounds.Width, IndicatorH);
 
-            if (selected) font.Dispose();
+            selectedFont?.Dispose();
         }
 
         // ── Hover tracking ───────────────────────────────────────────

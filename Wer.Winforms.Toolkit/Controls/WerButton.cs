@@ -17,6 +17,7 @@ namespace Wer.Winforms.Toolkit.Controls
         private int _borderWidth = 0;
         private bool _isHovering;
         private bool _isPressed;
+        private string _iconCode = "";
 
         public WerButton()
         {
@@ -84,6 +85,19 @@ namespace Wer.Winforms.Toolkit.Controls
             set { _borderRadius = Math.Max(0, value); Invalidate(); }
         }
 
+        /// <summary>
+        /// Icon from Segoe MDL2 Assets. Use WerIcons constants.
+        /// Drawn to the left of the text. Empty = no icon.
+        /// </summary>
+        [Category("WerButtons")]
+        [DefaultValue("")]
+        [Description("Icon code from WerIcons. Drawn left of text.")]
+        public string IconCode
+        {
+            get => _iconCode;
+            set { _iconCode = value ?? ""; Invalidate(); }
+        }
+
         protected override void OnPaint(PaintEventArgs e)
         {
             var g = e.Graphics;
@@ -95,17 +109,11 @@ namespace Wer.Winforms.Toolkit.Controls
 
             if (!Enabled)
             {
-                // Disabled look: light gray fill, no border, muted text
                 using (var path = CreateRoundedRect(rect, radius))
                 using (var brush = new SolidBrush(Color.FromArgb(230, 232, 236)))
                     g.FillPath(brush, path);
 
-                if (!string.IsNullOrEmpty(Text))
-                {
-                    var flags = TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter |
-                                TextFormatFlags.SingleLine | TextFormatFlags.NoPadding;
-                    TextRenderer.DrawText(g, Text, Font, ClientRectangle, Color.FromArgb(170, 175, 182), flags);
-                }
+                DrawContent(g, Color.FromArgb(170, 175, 182));
                 return;
             }
 
@@ -123,11 +131,46 @@ namespace Wer.Winforms.Toolkit.Controls
                 }
             }
 
-            if (!string.IsNullOrEmpty(Text))
+            DrawContent(g, ForeColor);
+        }
+
+        private void DrawContent(Graphics g, Color color)
+        {
+            bool hasIcon = !string.IsNullOrEmpty(_iconCode);
+            bool hasText = !string.IsNullOrEmpty(Text);
+
+            if (!hasIcon && !hasText) return;
+
+            if (hasIcon && hasText)
             {
-                var flags = TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter |
-                            TextFormatFlags.SingleLine | TextFormatFlags.NoPadding;
-                TextRenderer.DrawText(g, Text, Font, ClientRectangle, ForeColor, flags);
+                // Measure both to center together
+                using (var iconFont = new Font("Segoe MDL2 Assets", Font.Size, FontStyle.Regular))
+                {
+                    int iconW = TextRenderer.MeasureText(g, _iconCode, iconFont).Width;
+                    int textW = TextRenderer.MeasureText(g, Text, Font).Width;
+                    int gap = 6;
+                    int totalW = iconW + gap + textW;
+                    int startX = (Width - totalW) / 2;
+
+                    var iconRect = new Rectangle(startX, 0, iconW, Height);
+                    TextRenderer.DrawText(g, _iconCode, iconFont, iconRect, color,
+                        TextFormatFlags.Left | TextFormatFlags.VerticalCenter | TextFormatFlags.NoPrefix);
+
+                    var textRect = new Rectangle(startX + iconW + gap, 0, textW, Height);
+                    TextRenderer.DrawText(g, Text, Font, textRect, color,
+                        TextFormatFlags.Left | TextFormatFlags.VerticalCenter | TextFormatFlags.NoPrefix);
+                }
+            }
+            else if (hasIcon)
+            {
+                using (var iconFont = new Font("Segoe MDL2 Assets", Font.Size, FontStyle.Regular))
+                    TextRenderer.DrawText(g, _iconCode, iconFont, ClientRectangle, color,
+                        TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter | TextFormatFlags.NoPrefix);
+            }
+            else
+            {
+                TextRenderer.DrawText(g, Text, Font, ClientRectangle, color,
+                    TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter | TextFormatFlags.SingleLine | TextFormatFlags.NoPadding);
             }
         }
 
