@@ -13,6 +13,7 @@
     <tags>winforms ui toolkit controls modern datagrid buttons textfield datepicker timepicker combobox toggle banner snackbar messagebox spinner badge card navigation dotnet framework</tags>
     <projectUrl>https://github.com/jagwit/Wer.Winforms</projectUrl>
     <releaseNotes>v1.1.0 — Added WerSnackbar, WerMessageBox, WerSpinner, WerProgressBar, WerBadge, WerCard, WerToggle, WerTimePicker, WerCopyTextField, WerDateRangePicker, WerIcon, WerDataGrid (owner-drawn with search/pagination/tabs/sort/edit), WerLeftNavMenu, WerMenuButton, WerTopNav, WerForm. Memory leak fixes on all timer-based controls.</releaseNotes>
+    <readme>README.md</readme>
     <copyright>Copyright 2025 Jimmuel Agwit</copyright>
     <dependencies>
       <group targetFramework=".NETFramework4.7.2" />
