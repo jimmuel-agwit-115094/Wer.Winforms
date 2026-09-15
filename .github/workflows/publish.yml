@@ -31,19 +31,8 @@ jobs:
           $version = "${{ github.ref_name }}".TrimStart('v')
           nuget pack Wer.Winforms.Toolkit/Wer.Winforms.Toolkit.nuspec -OutputDirectory nupkg -Version $version
 
-      - name: Get OIDC token
-        id: oidc
-        uses: actions/github-script@v7
-        with:
-          script: return await core.getIDToken('nuget.org')
-          result-encoding: string
-
       - name: Push to NuGet (Trusted Publisher)
         shell: pwsh
         run: |
           $pkg = Get-ChildItem nupkg\*.nupkg | Select-Object -First 1
-          Write-Host "Package: $($pkg.FullName)"
-          $token = "${{ steps.oidc.outputs.result }}"
-          Write-Host "Token length: $($token.Length)"
-          Write-Host "Token prefix: $($token.Substring(0, [Math]::Min(20, $token.Length)))..."
-          dotnet nuget push $pkg.FullName --api-key $token --source https://api.nuget.org/v3/index.json --no-symbols
+          dotnet nuget push $pkg.FullName --source https://api.nuget.org/v3/index.json
