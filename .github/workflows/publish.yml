@@ -34,6 +34,8 @@ jobs:
       - name: Login to NuGet.org (OIDC token exchange)
         uses: NuGet/login@v1
         id: nuget-login
+        with:
+          user: jagwit
 
       - name: Push to NuGet (Trusted Publisher)
         shell: pwsh
