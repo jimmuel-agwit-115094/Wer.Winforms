@@ -28,4 +28,7 @@ jobs:
         run: nuget pack Wer.Winforms.Toolkit/Wer.Winforms.Toolkit.nuspec -OutputDirectory nupkg
 
       - name: Push to NuGet (Trusted Publisher)
-        run: dotnet nuget push nupkg/*.nupkg --source https://api.nuget.org/v3/index.json
+        shell: pwsh
+        run: |
+          $pkg = Get-ChildItem nupkg\*.nupkg | Select-Object -First 1
+          dotnet nuget push $pkg.FullName --source https://api.nuget.org/v3/index.json
