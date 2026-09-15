@@ -26,6 +26,9 @@ namespace Wer.Winforms.Toolkit.Controls
     public class WerLeftNavMenu : Panel
     {
         private Panel _contentPanel;
+        private Panel _titlePanel;
+        private Label _titleLabel;
+        private Panel _formHost;
         private WerMenuButton _activeButton;
         private Form _currentForm;
         private readonly Dictionary<Type, Form> _formCache = new Dictionary<Type, Form>();
@@ -84,7 +87,42 @@ namespace Wer.Winforms.Toolkit.Controls
         public Panel ContentPanel
         {
             get => _contentPanel;
-            set => _contentPanel = value;
+            set
+            {
+                _contentPanel = value;
+                if (_contentPanel != null && _formHost == null)
+                {
+                    // Title panel — Dock Top
+                    _titlePanel = new Panel
+                    {
+                        Dock = DockStyle.Top,
+                        Height = 32,
+                        BackColor = Color.White,
+                        Padding = new Padding(16, 6, 0, 2),
+                        Visible = false,
+                    };
+                    _titleLabel = new Label
+                    {
+                        Dock = DockStyle.Fill,
+                        Font = new Font(WerTheme.FontFamily, 14f, FontStyle.Bold),
+                        ForeColor = Color.FromArgb(33, 37, 41),
+                        BackColor = Color.White,
+                        TextAlign = ContentAlignment.MiddleLeft,
+                    };
+                    _titlePanel.Controls.Add(_titleLabel);
+
+                    // Form host — Dock Fill (remaining space below title)
+                    _formHost = new Panel
+                    {
+                        Dock = DockStyle.Fill,
+                        BackColor = Color.White,
+                    };
+
+                    // Add order: Fill first, then Top
+                    _contentPanel.Controls.Add(_formHost);
+                    _contentPanel.Controls.Add(_titlePanel);
+                }
+            }
         }
 
         /// <summary>Currently active button.</summary>
@@ -131,13 +169,17 @@ namespace Wer.Winforms.Toolkit.Controls
         /// Call from a WerMenuButton Click handler.
         /// Usage: werLeftNavMenu1.ShowForm&lt;CustomerForm&gt;();
         /// </summary>
-        public void ShowForm<TForm>() where TForm : Form, new()
+        /// <summary>
+        /// Show a form with optional page title.
+        /// Usage: werLeftNavMenu1.ShowForm&lt;UserForm&gt;("User Management");
+        /// </summary>
+        public void ShowForm<TForm>(string pageTitle = null) where TForm : Form, new()
         {
-            ShowForm(typeof(TForm));
+            ShowForm(typeof(TForm), pageTitle);
         }
 
-        /// <summary>Show a form by type.</summary>
-        public void ShowForm(Type formType)
+        /// <summary>Show a form by type with optional title.</summary>
+        public void ShowForm(Type formType, string pageTitle = null)
         {
             if (formType == null || _contentPanel == null) return;
             if (!typeof(Form).IsAssignableFrom(formType))
@@ -152,6 +194,7 @@ namespace Wer.Winforms.Toolkit.Controls
                 _formCache[formType] = form;
             }
 
+            SetPageTitle(pageTitle);
             EmbedForm(form);
         }
 
@@ -163,25 +206,39 @@ namespace Wer.Winforms.Toolkit.Controls
             EmbedForm(formInstance);
         }
 
+        private void SetPageTitle(string title)
+        {
+            if (_titlePanel == null || _titleLabel == null) return;
+            if (!string.IsNullOrEmpty(title))
+            {
+                _titleLabel.Text = title;
+                _titlePanel.Visible = true;
+            }
+            else
+            {
+                _titlePanel.Visible = false;
+            }
+        }
+
         private void EmbedForm(Form form)
         {
+            if (_formHost == null) return;
             if (_currentForm == form) return;
 
-            // Remove current (don't dispose — cached for reuse)
+            // Remove current (don't dispose — cached)
             if (_currentForm != null)
             {
                 _currentForm.Hide();
-                _contentPanel.Controls.Remove(_currentForm);
+                _formHost.Controls.Remove(_currentForm);
             }
 
-            // Clear any stale controls left in panel
-            _contentPanel.Controls.Clear();
+            _formHost.Controls.Clear();
 
             form.TopLevel = false;
             form.FormBorderStyle = FormBorderStyle.None;
             form.Dock = DockStyle.Fill;
 
-            _contentPanel.Controls.Add(form);
+            _formHost.Controls.Add(form);
             form.Show();
             form.BringToFront();
             _currentForm = form;

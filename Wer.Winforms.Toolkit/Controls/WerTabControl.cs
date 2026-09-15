@@ -89,7 +89,7 @@ namespace Wer.Winforms.Toolkit.Controls
             Font font = selectedFont ?? Font;
             Color color;
             if (selected)
-                color = Color.FromArgb(33, 37, 41);
+                color = WerTheme.PrimaryColor;
             else if (hover)
                 color = WerTheme.PrimaryColor;
             else
