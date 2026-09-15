@@ -88,6 +88,13 @@ namespace Wer.Winforms.Toolkit.Controls
 
         public event EventHandler<WerDataGridEditEventArgs> EditClicked;
 
+        /// <summary>
+        /// Fired when the selected row changes (keyboard or mouse).
+        /// The second argument is the PrimaryKeyColumn value of the newly selected row.
+        /// Usage: werDataGrid1.SelectedRowChanged += (s, id) => lblSelected.Text = id?.ToString();
+        /// </summary>
+        public event EventHandler<object> SelectedRowChanged;
+
         /// <summary>Fired when a tab is clicked.</summary>
         public event EventHandler TabChanged;
 
@@ -153,6 +160,22 @@ namespace Wer.Winforms.Toolkit.Controls
         {
             get => _primaryKeyColumn;
             set => _primaryKeyColumn = value;
+        }
+
+        /// <summary>
+        /// The primary key value of the currently selected row.
+        /// Returns null if no row is selected, PrimaryKeyColumn is not set, or no data is loaded.
+        /// </summary>
+        [Browsable(false)]
+        public object SelectedRowId
+        {
+            get
+            {
+                if (_primaryKeyColumn == null || ActiveTable == null) return null;
+                var view = GetSortedView();
+                if (_selectedRowIndex < 0 || _selectedRowIndex >= view.Length) return null;
+                return view[_selectedRowIndex][_primaryKeyColumn];
+            }
         }
 
         [Category("Wer Data")]
@@ -314,6 +337,7 @@ namespace Wer.Winforms.Toolkit.Controls
             _vScroll = new VScrollBar();
             _vScroll.Visible = false;
             _vScroll.Anchor = AnchorStyles.None; // positioned manually
+            _vScroll.TabStop = false;
             _vScroll.ValueChanged += (s, e) => { _scrollOffset = _vScroll.Value; InvalidateGrid(); };
             Controls.Add(_vScroll);
 
@@ -356,9 +380,37 @@ namespace Wer.Winforms.Toolkit.Controls
 
         protected override bool IsInputKey(Keys keyData)
         {
-            if (keyData == Keys.Up || keyData == Keys.Down || keyData == Keys.PageUp || keyData == Keys.PageDown)
+            if (keyData == Keys.Up || keyData == Keys.Down ||
+                keyData == Keys.PageUp || keyData == Keys.PageDown)
                 return true;
             return base.IsInputKey(keyData);
+        }
+
+        // Intercept arrow/page keys before any child control (VScrollBar) gets them
+        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+        {
+            switch (keyData)
+            {
+                case Keys.Up:
+                case Keys.Down:
+                case Keys.PageUp:
+                case Keys.PageDown:
+                    OnKeyDown(new KeyEventArgs(keyData));
+                    return true; // consumed — scrollbar never sees it
+            }
+            return base.ProcessCmdKey(ref msg, keyData);
+        }
+
+        protected override void OnMouseWheel(MouseEventArgs e)
+        {
+            // Handle wheel here — don't let VScrollBar steal it
+            if (_vScroll.Visible)
+            {
+                int delta = e.Delta > 0 ? -3 : 3;
+                int newVal = Math.Max(_vScroll.Minimum,
+                    Math.Min(_vScroll.Maximum - _vScroll.LargeChange + 1, _vScroll.Value + delta));
+                _vScroll.Value = newVal;
+            }
         }
 
         protected override void OnKeyDown(KeyEventArgs e)
@@ -377,6 +429,7 @@ namespace Wer.Winforms.Toolkit.Controls
                         _selectedRowIndex++;
                         EnsureRowVisible(_selectedRowIndex);
                         InvalidateGrid();
+                        SelectedRowChanged?.Invoke(this, SelectedRowId);
                     }
                     e.Handled = true;
                     break;
@@ -387,6 +440,7 @@ namespace Wer.Winforms.Toolkit.Controls
                         _selectedRowIndex--;
                         EnsureRowVisible(_selectedRowIndex);
                         InvalidateGrid();
+                        SelectedRowChanged?.Invoke(this, SelectedRowId);
                     }
                     e.Handled = true;
                     break;
@@ -1205,9 +1259,8 @@ namespace Wer.Winforms.Toolkit.Controls
                 return;
             }
 
-            // Remove focus from search when clicking grid body
-            if (_searchBox != null && _searchBox.Focused)
-                this.Focus();
+            // Take focus so keyboard events come to us, not the scrollbar
+            this.Focus();
 
             // Start column resize?
             if (e.Y >= SearchBarHeight && e.Y < SearchBarHeight + HeaderHeight)
@@ -1263,19 +1316,11 @@ namespace Wer.Winforms.Toolkit.Controls
                 {
                     _selectedRowIndex = row;
                     InvalidateGrid();
+                    SelectedRowChanged?.Invoke(this, SelectedRowId);
                 }
             }
         }
 
-        protected override void OnMouseWheel(MouseEventArgs e)
-        {
-            base.OnMouseWheel(e);
-            if (!_vScroll.Visible) return;
-
-            int delta = e.Delta > 0 ? -3 : 3;
-            int newVal = Math.Max(_vScroll.Minimum, Math.Min(_vScroll.Maximum - _vScroll.LargeChange + 1, _vScroll.Value + delta));
-            _vScroll.Value = newVal;
-        }
 
         protected override void OnResize(EventArgs e)
         {

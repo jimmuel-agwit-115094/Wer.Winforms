@@ -14,6 +14,8 @@ namespace Wer.Winforms.Demo
         {
             InitializeComponent();
             LoadUsers();
+            dgUsers.SelectedRowChanged += (s, id) =>
+        werLabel1.Text = "Selected: " + id;
         }
 
         private void LoadUsers()
@@ -89,5 +91,7 @@ namespace Wer.Winforms.Demo
             werButtonOrange1.IconCode = WerIcons.Delete;
             werButtonOrange1.Text = "Add User";
         }
+
+
     }
 }

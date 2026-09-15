@@ -33,6 +33,7 @@
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.dgUsers = new Wer.Winforms.Toolkit.Controls.WerDataGrid();
             this.werTabControl1 = new Wer.Winforms.Toolkit.Controls.WerTabControl();
+            this.werLabel1 = new Wer.Winforms.Toolkit.Controls.WerLabel();
             this.tabPage2.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.werTabControl1.SuspendLayout();
@@ -105,11 +106,23 @@
             this.werTabControl1.Size = new System.Drawing.Size(1237, 593);
             this.werTabControl1.TabIndex = 0;
             // 
+            // werLabel1
+            // 
+            this.werLabel1.AutoSize = true;
+            this.werLabel1.Font = new System.Drawing.Font("Segoe UI", 9.75F);
+            this.werLabel1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(33)))), ((int)(((byte)(37)))), ((int)(((byte)(41)))));
+            this.werLabel1.Location = new System.Drawing.Point(403, 1);
+            this.werLabel1.Name = "werLabel1";
+            this.werLabel1.Size = new System.Drawing.Size(67, 17);
+            this.werLabel1.TabIndex = 1;
+            this.werLabel1.Text = "werLabel1";
+            // 
             // SubForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 17F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1275, 635);
+            this.Controls.Add(this.werLabel1);
             this.Controls.Add(this.werTabControl1);
             this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "SubForm";
@@ -120,6 +133,7 @@
             this.tabPage1.ResumeLayout(false);
             this.werTabControl1.ResumeLayout(false);
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -130,5 +144,6 @@
         private System.Windows.Forms.TabPage tabPage1;
         private Toolkit.Controls.WerDataGrid dgUsers;
         private Toolkit.Controls.WerTabControl werTabControl1;
+        private Toolkit.Controls.WerLabel werLabel1;
     }
 }
