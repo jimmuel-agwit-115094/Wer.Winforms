@@ -290,8 +290,8 @@ namespace Wer.Winforms.Toolkit.Controls
             _footerFont = new Font(WerTheme.FontFamily, 9f, FontStyle.Regular);
 
             _vScroll = new VScrollBar();
-            _vScroll.Dock = DockStyle.Right;
             _vScroll.Visible = false;
+            _vScroll.Anchor = AnchorStyles.None; // positioned manually
             _vScroll.ValueChanged += (s, e) => { _scrollOffset = _vScroll.Value; InvalidateGrid(); };
             Controls.Add(_vScroll);
 
@@ -317,6 +317,94 @@ namespace Wer.Winforms.Toolkit.Controls
 
             BackColor = Color.White;
             PositionSearchBox();
+
+            // Keyboard navigation
+            SetStyle(ControlStyles.Selectable, true);
+            TabStop = true;
+        }
+
+        protected override bool IsInputKey(Keys keyData)
+        {
+            if (keyData == Keys.Up || keyData == Keys.Down || keyData == Keys.PageUp || keyData == Keys.PageDown)
+                return true;
+            return base.IsInputKey(keyData);
+        }
+
+        protected override void OnKeyDown(KeyEventArgs e)
+        {
+            base.OnKeyDown(e);
+
+            int startRow = PageStartRow;
+            int endRow = PageEndRow;
+            int pageRows = endRow - startRow;
+
+            switch (e.KeyCode)
+            {
+                case Keys.Down:
+                    if (_selectedRowIndex < endRow - 1)
+                    {
+                        _selectedRowIndex++;
+                        EnsureRowVisible(_selectedRowIndex);
+                        InvalidateGrid();
+                    }
+                    e.Handled = true;
+                    break;
+
+                case Keys.Up:
+                    if (_selectedRowIndex > startRow)
+                    {
+                        _selectedRowIndex--;
+                        EnsureRowVisible(_selectedRowIndex);
+                        InvalidateGrid();
+                    }
+                    e.Handled = true;
+                    break;
+
+                case Keys.PageDown:
+                    if (_currentPage < TotalPages - 1)
+                    {
+                        _currentPage++;
+                        _selectedRowIndex = PageStartRow;
+                        _scrollOffset = 0;
+                        if (_vScroll.Visible) _vScroll.Value = 0;
+                        RecalcLayout();
+                        InvalidateGrid();
+                    }
+                    e.Handled = true;
+                    break;
+
+                case Keys.PageUp:
+                    if (_currentPage > 0)
+                    {
+                        _currentPage--;
+                        _selectedRowIndex = PageStartRow;
+                        _scrollOffset = 0;
+                        if (_vScroll.Visible) _vScroll.Value = 0;
+                        RecalcLayout();
+                        InvalidateGrid();
+                    }
+                    e.Handled = true;
+                    break;
+            }
+        }
+
+        private void EnsureRowVisible(int rowIndex)
+        {
+            int visualRow = rowIndex - PageStartRow - _scrollOffset;
+            int visibleRows = VisibleRowCount;
+
+            if (visualRow < 0)
+            {
+                // Scroll up
+                _scrollOffset = Math.Max(0, rowIndex - PageStartRow);
+                if (_vScroll.Visible) _vScroll.Value = Math.Min(_scrollOffset, _vScroll.Maximum - _vScroll.LargeChange + 1);
+            }
+            else if (visualRow >= visibleRows)
+            {
+                // Scroll down
+                _scrollOffset = rowIndex - PageStartRow - visibleRows + 1;
+                if (_vScroll.Visible) _vScroll.Value = Math.Min(_scrollOffset, _vScroll.Maximum - _vScroll.LargeChange + 1);
+            }
         }
 
         public void SetColumns(WerDataGridColumn[] columns)
@@ -464,6 +552,8 @@ namespace Wer.Winforms.Toolkit.Controls
                 if (_hScroll != null) _hScroll.Visible = false;
                 _hScrollOffset = 0;
             }
+
+            PositionSearchBox();
         }
 
         private int[] GetColumnWidths()
@@ -1058,6 +1148,15 @@ namespace Wer.Winforms.Toolkit.Controls
                     _tabSelected = tab;
                     _currentPage = 0;
                     _selectedRowIndex = 0;
+
+                    // Clear search on tab change
+                    if (_searchBox != null && !string.IsNullOrEmpty(_searchBox.Text))
+                    {
+                        _searchBox.Text = "";
+                        _searchText = "";
+                        _filteredTable = null;
+                    }
+
                     InvalidateGrid();
                     TabChanged?.Invoke(this, EventArgs.Empty);
                 }
@@ -1162,6 +1261,14 @@ namespace Wer.Winforms.Toolkit.Controls
             int searchY = (SearchBarHeight - _searchBox.Height) / 2;
             _searchBox.Location = new Point(Width - scrollW - _searchBox.Width - 2, Math.Max(0, searchY));
             _searchBox.BringToFront();
+
+            // Position vScroll below search bar
+            if (_vScroll != null && _vScroll.Visible)
+            {
+                int hScrollH = (_hScroll != null && _hScroll.Visible) ? _hScroll.Height : 0;
+                _vScroll.SetBounds(Width - _vScroll.Width, SearchBarHeight, _vScroll.Width, Height - SearchBarHeight - hScrollH);
+                _vScroll.BringToFront();
+            }
         }
 
         // --- Hit testing ---

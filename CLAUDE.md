@@ -2,6 +2,21 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## Development Rules
+
+**Every code change MUST follow these rules:**
+
+1. **Best approach first** — Before implementing, evaluate alternatives. Choose the simplest, most performant, and most maintainable approach. Don't over-engineer.
+2. **Memory leak check** — Every control, form, event handler, cached object, and GDI+ resource must be reviewed for leaks:
+   - Dispose GDI+ objects (`Font`, `Brush`, `Pen`, `GraphicsPath`) — use `using` blocks
+   - Unwire event handlers in `OnControlRemoved` / `Dispose`
+   - Cached forms must be disposed when parent disposes
+   - Don't create new Font/Brush objects in `OnPaint` without `using`
+   - `Controls.Clear()` before adding new embedded forms
+3. **No duplicate instances** — Forms, timers, event subscriptions must not stack on repeated calls
+4. **Dispose pattern** — Override `Dispose(bool)` when control holds cached forms, timers, or unmanaged resources
+5. **Test visually** — Build and verify in the demo app before marking done
+
 ## Project Overview
 
 Wer.Winforms is a custom WinForms UI toolkit library with a demo application. It provides owner-drawn controls with a consistent theme (rounded corners, hover/pressed states, custom colors). Targets **.NET Framework 4.7.2** (not .NET Core/5+).

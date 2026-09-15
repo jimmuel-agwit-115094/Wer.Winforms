@@ -10,15 +10,11 @@ using System.Windows.Forms;
 
 namespace Wer.Winforms.Demo
 {
-    public partial class UsersForm : Form
+    public partial class DetailsForm : Form
     {
-        public UsersForm()
+        public DetailsForm()
         {
             InitializeComponent();
-        }
-
-        private void werButtonOrange1_Click(object sender, EventArgs e)
-        {
         }
     }
 }

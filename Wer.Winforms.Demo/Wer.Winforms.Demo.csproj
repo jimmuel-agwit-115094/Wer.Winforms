@@ -51,24 +51,6 @@
     <Compile Include="MainForm.Designer.cs">
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="SubMenu.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="SubMenu.Designer.cs">
-      <DependentUpon>SubMenu.cs</DependentUpon>
-    </Compile>
-    <Compile Include="TextFieldsForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="TextFieldsForm.Designer.cs">
-      <DependentUpon>TextFieldsForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="UsersForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="UsersForm.Designer.cs">
-      <DependentUpon>UsersForm.cs</DependentUpon>
-    </Compile>
     <EmbeddedResource Include="SubForm.resx">
       <DependentUpon>SubForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -76,16 +58,8 @@
       <DependentUpon>MainForm.cs</DependentUpon>
     </EmbeddedResource>
     <Compile Include="Product.cs" />
+    <Compile Include="Users.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="SubMenu.resx">
-      <DependentUpon>SubMenu.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="TextFieldsForm.resx">
-      <DependentUpon>TextFieldsForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="UsersForm.resx">
-      <DependentUpon>UsersForm.cs</DependentUpon>
-    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Wer.Winforms.Toolkit\Wer.Winforms.Toolkit.csproj">
