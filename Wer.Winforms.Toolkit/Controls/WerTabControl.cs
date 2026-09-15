@@ -117,6 +117,7 @@ namespace Wer.Winforms.Toolkit.Controls
             int h = -1;
             for (int i = 0; i < TabCount; i++)
                 if (GetTabRect(i).Contains(e.Location)) { h = i; break; }
+            Cursor = h >= 0 ? Cursors.Hand : Cursors.Default;
             if (h != _hoverIndex) { _hoverIndex = h; Invalidate(); }
         }
 

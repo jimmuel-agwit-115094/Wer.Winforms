@@ -155,7 +155,7 @@ namespace Wer.Winforms.Toolkit.Controls
             g.SmoothingMode = SmoothingMode.AntiAlias;
             g.TextRenderingHint = TextRenderingHint.ClearTypeGridFit;
 
-            var rect = new Rectangle(4, 2, Width - 8, Height - 4);
+            var rect = new Rectangle(2, 1, Width - 4, Height - 2);
 
             // Background
             if (_isActive)
@@ -164,8 +164,8 @@ namespace Wer.Winforms.Toolkit.Controls
                 using (var brush = new SolidBrush(ActiveBg))
                     g.FillPath(brush, path);
 
-                // Left indicator
-                var barRect = new Rectangle(1, 8, IndicatorW, Height - 16);
+                // Left indicator — taller
+                var barRect = new Rectangle(0, 4, IndicatorW, Height - 8);
                 using (var path = RoundedRect(barRect, 2))
                 using (var brush = new SolidBrush(IndicatorColor))
                     g.FillPath(brush, path);

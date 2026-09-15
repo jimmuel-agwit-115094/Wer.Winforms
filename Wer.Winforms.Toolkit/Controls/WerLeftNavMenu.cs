@@ -37,7 +37,7 @@ namespace Wer.Winforms.Toolkit.Controls
 
         private static readonly Color NavBg = Color.White;
         private static readonly Color NavBorder = Color.FromArgb(232, 235, 240);
-        private static readonly Color LogoColor = Color.FromArgb(33, 37, 41);
+        private static readonly Color LogoColor = Color.FromArgb(130, 140, 150);
 
         public event EventHandler NavigationChanged;
 
@@ -256,7 +256,7 @@ namespace Wer.Winforms.Toolkit.Controls
             if (_logoHeight > 0 && !string.IsNullOrEmpty(_logoText))
             {
                 var logoRect = new Rectangle(12, 0, Width - 24, _logoHeight);
-                using (var font = new Font(WerTheme.FontFamily, 14f, FontStyle.Bold))
+                using (var font = new Font("Segoe UI Light", 14f, FontStyle.Regular))
                     TextRenderer.DrawText(g, _logoText, font, logoRect, LogoColor,
                         TextFormatFlags.Left | TextFormatFlags.VerticalCenter | TextFormatFlags.NoPrefix);
             }
