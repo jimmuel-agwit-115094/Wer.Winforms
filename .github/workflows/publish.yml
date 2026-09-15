@@ -9,7 +9,7 @@ jobs:
   publish:
     runs-on: windows-latest
     permissions:
-      id-token: write  # Required for NuGet trusted publisher OIDC
+      contents: read
 
     steps:
       - name: Checkout
@@ -30,20 +30,10 @@ jobs:
           $version = "${{ github.ref_name }}".TrimStart('v')
           nuget pack Wer.Winforms.Toolkit/Wer.Winforms.Toolkit.nuspec -OutputDirectory nupkg -Version $version
 
-      - name: Get NuGet API token (Trusted Publisher OIDC)
-        id: get-token
+      - name: Push to NuGet
         shell: pwsh
-        run: |
-          $oidcToken = (Invoke-RestMethod "$env:ACTIONS_ID_TOKEN_REQUEST_URL&audience=nuget.org" `
-            -Headers @{ Authorization = "bearer $env:ACTIONS_ID_TOKEN_REQUEST_TOKEN" }).value
-          $response = Invoke-RestMethod `
-            -Uri "https://api.nuget.org/v1/authentication/authenticate" `
-            -Headers @{ Authorization = "Bearer $oidcToken" }
-          echo "::add-mask::$($response.apiKey)"
-          echo "NUGET_API_KEY=$($response.apiKey)" | Out-File -FilePath $env:GITHUB_ENV -Append
-
-      - name: Push to NuGet (Trusted Publisher)
-        shell: pwsh
+        env:
+          NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
         run: |
           $pkg = Get-ChildItem nupkg\*.nupkg | Select-Object -First 1
           dotnet nuget push $pkg.FullName --api-key $env:NUGET_API_KEY --source https://api.nuget.org/v3/index.json
