@@ -42,4 +42,8 @@ jobs:
         shell: pwsh
         run: |
           $pkg = Get-ChildItem nupkg\*.nupkg | Select-Object -First 1
-          dotnet nuget push $pkg.FullName --api-key "${{ steps.oidc.outputs.result }}" --source https://api.nuget.org/v3/index.json
+          Write-Host "Package: $($pkg.FullName)"
+          $token = "${{ steps.oidc.outputs.result }}"
+          Write-Host "Token length: $($token.Length)"
+          Write-Host "Token prefix: $($token.Substring(0, [Math]::Min(20, $token.Length)))..."
+          dotnet nuget push $pkg.FullName --api-key $token --source https://api.nuget.org/v3/index.json --no-symbols
