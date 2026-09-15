@@ -10,6 +10,7 @@ jobs:
     runs-on: windows-latest
     permissions:
       contents: read
+      id-token: write  # Required for OIDC trusted publishing
 
     steps:
       - name: Checkout
@@ -30,10 +31,15 @@ jobs:
           $version = "${{ github.ref_name }}".TrimStart('v')
           nuget pack Wer.Winforms.Toolkit/Wer.Winforms.Toolkit.nuspec -OutputDirectory nupkg -Version $version
 
-      - name: Push to NuGet
+      - name: Get OIDC token
+        id: oidc
+        uses: actions/github-script@v7
+        with:
+          script: return await core.getIDToken('nuget.org')
+          result-encoding: string
+
+      - name: Push to NuGet (Trusted Publisher)
         shell: pwsh
-        env:
-          NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
         run: |
           $pkg = Get-ChildItem nupkg\*.nupkg | Select-Object -First 1
-          dotnet nuget push $pkg.FullName --api-key $env:NUGET_API_KEY --source https://api.nuget.org/v3/index.json
+          dotnet nuget push $pkg.FullName --api-key "${{ steps.oidc.outputs.result }}" --source https://api.nuget.org/v3/index.json
