@@ -25,18 +25,20 @@ jobs:
         run: msbuild Wer.Winforms.Toolkit/Wer.Winforms.Toolkit.csproj /p:Configuration=Release /verbosity:minimal
 
       - name: Pack
-        run: nuget pack Wer.Winforms.Toolkit/Wer.Winforms.Toolkit.nuspec -OutputDirectory nupkg
+        shell: pwsh
+        run: |
+          $version = "${{ github.ref_name }}".TrimStart('v')
+          nuget pack Wer.Winforms.Toolkit/Wer.Winforms.Toolkit.nuspec -OutputDirectory nupkg -Version $version
 
       - name: Get NuGet API token (Trusted Publisher OIDC)
         id: get-token
         shell: pwsh
         run: |
-          $token = (Invoke-RestMethod "$env:ACTIONS_ID_TOKEN_REQUEST_URL&audience=nuget.org" `
+          $oidcToken = (Invoke-RestMethod "$env:ACTIONS_ID_TOKEN_REQUEST_URL&audience=nuget.org" `
             -Headers @{ Authorization = "bearer $env:ACTIONS_ID_TOKEN_REQUEST_TOKEN" }).value
-          $response = Invoke-RestMethod -Method POST `
-            -Uri "https://api.nuget.org/v3/authentication/authenticate" `
-            -Body (@{ identityToken = $token } | ConvertTo-Json) `
-            -ContentType "application/json"
+          $response = Invoke-RestMethod `
+            -Uri "https://api.nuget.org/v1/authentication/authenticate" `
+            -Headers @{ Authorization = "Bearer $oidcToken" }
           echo "::add-mask::$($response.apiKey)"
           echo "NUGET_API_KEY=$($response.apiKey)" | Out-File -FilePath $env:GITHUB_ENV -Append
 
