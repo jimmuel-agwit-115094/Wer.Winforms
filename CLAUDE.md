@@ -258,18 +258,83 @@ All form fields share: `LabelText`, `Required`, `ReadOnly`, `ShowLabel` (default
 
 ### Selectors
 `WerDateRange` — Predefined date range dropdown (Past 7/30/60/90 Days, 6 Months, 1 Year). Access via `Result.StartDate` / `Result.EndDate`
+`WerDateRangePicker` — Two calendar pickers (From — To) with label. Access via `StartDate` / `EndDate`
 
 ### Display
-`WerLabel`, `WerHeading`, `WerLink`, `WerCheckbox`, `WerRadioButton`, `WerToggle`, `WerStatusIndicator`, `WerDivider`, `WerBanner` (Info/Positive/Negative/Notice variants)
+`WerLabel`, `WerHeading`, `WerLink`, `WerCheckbox`, `WerRadioButton`, `WerToggle`, `WerStatusIndicator`, `WerDivider`, `WerBanner` (Info/Positive/Negative/Notice variants), `WerBadge`, `WerIcon`
 
 ### Layout
 `WerGroupBox`, `WerEmptyGroupBox`, `WerTabControl`, `WerTabPage`
 
 ### Navigation
-`WerLeftNavMenu` (left nav panel), `WerMenuButton` (nav item), `WerTopNav` (top bar with user info)
+`WerLeftNavMenu` (left nav panel), `WerMenuButton` (nav item), `WerTopNav` (top bar with avatar color by initial)
 
 ### Data
-`WerDataGrid` (owner-drawn data grid with search, pagination, tabs, edit buttons, horizontal scroll)
+`WerDataGrid` (owner-drawn data grid with search, pagination, tabs, edit buttons, add button, horizontal scroll)
+
+### Feedback
+`WerSnackbar` (auto-dismiss toast: Success/Error/Warning/Info), `WerProgressBar` (rounded bar with label), `WerSpinner` (animated loading arc)
+
+### Dashboard
+`WerCard` — Stat card with title, value, subtitle, colored accent bar
 
 ### Dialogs
 `WerMessageBox` (modern message box: Success/Error/Warning/Info), `WerForm` (themed base form)
+
+## New Controls API
+
+### WerSnackbar
+```csharp
+WerSnackbar.Success(this, "Record saved!");
+WerSnackbar.Error(this, "Failed to connect.");
+WerSnackbar.Warning(this, "Unsaved changes.");
+WerSnackbar.Info(this, "3 new messages.");
+```
+Auto-dismiss after 3s. Stacks vertically at bottom-center. No instance needed.
+
+### WerCard
+```csharp
+werCard1.Title = "Total Revenue";
+werCard1.Value = "$125,000.00";
+werCard1.Subtitle = "Last 30 days";
+werCard1.AccentColor = WerTheme.SuccessColor;
+```
+
+### WerProgressBar
+```csharp
+werProgressBar1.Value = 75;         // 0-100
+werProgressBar1.BarColor = WerTheme.PrimaryColor;
+werProgressBar1.ShowLabel = true;   // shows "75%"
+```
+
+### WerSpinner
+```csharp
+werSpinner1.IsSpinning = true;
+werSpinner1.SpinnerColor = WerTheme.PrimaryColor;
+```
+
+### WerBadge
+```csharp
+werBadge1.Text = "Active";
+werBadge1.BadgeColor = WerTheme.SuccessColor;
+```
+Auto-sizes to text. Pill shape with tinted background.
+
+### WerDateRangePicker
+```csharp
+werDateRangePicker1.LabelText = "Period";
+DateTime? from = werDateRangePicker1.StartDate;
+DateTime? to = werDateRangePicker1.EndDate;
+werDateRangePicker1.RangeChanged += (s, e) => Reload();
+```
+
+### WerIcon + WerIcons
+```csharp
+werIcon1.IconCode = WerIcons.Person;   // standalone icon
+werIcon1.ForeColor = WerTheme.PrimaryColor;
+
+// On buttons:
+btnAdd.IconCode = WerIcons.Add;        // icon + text on any WerButton
+btnAdd.Text = "Add User";
+```
+Uses Segoe MDL2 Assets (built into Windows 10/11). 70+ named constants in `WerIcons`.

@@ -218,7 +218,7 @@ namespace Wer.Winforms.Toolkit.Controls
                 btn.Text = labels[i];
                 btn.Size = new Size(BtnW, BtnH);
                 btn.Location = new Point(startX + i * (BtnW + BtnGap), btnY);
-                btn.Font = new Font(WerTheme.FontFamily, 9.75f, FontStyle.Regular);
+                btn.Font = WerTheme.BodyFont;
 
                 var result = results[i];
                 btn.Click += (s, e) => { DialogResult = result; Close(); };

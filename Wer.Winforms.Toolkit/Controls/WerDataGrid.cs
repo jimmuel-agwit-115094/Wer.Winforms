@@ -84,6 +84,7 @@ namespace Wer.Winforms.Toolkit.Controls
         private Font _dataFont;
         private Font _editFont;
         private Font _footerFont;
+        private Font _addButtonFont;
 
         public event EventHandler<WerDataGridEditEventArgs> EditClicked;
 
@@ -338,7 +339,8 @@ namespace Wer.Winforms.Toolkit.Controls
 
             _addButton = new WerButtonPrimary();
             _addButton.Text = "Add";
-            _addButton.Font = new Font(WerTheme.FontFamily, 9.75f, FontStyle.Bold);
+            _addButtonFont = new Font(WerTheme.FontFamily, 9.75f, FontStyle.Bold);
+            _addButton.Font = _addButtonFont;
             _addButton.Size = new Size(80, 30);
             _addButton.Visible = false;
             _addButton.Click += (s, ev) => AddClicked?.Invoke(this, EventArgs.Empty);
@@ -1460,6 +1462,7 @@ namespace Wer.Winforms.Toolkit.Controls
                 _dataFont?.Dispose();
                 _editFont?.Dispose();
                 _footerFont?.Dispose();
+                _addButtonFont?.Dispose();
                 _searchBox?.Dispose();
             }
             base.Dispose(disposing);

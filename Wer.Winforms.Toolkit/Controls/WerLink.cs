@@ -17,6 +17,7 @@ namespace Wer.Winforms.Toolkit.Controls
         private bool _underlineOnHover = true;
         private bool _underline = false;
         private bool _isHovering;
+        private Font _ownedFont;
 
         public WerLink()
         {
@@ -98,10 +99,17 @@ namespace Wer.Winforms.Toolkit.Controls
             var style = show ? FontStyle.Underline : FontStyle.Regular;
             if (Font.Style != style)
             {
-                var old = Font;
-                Font = new Font(Font.FontFamily, Font.Size, style);
-                if (old != null && old != Font) old.Dispose();
+                var newFont = new Font(Font.FontFamily, Font.Size, style);
+                _ownedFont?.Dispose();
+                _ownedFont = newFont;
+                Font = newFont;
             }
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing) _ownedFont?.Dispose();
+            base.Dispose(disposing);
         }
     }
 }

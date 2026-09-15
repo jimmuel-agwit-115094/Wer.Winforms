@@ -17,6 +17,7 @@ namespace Wer.Winforms.Toolkit.Controls
     public class WerHeading : Label
     {
         private WerHeadingLevel _level = WerHeadingLevel.H1;
+        private Font _ownedFont;
 
         private static readonly float SizeH1 = 20f;
         private static readonly float SizeH2 = 16f;
@@ -47,9 +48,16 @@ namespace Wer.Winforms.Toolkit.Controls
                 case WerHeadingLevel.H2: size = SizeH2; break;
                 default:                 size = SizeH3; break;
             }
-            var old = Font;
-            Font = new Font(WerTheme.FontFamily, size, FontStyle.Bold);
-            if (old != null && old != Font) old.Dispose();
+            var newFont = new Font(WerTheme.FontFamily, size, FontStyle.Bold);
+            _ownedFont?.Dispose();
+            _ownedFont = newFont;
+            Font = newFont;
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing) _ownedFont?.Dispose();
+            base.Dispose(disposing);
         }
     }
 }

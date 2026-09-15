@@ -150,6 +150,24 @@
     <Compile Include="Controls\WerIcon.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Controls\WerSnackbar.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\WerCard.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\WerProgressBar.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\WerSpinner.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\WerBadge.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\WerDateRangePicker.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="Controls\WerMessageBox.cs" />
     <Compile Include="Controls\WerCopyTextField.cs">
       <SubType>Component</SubType>

@@ -55,7 +55,7 @@ namespace Wer.Winforms.Demo
 
         private void btnCancel_Click(object sender, EventArgs e)
         {
-            Close();
+            WerSnackbar.Error(this, "Record saved!");
         }
 
         private void UserForm_Load(object sender, EventArgs e)

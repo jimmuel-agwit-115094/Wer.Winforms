@@ -34,6 +34,7 @@ namespace Wer.Winforms.Toolkit.Controls
         private readonly Dictionary<Type, Form> _formCache = new Dictionary<Type, Form>();
         private string _logoText = "";
         private int _logoHeight = 60;
+        private Font _titleLabelFont;
 
         private static readonly Color NavBg = Color.White;
         private static readonly Color NavBorder = Color.FromArgb(232, 235, 240);
@@ -101,10 +102,11 @@ namespace Wer.Winforms.Toolkit.Controls
                         Padding = new Padding(16, 6, 0, 2),
                         Visible = false,
                     };
+                    _titleLabelFont = new Font(WerTheme.FontFamily, 14f, FontStyle.Bold);
                     _titleLabel = new Label
                     {
                         Dock = DockStyle.Fill,
-                        Font = new Font(WerTheme.FontFamily, 14f, FontStyle.Bold),
+                        Font = _titleLabelFont,
                         ForeColor = Color.FromArgb(33, 37, 41),
                         BackColor = Color.White,
                         TextAlign = ContentAlignment.MiddleLeft,
@@ -279,6 +281,7 @@ namespace Wer.Winforms.Toolkit.Controls
         {
             if (disposing)
             {
+                _titleLabelFont?.Dispose();
                 foreach (var kvp in _formCache)
                 {
                     if (kvp.Value != null && !kvp.Value.IsDisposed)
