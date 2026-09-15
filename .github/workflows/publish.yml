@@ -31,8 +31,15 @@ jobs:
           $version = "${{ github.ref_name }}".TrimStart('v')
           nuget pack Wer.Winforms.Toolkit/Wer.Winforms.Toolkit.nuspec -OutputDirectory nupkg -Version $version
 
+      - name: Login to NuGet.org (OIDC token exchange)
+        uses: NuGet/login@v1
+        id: nuget-login
+
       - name: Push to NuGet (Trusted Publisher)
         shell: pwsh
         run: |
           $pkg = Get-ChildItem nupkg\*.nupkg | Select-Object -First 1
-          dotnet nuget push $pkg.FullName --source https://api.nuget.org/v3/index.json
+          dotnet nuget push $pkg.FullName `
+            --api-key ${{ steps.nuget-login.outputs.NUGET_API_KEY }} `
+            --source https://api.nuget.org/v3/index.json `
+            --skip-duplicate
