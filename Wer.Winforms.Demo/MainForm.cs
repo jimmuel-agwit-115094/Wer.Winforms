@@ -146,5 +146,10 @@ namespace Wer.Winforms.Demo
         private void werMenuButton3_Click(object sender, EventArgs e)
         {
         }
+
+        private void werMenuButton2_Click(object sender, EventArgs e)
+        {
+            werLeftNavMenu1.ShowForm<ProductsForm>();
+        }
     }
 }
