@@ -63,8 +63,8 @@ namespace Wer.Winforms.Toolkit.Controls
             int top = (Height - CircleSize) / 2;
             var circleRect = new Rectangle(0, top, CircleSize, CircleSize);
 
-            // Outer circle fill
-            using (var brush = new SolidBrush(WerTheme.InputBg))
+            // Outer circle fill (white)
+            using (var brush = new SolidBrush(Color.White))
                 g.FillEllipse(brush, circleRect);
 
             // Outer circle border
@@ -115,24 +115,6 @@ namespace Wer.Winforms.Toolkit.Controls
             Cursor = Enabled ? Cursors.Hand : Cursors.Default;
             Invalidate();
             base.OnEnabledChanged(e);
-        }
-
-        protected override void OnHandleCreated(EventArgs e)
-        {
-            base.OnHandleCreated(e);
-            WerTheme.ThemeChanged += OnThemeChanged;
-        }
-
-        protected override void OnHandleDestroyed(EventArgs e)
-        {
-            base.OnHandleDestroyed(e);
-            WerTheme.ThemeChanged -= OnThemeChanged;
-        }
-
-        private void OnThemeChanged(object sender, EventArgs e)
-        {
-            ForeColor = WerTheme.TextColor;
-            Invalidate();
         }
 
         private void UncheckSiblings()

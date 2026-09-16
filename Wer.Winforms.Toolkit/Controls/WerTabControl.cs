@@ -17,38 +17,17 @@ namespace Wer.Winforms.Toolkit.Controls
         private const int IndicatorH   = 3;
         private const int BorderRadius = 6;
 
+        private static readonly Color BorderColor = Color.FromArgb(210, 215, 220);
+
         public WerTabControl()
         {
             SetStyle(ControlStyles.UserPaint | ControlStyles.AllPaintingInWmPaint |
                      ControlStyles.OptimizedDoubleBuffer | ControlStyles.ResizeRedraw, true);
 
             Font      = WerTheme.BodyFont;
-            BackColor = WerTheme.SurfaceColor;
+            BackColor = Color.White;
             ItemSize  = new Size(0, 38);
             Padding   = new Point(16, 0);
-        }
-
-        // ── Theme subscription ───────────────────────────────────────
-
-        protected override void OnHandleCreated(EventArgs e)
-        {
-            base.OnHandleCreated(e);
-            WerTheme.ThemeChanged += OnThemeChanged;
-        }
-
-        protected override void OnHandleDestroyed(EventArgs e)
-        {
-            base.OnHandleDestroyed(e);
-            WerTheme.ThemeChanged -= OnThemeChanged;
-        }
-
-        private void OnThemeChanged(object sender, EventArgs e)
-        {
-            BackColor = WerTheme.SurfaceColor;
-            // Update existing tab pages
-            foreach (TabPage tp in TabPages)
-                tp.BackColor = WerTheme.SurfaceColor;
-            Invalidate();
         }
 
         // ── Paint ─────────────────────────────────────────────────────
@@ -69,20 +48,20 @@ namespace Wer.Winforms.Toolkit.Controls
 
             if (TabCount == 0) return;
 
-            // Surface rounded fill for entire control
+            // White rounded fill for entire control
             var outerRect = new Rectangle(0, 0, Width - 1, Height - 1);
             using (var path = RoundedRect(outerRect, BorderRadius))
-            using (var brush = new SolidBrush(WerTheme.SurfaceColor))
+            using (var brush = new SolidBrush(Color.White))
                 g.FillPath(brush, path);
 
             // Rounded border
             using (var path = RoundedRect(outerRect, BorderRadius))
-            using (var pen = new Pen(WerTheme.InputBorder, 1f))
+            using (var pen = new Pen(BorderColor, 1f))
                 g.DrawPath(pen, path);
 
             // Separator line
             var firstTab = GetTabRect(0);
-            using (var pen = new Pen(WerTheme.InputBorder, 1))
+            using (var pen = new Pen(Color.FromArgb(220, 220, 220), 1))
                 g.DrawLine(pen, 1, firstTab.Bottom + 1, Width - 1, firstTab.Bottom + 1);
 
             // Tab headers
@@ -96,8 +75,8 @@ namespace Wer.Winforms.Toolkit.Controls
             bool selected = index == SelectedIndex;
             bool hover    = index == _hoverIndex;
 
-            // Tab background
-            using (var brush = new SolidBrush(WerTheme.SurfaceColor))
+            // Tab background — white
+            using (var brush = new SolidBrush(Color.White))
                 g.FillRectangle(brush, bounds);
 
             // Hover tint
@@ -114,7 +93,7 @@ namespace Wer.Winforms.Toolkit.Controls
             else if (hover)
                 color = WerTheme.PrimaryColor;
             else
-                color = WerTheme.MutedColor;
+                color = Color.FromArgb(108, 117, 125);
 
             TextRenderer.DrawText(g, TabPages[index].Text, font, bounds, color,
                 TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter |
@@ -159,7 +138,7 @@ namespace Wer.Winforms.Toolkit.Controls
         {
             base.OnControlAdded(e);
             if (e.Control is TabPage tp)
-                tp.BackColor = WerTheme.SurfaceColor;
+                tp.BackColor = Color.White;
         }
 
         // ── Helpers ──────────────────────────────────────────────────

@@ -1,4 +1,3 @@
-using System;
 using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Drawing2D;
@@ -63,20 +62,6 @@ namespace Wer.Winforms.Toolkit.Controls
             Text = "Neutral";
             AutoSize = true;
         }
-
-        protected override void OnHandleCreated(EventArgs e)
-        {
-            base.OnHandleCreated(e);
-            WerTheme.ThemeChanged += OnThemeChanged;
-        }
-
-        protected override void OnHandleDestroyed(EventArgs e)
-        {
-            base.OnHandleDestroyed(e);
-            WerTheme.ThemeChanged -= OnThemeChanged;
-        }
-
-        private void OnThemeChanged(object sender, EventArgs e) => Invalidate();
 
         [Category("WerStatusIndicator")]
         [DefaultValue(WerStatus.Neutral)]

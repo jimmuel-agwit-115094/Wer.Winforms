@@ -37,6 +37,17 @@ namespace Wer.Winforms.Toolkit.Controls
         private const int ChevronW     = 28;
         private const int CheckW       = 24;
 
+        private static readonly Color LabelNormal      = Color.Black;
+        private static readonly Color LabelRequired    = Color.FromArgb(200, 100, 20);
+        private static readonly Color LabelDisabled    = Color.FromArgb(150, 150, 150);
+        private static readonly Color RequiredStar     = Color.FromArgb(210, 50, 50);
+        private static readonly Color BorderNormal     = Color.FromArgb(200, 210, 220);
+        private static readonly Color BorderFocus      = Color.FromArgb(12, 124, 146);
+        private static readonly Color PlaceholderColor = Color.FromArgb(160, 170, 180);
+        private static readonly Color BgNormal         = Color.White;
+        private static readonly Color BgDisabled       = Color.FromArgb(242, 242, 242);
+        private static readonly Color AccentColor      = Color.FromArgb(12, 124, 146);
+
         /// <summary>Fired when the selected range changes.</summary>
         public event EventHandler RangeChanged;
 
@@ -90,26 +101,6 @@ namespace Wer.Winforms.Toolkit.Controls
 
             _inputBorder.BringToFront();
             LayoutInternals();
-        }
-
-        // ── Theme subscription ───────────────────────────────────────
-
-        protected override void OnHandleCreated(EventArgs e)
-        {
-            base.OnHandleCreated(e);
-            WerTheme.ThemeChanged += OnThemeChanged;
-        }
-
-        protected override void OnHandleDestroyed(EventArgs e)
-        {
-            base.OnHandleDestroyed(e);
-            WerTheme.ThemeChanged -= OnThemeChanged;
-        }
-
-        private void OnThemeChanged(object sender, EventArgs e)
-        {
-            Invalidate();
-            _inputBorder?.Invalidate();
         }
 
         private void OpenCombo()
@@ -271,9 +262,9 @@ namespace Wer.Winforms.Toolkit.Controls
             if (!_showLabel) return;
 
             Color labelColor;
-            if (!Enabled)       labelColor = WerTheme.LabelDisabledColor;
-            else if (_readOnly) labelColor = WerTheme.LabelReadOnlyColor;
-            else                labelColor = WerTheme.LabelColor;
+            if (!Enabled)          labelColor = LabelDisabled;
+            else if (_readOnly)    labelColor = LabelRequired;
+            else                   labelColor = LabelNormal;
 
             var labelRect = new Rectangle(0, 0, Width, LabelHeight);
             TextRenderer.DrawText(g, _labelText, Font, labelRect, labelColor,
@@ -283,7 +274,7 @@ namespace Wer.Winforms.Toolkit.Controls
             {
                 int lw = TextRenderer.MeasureText(g, _labelText, Font).Width;
                 TextRenderer.DrawText(g, "*", Font, new Rectangle(lw + 2, 0, 12, LabelHeight),
-                    WerTheme.RequiredStarColor, TextFormatFlags.Left | TextFormatFlags.VerticalCenter);
+                    RequiredStar, TextFormatFlags.Left | TextFormatFlags.VerticalCenter);
             }
         }
 
@@ -301,11 +292,11 @@ namespace Wer.Winforms.Toolkit.Controls
 
             // Background
             using (var path = RoundedRect(rect, BorderRadius))
-            using (var brush = new SolidBrush(inactive ? WerTheme.InputBgDisabled : WerTheme.InputBg))
+            using (var brush = new SolidBrush(inactive ? BgDisabled : BgNormal))
                 g.FillPath(brush, path);
 
             // Border
-            var borderColor = (_hasFocus && Enabled && !_readOnly) ? WerTheme.InputBorderFocus : WerTheme.InputBorder;
+            var borderColor = (_hasFocus && Enabled && !_readOnly) ? BorderFocus : BorderNormal;
             float bw = (_hasFocus && Enabled && !_readOnly) ? 1.5f : 1f;
             using (var path = RoundedRect(rect, BorderRadius))
             using (var pen = new Pen(borderColor, bw))
@@ -315,13 +306,13 @@ namespace Wer.Winforms.Toolkit.Controls
             var textRect = new Rectangle(InputPadH, 0, panel.Width - InputPadH - ChevronW, panel.Height);
             if (_combo.SelectedIndex >= 0)
             {
-                var textColor = !Enabled ? WerTheme.LabelDisabledColor : WerTheme.TextColor;
+                var textColor = !Enabled ? LabelDisabled : WerTheme.TextColor;
                 TextRenderer.DrawText(g, _combo.SelectedItem.ToString(), Font, textRect, textColor,
                     TextFormatFlags.VerticalCenter | TextFormatFlags.SingleLine | TextFormatFlags.NoPrefix);
             }
             else
             {
-                TextRenderer.DrawText(g, "Select range...", Font, textRect, WerTheme.PlaceholderColor,
+                TextRenderer.DrawText(g, "Select range...", Font, textRect, PlaceholderColor,
                     TextFormatFlags.VerticalCenter | TextFormatFlags.SingleLine);
             }
 
@@ -329,7 +320,7 @@ namespace Wer.Winforms.Toolkit.Controls
             if (Enabled && !_readOnly)
             {
                 var chevronRect = new Rectangle(panel.Width - ChevronW, 0, ChevronW, panel.Height);
-                var chevronColor = _hasFocus ? WerTheme.InputBorderFocus : WerTheme.IconColor;
+                var chevronColor = _hasFocus ? BorderFocus : Color.FromArgb(140, 150, 160);
                 string chevron = _hasFocus ? "▲" : "▼";
                 TextRenderer.DrawText(g, chevron, Font, chevronRect, chevronColor,
                     TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter);
@@ -343,22 +334,23 @@ namespace Wer.Winforms.Toolkit.Controls
             if (e.Index < 0) return;
             var combo = (ComboBox)sender;
             bool selected = (e.State & DrawItemState.Selected) != 0;
+            bool isChosen = e.Index == combo.SelectedIndex;
 
             // Background
-            using (var bg = new SolidBrush(selected ? WerTheme.GridSelectedBg : WerTheme.InputBg))
+            using (var bg = new SolidBrush(selected ? Color.FromArgb(240, 250, 252) : Color.White))
                 e.Graphics.FillRectangle(bg, e.Bounds);
 
             // Text
             var text = combo.Items[e.Index].ToString();
             var textRect = new Rectangle(e.Bounds.X + InputPadH, e.Bounds.Y, e.Bounds.Width - InputPadH * 2, e.Bounds.Height);
-            var textColor = selected ? WerTheme.PrimaryColor : WerTheme.TextColor;
+            var textColor = selected ? AccentColor : WerTheme.TextColor;
             TextRenderer.DrawText(e.Graphics, text, WerTheme.BodyFont, textRect, textColor,
                 TextFormatFlags.Left | TextFormatFlags.VerticalCenter | TextFormatFlags.NoPrefix | TextFormatFlags.SingleLine);
 
             // Bottom separator
             if (e.Index < combo.Items.Count - 1)
             {
-                using (var pen = new Pen(WerTheme.GridRowSep, 1f))
+                using (var pen = new Pen(Color.FromArgb(235, 238, 242), 1f))
                     e.Graphics.DrawLine(pen, e.Bounds.X + 8, e.Bounds.Bottom - 1, e.Bounds.Right - 8, e.Bounds.Bottom - 1);
             }
         }

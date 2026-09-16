@@ -26,6 +26,9 @@ namespace Wer.Winforms.Toolkit.Controls
         private const int PadH         = 16;
         private const int PadV         = 14;
 
+        private static readonly Color BorderColor = Color.FromArgb(220, 226, 234);
+        private static readonly Color BgColor     = Color.White;
+
         public WerCard()
         {
             SetStyle(
@@ -40,22 +43,6 @@ namespace Wer.Winforms.Toolkit.Controls
             BackColor    = Color.Transparent;
             Size         = new Size(250, 120);
         }
-
-        // ── Theme subscription ───────────────────────────────────────
-
-        protected override void OnHandleCreated(EventArgs e)
-        {
-            base.OnHandleCreated(e);
-            WerTheme.ThemeChanged += OnThemeChanged;
-        }
-
-        protected override void OnHandleDestroyed(EventArgs e)
-        {
-            base.OnHandleDestroyed(e);
-            WerTheme.ThemeChanged -= OnThemeChanged;
-        }
-
-        private void OnThemeChanged(object sender, EventArgs e) => Invalidate();
 
         [Category("WerCard")]
         [DefaultValue("Total Revenue")]
@@ -103,9 +90,9 @@ namespace Wer.Winforms.Toolkit.Controls
             // Card background + border
             using (var path = RoundedRect(cardRect, CornerR))
             {
-                using (var brush = new SolidBrush(WerTheme.SurfaceColor))
+                using (var brush = new SolidBrush(BgColor))
                     g.FillPath(brush, path);
-                using (var pen = new Pen(WerTheme.InputBorder, 1f))
+                using (var pen = new Pen(BorderColor, 1f))
                     g.DrawPath(pen, path);
             }
 

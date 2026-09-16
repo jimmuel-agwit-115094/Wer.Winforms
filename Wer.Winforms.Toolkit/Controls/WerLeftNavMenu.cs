@@ -36,43 +36,20 @@ namespace Wer.Winforms.Toolkit.Controls
         private int _logoHeight = 60;
         private Font _titleLabelFont;
 
+        private static readonly Color NavBg = Color.White;
+        private static readonly Color NavBorder = Color.FromArgb(232, 235, 240);
+        private static readonly Color LogoColor = Color.FromArgb(130, 140, 150);
+
         public event EventHandler NavigationChanged;
 
         public WerLeftNavMenu()
         {
-            BackColor = WerTheme.SurfaceColor;
+            BackColor = NavBg;
             Dock = DockStyle.Left;
             Width = 220;
             Padding = new Padding(4, 68, 4, 8); // top padding = logoHeight + 8
             AutoScroll = true;
             DoubleBuffered = true;
-        }
-
-        // ── Theme subscription ───────────────────────────────────────
-
-        protected override void OnHandleCreated(EventArgs e)
-        {
-            base.OnHandleCreated(e);
-            WerTheme.ThemeChanged += OnThemeChanged;
-        }
-
-        protected override void OnHandleDestroyed(EventArgs e)
-        {
-            base.OnHandleDestroyed(e);
-            WerTheme.ThemeChanged -= OnThemeChanged;
-        }
-
-        private void OnThemeChanged(object sender, EventArgs e)
-        {
-            BackColor = WerTheme.SurfaceColor;
-            if (_titlePanel != null) _titlePanel.BackColor = WerTheme.SurfaceColor;
-            if (_titleLabel != null)
-            {
-                _titleLabel.BackColor = WerTheme.SurfaceColor;
-                _titleLabel.ForeColor = WerTheme.TextColor;
-            }
-            if (_formHost != null) _formHost.BackColor = WerTheme.SurfaceColor;
-            Invalidate();
         }
 
         // ── Properties ──────────────────────────────────────────
@@ -121,7 +98,7 @@ namespace Wer.Winforms.Toolkit.Controls
                     {
                         Dock = DockStyle.Top,
                         Height = 32,
-                        BackColor = WerTheme.SurfaceColor,
+                        BackColor = Color.White,
                         Padding = new Padding(16, 6, 0, 2),
                         Visible = false,
                     };
@@ -130,8 +107,8 @@ namespace Wer.Winforms.Toolkit.Controls
                     {
                         Dock = DockStyle.Fill,
                         Font = _titleLabelFont,
-                        ForeColor = WerTheme.TextColor,
-                        BackColor = WerTheme.SurfaceColor,
+                        ForeColor = Color.FromArgb(33, 37, 41),
+                        BackColor = Color.White,
                         TextAlign = ContentAlignment.MiddleLeft,
                     };
                     _titlePanel.Controls.Add(_titleLabel);
@@ -140,7 +117,7 @@ namespace Wer.Winforms.Toolkit.Controls
                     _formHost = new Panel
                     {
                         Dock = DockStyle.Fill,
-                        BackColor = WerTheme.SurfaceColor,
+                        BackColor = Color.White,
                     };
 
                     // Add order: Fill first, then Top
@@ -282,19 +259,19 @@ namespace Wer.Winforms.Toolkit.Controls
             {
                 var logoRect = new Rectangle(12, 0, Width - 24, _logoHeight);
                 using (var font = new Font("Segoe UI Light", 14f, FontStyle.Regular))
-                    TextRenderer.DrawText(g, _logoText, font, logoRect, WerTheme.MutedColor,
+                    TextRenderer.DrawText(g, _logoText, font, logoRect, LogoColor,
                         TextFormatFlags.Left | TextFormatFlags.VerticalCenter | TextFormatFlags.NoPrefix);
             }
 
             // Separator under logo
             if (_logoHeight > 0)
             {
-                using (var pen = new Pen(WerTheme.InputBorder, 1f))
+                using (var pen = new Pen(NavBorder, 1f))
                     g.DrawLine(pen, 12, _logoHeight, Width - 12, _logoHeight);
             }
 
             // Right border
-            using (var pen = new Pen(WerTheme.InputBorder, 1f))
+            using (var pen = new Pen(NavBorder, 1f))
                 g.DrawLine(pen, Width - 1, 0, Width - 1, Height);
         }
 

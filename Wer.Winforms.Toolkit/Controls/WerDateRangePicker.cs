@@ -50,7 +50,7 @@ namespace Wer.Winforms.Toolkit.Controls
             {
                 Text      = _labelText,
                 Font      = WerTheme.BodyFont,
-                ForeColor = WerTheme.LabelColor,
+                ForeColor = Color.Black,
                 AutoSize  = false,
                 BackColor = Color.Transparent,
             };
@@ -88,26 +88,6 @@ namespace Wer.Winforms.Toolkit.Controls
             Controls.Add(_toPicker);
 
             LayoutInternals();
-        }
-
-        // ── Theme subscription ───────────────────────────────────────
-
-        protected override void OnHandleCreated(EventArgs e)
-        {
-            base.OnHandleCreated(e);
-            WerTheme.ThemeChanged += OnThemeChanged;
-        }
-
-        protected override void OnHandleDestroyed(EventArgs e)
-        {
-            base.OnHandleDestroyed(e);
-            WerTheme.ThemeChanged -= OnThemeChanged;
-        }
-
-        private void OnThemeChanged(object sender, EventArgs e)
-        {
-            if (_label != null) _label.ForeColor = WerTheme.LabelColor;
-            if (_separator != null) _separator.ForeColor = WerTheme.MutedColor;
         }
 
         // ── Public properties ──────────────────────────────────────

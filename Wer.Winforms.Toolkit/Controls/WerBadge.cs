@@ -40,20 +40,6 @@ namespace Wer.Winforms.Toolkit.Controls
             AutoSizeControl();
         }
 
-        protected override void OnHandleCreated(EventArgs e)
-        {
-            base.OnHandleCreated(e);
-            WerTheme.ThemeChanged += OnThemeChanged;
-        }
-
-        protected override void OnHandleDestroyed(EventArgs e)
-        {
-            base.OnHandleDestroyed(e);
-            WerTheme.ThemeChanged -= OnThemeChanged;
-        }
-
-        private void OnThemeChanged(object sender, EventArgs e) => Invalidate();
-
         [Category("WerBadge")]
         [Description("Color used for the badge fill (light tint), border, and text.")]
         public Color BadgeColor

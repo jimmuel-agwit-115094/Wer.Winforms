@@ -110,10 +110,10 @@ namespace Wer.Winforms.Toolkit.Controls
             if (!Enabled)
             {
                 using (var path = CreateRoundedRect(rect, radius))
-                using (var brush = new SolidBrush(WerTheme.ButtonDisabledBg))
+                using (var brush = new SolidBrush(Color.FromArgb(230, 232, 236)))
                     g.FillPath(brush, path);
 
-                DrawContent(g, WerTheme.ButtonDisabledText);
+                DrawContent(g, Color.FromArgb(170, 175, 182));
                 return;
             }
 
@@ -180,20 +180,6 @@ namespace Wer.Winforms.Toolkit.Controls
             Invalidate();
             base.OnEnabledChanged(e);
         }
-
-        protected override void OnHandleCreated(EventArgs e)
-        {
-            base.OnHandleCreated(e);
-            WerTheme.ThemeChanged += OnThemeChanged;
-        }
-
-        protected override void OnHandleDestroyed(EventArgs e)
-        {
-            base.OnHandleDestroyed(e);
-            WerTheme.ThemeChanged -= OnThemeChanged;
-        }
-
-        private void OnThemeChanged(object sender, EventArgs e) => Invalidate();
 
         private static GraphicsPath CreateRoundedRect(Rectangle rect, int radius)
         {

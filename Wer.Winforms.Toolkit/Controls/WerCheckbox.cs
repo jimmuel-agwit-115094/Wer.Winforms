@@ -62,7 +62,7 @@ namespace Wer.Winforms.Toolkit.Controls
             var boxRect = new Rectangle(0, top, BoxSize, BoxSize);
 
             // Box fill
-            using (var brush = new SolidBrush(_checked ? WerTheme.PrimaryColor : WerTheme.InputBg))
+            using (var brush = new SolidBrush(_checked ? WerTheme.PrimaryColor : Color.White))
                 g.FillRectangle(brush, boxRect);
 
             // Box border
@@ -120,24 +120,6 @@ namespace Wer.Winforms.Toolkit.Controls
             Cursor = Enabled ? Cursors.Hand : Cursors.Default;
             Invalidate();
             base.OnEnabledChanged(e);
-        }
-
-        protected override void OnHandleCreated(EventArgs e)
-        {
-            base.OnHandleCreated(e);
-            WerTheme.ThemeChanged += OnThemeChanged;
-        }
-
-        protected override void OnHandleDestroyed(EventArgs e)
-        {
-            base.OnHandleDestroyed(e);
-            WerTheme.ThemeChanged -= OnThemeChanged;
-        }
-
-        private void OnThemeChanged(object sender, EventArgs e)
-        {
-            ForeColor = WerTheme.TextColor;
-            Invalidate();
         }
     }
 }

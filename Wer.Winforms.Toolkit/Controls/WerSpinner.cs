@@ -25,6 +25,8 @@ namespace Wer.Winforms.Toolkit.Controls
         private const float AngleStep    = 10f;
         private const int   TimerInterval = 30;
 
+        private static readonly Color TrackColor = Color.FromArgb(220, 225, 232);
+
         public WerSpinner()
         {
             SetStyle(
@@ -42,20 +44,6 @@ namespace Wer.Winforms.Toolkit.Controls
             _timer          = new Timer { Interval = TimerInterval };
             _timer.Tick    += OnTick;
         }
-
-        protected override void OnHandleCreated(EventArgs e)
-        {
-            base.OnHandleCreated(e);
-            WerTheme.ThemeChanged += OnThemeChanged;
-        }
-
-        protected override void OnHandleDestroyed(EventArgs e)
-        {
-            base.OnHandleDestroyed(e);
-            WerTheme.ThemeChanged -= OnThemeChanged;
-        }
-
-        private void OnThemeChanged(object sender, EventArgs e) => Invalidate();
 
         [Category("WerSpinner")]
         [DefaultValue(false)]
@@ -109,7 +97,7 @@ namespace Wer.Winforms.Toolkit.Controls
             if (rect.Width <= 0 || rect.Height <= 0) return;
 
             // Track circle
-            using (var pen = new Pen(WerTheme.ProgressTrack, _thickness))
+            using (var pen = new Pen(TrackColor, _thickness))
                 g.DrawEllipse(pen, rect);
 
             // Spinning arc

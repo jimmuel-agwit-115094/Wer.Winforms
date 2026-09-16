@@ -1,4 +1,3 @@
-using System;
 using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Text;
@@ -26,20 +25,6 @@ namespace Wer.Winforms.Toolkit.Controls
             AutoSize = true;
             ApplyStyle();
         }
-
-        protected override void OnHandleCreated(EventArgs e)
-        {
-            base.OnHandleCreated(e);
-            WerTheme.ThemeChanged += OnThemeChanged;
-        }
-
-        protected override void OnHandleDestroyed(EventArgs e)
-        {
-            base.OnHandleDestroyed(e);
-            WerTheme.ThemeChanged -= OnThemeChanged;
-        }
-
-        private void OnThemeChanged(object sender, EventArgs e) => ApplyStyle();
 
         [Category("WerLabel")]
         [DefaultValue(WerLabelStyle.Body)]

@@ -21,6 +21,8 @@ namespace Wer.Winforms.Toolkit.Controls
         private Color _barColor;
         private bool  _showLabel = true;
 
+        private static readonly Color TrackColor = Color.FromArgb(235, 238, 242);
+
         public WerProgressBar()
         {
             SetStyle(
@@ -35,20 +37,6 @@ namespace Wer.Winforms.Toolkit.Controls
             BackColor = Color.Transparent;
             Size      = new Size(300, 24);
         }
-
-        protected override void OnHandleCreated(EventArgs e)
-        {
-            base.OnHandleCreated(e);
-            WerTheme.ThemeChanged += OnThemeChanged;
-        }
-
-        protected override void OnHandleDestroyed(EventArgs e)
-        {
-            base.OnHandleDestroyed(e);
-            WerTheme.ThemeChanged -= OnThemeChanged;
-        }
-
-        private void OnThemeChanged(object sender, EventArgs e) => Invalidate();
 
         [Category("WerProgressBar")]
         [DefaultValue(0)]
@@ -105,7 +93,7 @@ namespace Wer.Winforms.Toolkit.Controls
 
             // Track
             using (var path = RoundedRect(trackRect, radius))
-            using (var brush = new SolidBrush(WerTheme.ProgressTrack))
+            using (var brush = new SolidBrush(TrackColor))
                 g.FillPath(brush, path);
 
             // Fill
