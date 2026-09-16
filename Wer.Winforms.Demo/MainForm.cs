@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
+using Wer.Winforms.Toolkit;
 using Wer.Winforms.Toolkit.Controls;
 
 namespace Wer.Winforms.Demo
@@ -54,6 +55,7 @@ namespace Wer.Winforms.Demo
 
         private void MainForm_Load(object sender, System.EventArgs e)
         {
+            WerTheme.SetDarkMode();
         }
 
         private void werTabControl1_SelectedIndexChanged(object sender, System.EventArgs e)

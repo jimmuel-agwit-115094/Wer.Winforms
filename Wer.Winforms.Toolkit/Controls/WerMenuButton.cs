@@ -32,19 +32,12 @@ namespace Wer.Winforms.Toolkit.Controls
         private const int CornerRadius = 8;
         private const int IndicatorW = 3;
 
-        private static readonly Color NormalBg = Color.White;
-        private static readonly Color ActiveBg = Color.FromArgb(236, 247, 250);
-        private static readonly Color HoverBg = Color.FromArgb(246, 248, 250);
-        private static readonly Color NormalText = Color.FromArgb(75, 85, 100);
-        private static readonly Color ActiveText = Color.FromArgb(12, 124, 146);
-        private static readonly Color IndicatorColor = Color.FromArgb(12, 124, 146);
-
         public WerMenuButton()
         {
             SetStyle(ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint |
                      ControlStyles.ResizeRedraw | ControlStyles.OptimizedDoubleBuffer, true);
 
-            BackColor = NormalBg;
+            BackColor = WerTheme.SurfaceColor;
             Font = WerTheme.BodyFont;
             Size = new Size(200, ItemH);
             Cursor = Cursors.Hand;
@@ -131,6 +124,26 @@ namespace Wer.Winforms.Toolkit.Controls
             return _targetFormInstance;
         }
 
+        // ── Theme subscription ───────────────────────────────────────
+
+        protected override void OnHandleCreated(EventArgs e)
+        {
+            base.OnHandleCreated(e);
+            WerTheme.ThemeChanged += OnThemeChanged;
+        }
+
+        protected override void OnHandleDestroyed(EventArgs e)
+        {
+            base.OnHandleDestroyed(e);
+            WerTheme.ThemeChanged -= OnThemeChanged;
+        }
+
+        private void OnThemeChanged(object sender, EventArgs e)
+        {
+            BackColor = WerTheme.SurfaceColor;
+            Invalidate();
+        }
+
         // ── Mouse ───────────────────────────────────────────────
 
         protected override void OnMouseEnter(EventArgs e)
@@ -161,29 +174,29 @@ namespace Wer.Winforms.Toolkit.Controls
             if (_isActive)
             {
                 using (var path = RoundedRect(rect, CornerRadius))
-                using (var brush = new SolidBrush(ActiveBg))
+                using (var brush = new SolidBrush(WerTheme.MenuActiveBg))
                     g.FillPath(brush, path);
 
                 // Left indicator — taller
                 var barRect = new Rectangle(0, 4, IndicatorW, Height - 8);
                 using (var path = RoundedRect(barRect, 2))
-                using (var brush = new SolidBrush(IndicatorColor))
+                using (var brush = new SolidBrush(WerTheme.PrimaryColor))
                     g.FillPath(brush, path);
             }
             else if (_isHovering)
             {
                 using (var path = RoundedRect(rect, CornerRadius))
-                using (var brush = new SolidBrush(HoverBg))
+                using (var brush = new SolidBrush(WerTheme.MenuHoverBg))
                     g.FillPath(brush, path);
             }
             else
             {
-                g.Clear(NormalBg);
+                g.Clear(WerTheme.SurfaceColor);
             }
 
             // Text
             var textRect = new Rectangle(PadLeft, 0, Width - PadLeft - 8, Height);
-            var textCol = _isActive ? ActiveText : NormalText;
+            var textCol = _isActive ? WerTheme.PrimaryColor : WerTheme.MenuNormalText;
             var fontStyle = _isActive ? FontStyle.Bold : FontStyle.Regular;
             using (var font = new Font(WerTheme.FontFamily, 9.75f, fontStyle))
                 TextRenderer.DrawText(g, Text, font, textRect, textCol,

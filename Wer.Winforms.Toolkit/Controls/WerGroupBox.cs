@@ -15,10 +15,10 @@ namespace Wer.Winforms.Toolkit.Controls
         private string _subheadingText = "Subheading";
         private int _borderRadius = 10;
         private int _headerHeight = 60;
-        private Color _dividerColor = Color.FromArgb(220, 220, 220);
-        private Color _bodyBackColor = Color.White;
-        private Color _headerBackColor = Color.White;
-        private Color _borderColor = Color.FromArgb(200, 210, 220);
+        private Color _dividerColor;
+        private Color _bodyBackColor;
+        private Color _headerBackColor;
+        private Color _borderColor;
 
         // Internal panel that hosts child controls in the body area
         private readonly Panel _bodyPanel;
@@ -40,6 +40,11 @@ namespace Wer.Winforms.Toolkit.Controls
             BackColor = Color.Transparent;
             Size = new Size(400, 160);
 
+            _dividerColor    = WerTheme.InputBorder;
+            _bodyBackColor   = WerTheme.SurfaceColor;
+            _headerBackColor = WerTheme.SurfaceColor;
+            _borderColor     = WerTheme.InputBorder;
+
             _bodyPanel = new Panel
             {
                 BackColor = _bodyBackColor,
@@ -47,6 +52,30 @@ namespace Wer.Winforms.Toolkit.Controls
             };
             Controls.Add(_bodyPanel);
             LayoutInternals();
+        }
+
+        // ── Theme subscription ───────────────────────────────────────
+
+        protected override void OnHandleCreated(EventArgs e)
+        {
+            base.OnHandleCreated(e);
+            WerTheme.ThemeChanged += OnThemeChanged;
+        }
+
+        protected override void OnHandleDestroyed(EventArgs e)
+        {
+            base.OnHandleDestroyed(e);
+            WerTheme.ThemeChanged -= OnThemeChanged;
+        }
+
+        private void OnThemeChanged(object sender, EventArgs e)
+        {
+            _dividerColor    = WerTheme.InputBorder;
+            _bodyBackColor   = WerTheme.SurfaceColor;
+            _headerBackColor = WerTheme.SurfaceColor;
+            _borderColor     = WerTheme.InputBorder;
+            if (_bodyPanel != null) _bodyPanel.BackColor = _bodyBackColor;
+            Invalidate();
         }
 
         // ── Public properties ─────────────────────────────────────

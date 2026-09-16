@@ -32,9 +32,6 @@ namespace Wer.Winforms.Toolkit.Controls
         private static readonly Color NoticeColor  = Color.FromArgb(200, 140, 20);   // amber
         private static readonly Color NegativeColor = Color.FromArgb(179, 58, 58);   // red
 
-        private static readonly Color CardBorder = Color.FromArgb(210, 215, 220);
-        private static readonly Color BodyColor  = Color.FromArgb(108, 117, 125);
-
         public WerBanner()
         {
             SetStyle(ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint |
@@ -45,6 +42,22 @@ namespace Wer.Winforms.Toolkit.Controls
             Font      = WerTheme.BodyFont;
             Size      = new Size(400, 70);
         }
+
+        // ── Theme subscription ───────────────────────────────────────
+
+        protected override void OnHandleCreated(EventArgs e)
+        {
+            base.OnHandleCreated(e);
+            WerTheme.ThemeChanged += OnThemeChanged;
+        }
+
+        protected override void OnHandleDestroyed(EventArgs e)
+        {
+            base.OnHandleDestroyed(e);
+            WerTheme.ThemeChanged -= OnThemeChanged;
+        }
+
+        private void OnThemeChanged(object sender, EventArgs e) => Invalidate();
 
         // ── Properties ───────────────────────────────────────────────
 
@@ -88,12 +101,12 @@ namespace Wer.Winforms.Toolkit.Controls
 
             // ── Card background ──────────────────────────────────
             using (var path = RoundedRect(cardRect, BorderRadius))
-            using (var brush = new SolidBrush(Color.White))
+            using (var brush = new SolidBrush(WerTheme.SurfaceColor))
                 g.FillPath(brush, path);
 
             // ── Card border ──────────────────────────────────────
             using (var path = RoundedRect(cardRect, BorderRadius))
-            using (var pen  = new Pen(CardBorder, 1f))
+            using (var pen  = new Pen(WerTheme.InputBorder, 1f))
                 g.DrawPath(pen, path);
 
             // ── Colored top bar ──────────────────────────────────
@@ -120,7 +133,7 @@ namespace Wer.Winforms.Toolkit.Controls
                 // ── Body text ────────────────────────────────────
                 int bodyY    = titleRect.Bottom + TitleBodyGap;
                 var bodyRect = new Rectangle(textX, bodyY, Width - textX - PadRight, Height - bodyY - PadBottom);
-                TextRenderer.DrawText(g, _body, Font, bodyRect, BodyColor,
+                TextRenderer.DrawText(g, _body, Font, bodyRect, WerTheme.MutedColor,
                     TextFormatFlags.Left | TextFormatFlags.WordBreak);
             }
         }

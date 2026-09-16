@@ -25,15 +25,6 @@ namespace Wer.Winforms.Toolkit.Controls
         private const int PadLeft      = 10;
         private const int IconWidth    = 36;
 
-        // ── Colors ───────────────────────────────────────────────────
-        private static readonly Color BorderNormal      = Color.FromArgb(200, 210, 220);
-        private static readonly Color BorderFocus       = Color.FromArgb(12, 124, 146);
-        private static readonly Color IconColor         = Color.FromArgb(150, 160, 170);
-        private static readonly Color IconHoverColor    = Color.FromArgb(12, 124, 146);
-        private static readonly Color PlaceholderColor  = Color.FromArgb(180, 180, 180);
-        private static readonly Color BgNormal          = Color.White;
-        private static readonly Color BgDisabled        = Color.FromArgb(242, 242, 242);
-
         public WerSearchField()
         {
             SetStyle(ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint |
@@ -51,7 +42,7 @@ namespace Wer.Winforms.Toolkit.Controls
             _input = new TextBox
             {
                 BorderStyle = BorderStyle.None,
-                BackColor   = BgNormal,
+                BackColor   = WerTheme.InputBg,
                 ForeColor   = WerTheme.TextColor,
                 Font        = WerTheme.BodyFont,
             };
@@ -62,6 +53,27 @@ namespace Wer.Winforms.Toolkit.Controls
             _inputBorder.Controls.Add(_input);
 
             LayoutInternals();
+        }
+
+        // ── Theme subscription ───────────────────────────────────────
+
+        protected override void OnHandleCreated(EventArgs e)
+        {
+            base.OnHandleCreated(e);
+            WerTheme.ThemeChanged += OnThemeChanged;
+        }
+
+        protected override void OnHandleDestroyed(EventArgs e)
+        {
+            base.OnHandleDestroyed(e);
+            WerTheme.ThemeChanged -= OnThemeChanged;
+        }
+
+        private void OnThemeChanged(object sender, EventArgs e)
+        {
+            if (_input != null)
+                _input.BackColor = Enabled ? WerTheme.InputBg : WerTheme.InputBgDisabled;
+            _inputBorder?.Invalidate();
         }
 
         // ── Events ───────────────────────────────────────────────────
@@ -96,7 +108,7 @@ namespace Wer.Winforms.Toolkit.Controls
             base.OnEnabledChanged(e);
             if (_input == null) return;
             _input.Enabled   = Enabled;
-            _input.BackColor = Enabled ? BgNormal : BgDisabled;
+            _input.BackColor = Enabled ? WerTheme.InputBg : WerTheme.InputBgDisabled;
             _inputBorder.Invalidate();
         }
 
@@ -143,13 +155,13 @@ namespace Wer.Winforms.Toolkit.Controls
 
             // Background
             using (var path  = RoundedRect(rect, BorderRadius))
-            using (var brush = new SolidBrush(inactive ? BgDisabled : BgNormal))
+            using (var brush = new SolidBrush(inactive ? WerTheme.InputBgDisabled : WerTheme.InputBg))
                 g.FillPath(brush, path);
 
             // Border
             if (Enabled)
             {
-                var borderColor = _hasFocus ? BorderFocus : BorderNormal;
+                var borderColor = _hasFocus ? WerTheme.InputBorderFocus : WerTheme.InputBorder;
                 using (var path = RoundedRect(rect, BorderRadius))
                 using (var pen  = new Pen(borderColor, _hasFocus ? 1.5f : 1f))
                     g.DrawPath(pen, path);
@@ -160,7 +172,7 @@ namespace Wer.Winforms.Toolkit.Controls
             if (isEmpty && !_hasFocus)
             {
                 var ph = new Rectangle(PadLeft, 0, Width - PadLeft - IconWidth, Height);
-                TextRenderer.DrawText(g, _placeholder, _input.Font, ph, PlaceholderColor,
+                TextRenderer.DrawText(g, _placeholder, _input.Font, ph, WerTheme.PlaceholderColor,
                     TextFormatFlags.VerticalCenter | TextFormatFlags.SingleLine);
             }
 
@@ -170,7 +182,7 @@ namespace Wer.Winforms.Toolkit.Controls
 
         private void DrawSearchIcon(Graphics g)
         {
-            var iconColor = _hasFocus ? IconHoverColor : IconColor;
+            var iconColor = _hasFocus ? WerTheme.InputBorderFocus : WerTheme.IconColor;
 
             int iconAreaX = Width - IconWidth;
             int cx        = iconAreaX + IconWidth / 2 - 1;

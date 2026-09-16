@@ -11,7 +11,7 @@ namespace Wer.Winforms.Toolkit.Controls
     public class WerEmptyGroupBox : Panel
     {
         private int _borderRadius = 10;
-        private Color _borderColor = Color.FromArgb(200, 210, 220);
+        private Color _borderColor;
 
         public WerEmptyGroupBox()
         {
@@ -23,9 +23,31 @@ namespace Wer.Winforms.Toolkit.Controls
                 ControlStyles.SupportsTransparentBackColor,
                 true);
 
+            _borderColor = WerTheme.InputBorder;
+
             BackColor = Color.Transparent;
             Size = new Size(400, 200);
             Padding = new Padding(10);
+        }
+
+        // ── Theme subscription ───────────────────────────────────────
+
+        protected override void OnHandleCreated(EventArgs e)
+        {
+            base.OnHandleCreated(e);
+            WerTheme.ThemeChanged += OnThemeChanged;
+        }
+
+        protected override void OnHandleDestroyed(EventArgs e)
+        {
+            base.OnHandleDestroyed(e);
+            WerTheme.ThemeChanged -= OnThemeChanged;
+        }
+
+        private void OnThemeChanged(object sender, EventArgs e)
+        {
+            _borderColor = WerTheme.InputBorder;
+            Invalidate();
         }
 
         [Category("WerEmptyGroupBox")]
@@ -53,9 +75,9 @@ namespace Wer.Winforms.Toolkit.Controls
             var rect = new Rectangle(1, 1, Width - 3, Height - 3);
             int radius = Math.Min(_borderRadius, Math.Min(rect.Width, rect.Height) / 2);
 
-            // White fill
+            // Surface fill
             using (var path = CreateRoundedRect(rect, radius))
-            using (var brush = new SolidBrush(Color.White))
+            using (var brush = new SolidBrush(WerTheme.SurfaceColor))
                 g.FillPath(brush, path);
 
             // Border

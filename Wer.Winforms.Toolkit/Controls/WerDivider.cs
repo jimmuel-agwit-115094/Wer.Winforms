@@ -9,7 +9,7 @@ namespace Wer.Winforms.Toolkit.Controls
     [Description("Horizontal divider line.")]
     public class WerDivider : Control
     {
-        private Color _lineColor = Color.FromArgb(220, 220, 220);
+        private Color _lineColor;
         private int _lineThickness = 1;
 
         public WerDivider()
@@ -22,8 +22,28 @@ namespace Wer.Winforms.Toolkit.Controls
                 ControlStyles.SupportsTransparentBackColor,
                 true);
 
+            _lineColor = WerTheme.InputBorder;
+
             BackColor = Color.Transparent;
             Size = new Size(300, 10);
+        }
+
+        protected override void OnHandleCreated(EventArgs e)
+        {
+            base.OnHandleCreated(e);
+            WerTheme.ThemeChanged += OnThemeChanged;
+        }
+
+        protected override void OnHandleDestroyed(EventArgs e)
+        {
+            base.OnHandleDestroyed(e);
+            WerTheme.ThemeChanged -= OnThemeChanged;
+        }
+
+        private void OnThemeChanged(object sender, EventArgs e)
+        {
+            _lineColor = WerTheme.InputBorder;
+            Invalidate();
         }
 
         [Category("WerDivider")]

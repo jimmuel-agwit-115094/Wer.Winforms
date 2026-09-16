@@ -14,17 +14,7 @@ namespace Wer.Winforms.Toolkit.Controls
     [ToolboxItem(true)]
     public class WerDataGrid : UserControl
     {
-        // --- Colors ---
-        private static readonly Color HeaderBg = Color.FromArgb(248, 249, 250);
-        private static readonly Color HeaderText = Color.FromArgb(55, 65, 81);
-        private static readonly Color HeaderSep = Color.FromArgb(228, 231, 235);
-        private static readonly Color RowSep = Color.FromArgb(238, 240, 243);
-        private static readonly Color SelectedBg = Color.FromArgb(234, 245, 252);
-        private static readonly Color ContainerBorder = Color.FromArgb(218, 222, 228);
-        private static readonly Color DataText = Color.FromArgb(33, 37, 41);
-        private static readonly Color EditBtnBorder = Color.FromArgb(12, 124, 146);
-        private static readonly Color EditBtnText = Color.FromArgb(12, 124, 146);
-        private static readonly Color EditBtnHover = Color.FromArgb(240, 250, 252);
+        // --- Colors (resolved at paint time from WerTheme) ---
 
         // --- Metrics ---
         private const int CornerRadius = 8;
@@ -370,12 +360,30 @@ namespace Wer.Winforms.Toolkit.Controls
             _addButton.Click += (s, ev) => AddClicked?.Invoke(this, EventArgs.Empty);
             Controls.Add(_addButton);
 
-            BackColor = Color.White;
+            BackColor = WerTheme.SurfaceColor;
             PositionSearchBox();
 
             // Keyboard navigation
             SetStyle(ControlStyles.Selectable, true);
             TabStop = true;
+        }
+
+        protected override void OnHandleCreated(EventArgs e)
+        {
+            base.OnHandleCreated(e);
+            WerTheme.ThemeChanged += OnThemeChanged;
+        }
+
+        protected override void OnHandleDestroyed(EventArgs e)
+        {
+            base.OnHandleDestroyed(e);
+            WerTheme.ThemeChanged -= OnThemeChanged;
+        }
+
+        private void OnThemeChanged(object sender, EventArgs e)
+        {
+            BackColor = WerTheme.SurfaceColor;
+            InvalidateGrid();
         }
 
         protected override bool IsInputKey(Keys keyData)
@@ -749,8 +757,8 @@ namespace Wer.Winforms.Toolkit.Controls
             int w = Width - scrollW;
             int h = Height;
 
-            // White background above grid (search + tabs area)
-            using (var brush = new SolidBrush(Color.White))
+            // Background above grid (search + tabs area)
+            using (var brush = new SolidBrush(WerTheme.SurfaceColor))
                 g.FillRectangle(brush, 0, 0, w, SearchBarHeight);
 
             // --- Tabs ---
@@ -762,8 +770,8 @@ namespace Wer.Winforms.Toolkit.Controls
             {
                 g.SetClip(path);
 
-                // White background
-                using (var brush = new SolidBrush(Color.White))
+                // Main background
+                using (var brush = new SolidBrush(WerTheme.SurfaceColor))
                     g.FillRectangle(brush, 0, SearchBarHeight, w, h - SearchBarHeight);
 
                 // --- Header ---
@@ -782,7 +790,7 @@ namespace Wer.Winforms.Toolkit.Controls
                 g.ResetClip();
 
                 // Container border
-                using (var pen = new Pen(ContainerBorder, 1f))
+                using (var pen = new Pen(WerTheme.InputBorder, 1f))
                     g.DrawPath(pen, path);
             }
         }
@@ -808,9 +816,9 @@ namespace Wer.Winforms.Toolkit.Controls
                 var containerRect = new Rectangle(0, containerY, totalTabsW, TabHeight);
                 using (var path = RoundedRect(containerRect.X, containerRect.Y, containerRect.Width, containerRect.Height, 8))
                 {
-                    using (var brush = new SolidBrush(Color.White))
+                    using (var brush = new SolidBrush(WerTheme.SurfaceColor))
                         g.FillPath(brush, path);
-                    using (var pen = new Pen(Color.FromArgb(210, 215, 222), 1f))
+                    using (var pen = new Pen(WerTheme.InputBorder, 1f))
                         g.DrawPath(pen, path);
                 }
 
@@ -828,19 +836,19 @@ namespace Wer.Winforms.Toolkit.Controls
                     if (selected)
                     {
                         using (var path = RoundedRect(tabRect.X, tabRect.Y, tabRect.Width, tabRect.Height, 6))
-                        using (var brush = new SolidBrush(Color.FromArgb(245, 247, 250)))
+                        using (var brush = new SolidBrush(WerTheme.GridSelectedBg))
                             g.FillPath(brush, path);
                     }
                     else if (hovered)
                     {
                         using (var path = RoundedRect(tabRect.X, tabRect.Y, tabRect.Width, tabRect.Height, 6))
-                        using (var brush = new SolidBrush(Color.FromArgb(250, 251, 252)))
+                        using (var brush = new SolidBrush(WerTheme.MenuHoverBg))
                             g.FillPath(brush, path);
                     }
 
-                    var textColor = selected ? Color.FromArgb(12, 124, 146)
-                                  : hovered ? Color.FromArgb(60, 65, 75)
-                                  : Color.FromArgb(120, 130, 140);
+                    var textColor = selected ? WerTheme.PrimaryColor
+                                  : hovered ? WerTheme.TextColor
+                                  : WerTheme.MutedColor;
 
                     var fontStyle = selected ? FontStyle.Bold : FontStyle.Regular;
                     using (var font = new Font(WerTheme.FontFamily, 9.75f, fontStyle))
@@ -858,11 +866,11 @@ namespace Wer.Winforms.Toolkit.Controls
 
             // Header background with rounded top corners
             using (var path = RoundedRectTop(1, headerY, totalWidth - 2, HeaderHeight + CornerRadius, CornerRadius))
-            using (var brush = new SolidBrush(HeaderBg))
+            using (var brush = new SolidBrush(WerTheme.GridHeaderBg))
                 g.FillPath(brush, path);
 
             // Header bottom line
-            using (var pen = new Pen(HeaderSep, 1f))
+            using (var pen = new Pen(WerTheme.GridHeaderSep, 1f))
                 g.DrawLine(pen, 1, headerY + HeaderHeight, totalWidth - 2, headerY + HeaderHeight);
 
             var widths = GetColumnWidths();
@@ -878,13 +886,13 @@ namespace Wer.Winforms.Toolkit.Controls
                 if (_sortColumnIndex == i)
                     headerText += _sortAscending ? "  \u25B2" : "  \u25BC";
 
-                TextRenderer.DrawText(g, headerText, _headerFont, textRect, HeaderText,
+                TextRenderer.DrawText(g, headerText, _headerFont, textRect, WerTheme.GridHeaderText,
                     TextFormatFlags.Left | TextFormatFlags.VerticalCenter | TextFormatFlags.EndEllipsis | TextFormatFlags.NoPrefix);
 
                 // Vertical separator (subtle, only in header)
                 if (i < _columns.Count - 1 || _showEditColumn)
                 {
-                    using (var pen = new Pen(HeaderSep, 1f))
+                    using (var pen = new Pen(WerTheme.GridHeaderSep, 1f))
                         g.DrawLine(pen, x + colW, headerY + 10, x + colW, headerY + HeaderHeight - 10);
                 }
 
@@ -896,7 +904,7 @@ namespace Wer.Winforms.Toolkit.Controls
             {
                 int editW = widths[_columns.Count];
                 var textRect = new Rectangle(x + CellPadding, headerY, editW - CellPadding * 2, HeaderHeight);
-                TextRenderer.DrawText(g, "Actions", _headerFont, textRect, HeaderText,
+                TextRenderer.DrawText(g, "Actions", _headerFont, textRect, WerTheme.GridHeaderText,
                     TextFormatFlags.Left | TextFormatFlags.VerticalCenter | TextFormatFlags.NoPrefix);
             }
         }
@@ -908,7 +916,7 @@ namespace Wer.Winforms.Toolkit.Controls
             var rect = new Rectangle(0, ContentAreaTop, totalWidth, areaHeight);
             using (var font = new Font(WerTheme.FontFamily, 12f, FontStyle.Italic))
                 TextRenderer.DrawText(g, "No Records Found", font, rect,
-                    Color.FromArgb(180, 180, 180),
+                    WerTheme.LabelDisabledColor,
                     TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter | TextFormatFlags.NoPrefix);
         }
 
@@ -934,12 +942,12 @@ namespace Wer.Winforms.Toolkit.Controls
                 if (selected)
                 {
                     using (var path = RoundedRect(3, y + 1, totalWidth - 6, RowHeight - 2, SelectionRadius))
-                    using (var brush = new SolidBrush(SelectedBg))
+                    using (var brush = new SolidBrush(WerTheme.GridSelectedBg))
                         g.FillPath(brush, path);
                 }
                 else if (hovered)
                 {
-                    using (var brush = new SolidBrush(Color.FromArgb(248, 250, 252)))
+                    using (var brush = new SolidBrush(WerTheme.GridEditBtnHover))
                         g.FillRectangle(brush, 3, y, totalWidth - 6, RowHeight);
                 }
 
@@ -965,7 +973,7 @@ namespace Wer.Winforms.Toolkit.Controls
                             ? TextFormatFlags.HorizontalCenter
                             : TextFormatFlags.Left;
 
-                    TextRenderer.DrawText(g, text, _dataFont, textRect, DataText,
+                    TextRenderer.DrawText(g, text, _dataFont, textRect, WerTheme.TextColor,
                         align | TextFormatFlags.VerticalCenter | TextFormatFlags.EndEllipsis | TextFormatFlags.NoPrefix);
 
                     x += colW;
@@ -984,15 +992,15 @@ namespace Wer.Winforms.Toolkit.Controls
                     {
                         if (editHover)
                         {
-                            using (var brush = new SolidBrush(EditBtnHover))
+                            using (var brush = new SolidBrush(WerTheme.GridEditBtnHover))
                                 g.FillPath(brush, path);
                         }
-                        using (var pen = new Pen(EditBtnBorder, 1.5f))
+                        using (var pen = new Pen(WerTheme.PrimaryColor, 1.5f))
                             g.DrawPath(pen, path);
                     }
 
                     var btnRect = new Rectangle(btnX, btnY, EditBtnWidth, EditBtnHeight);
-                    TextRenderer.DrawText(g, "Edit", _editFont, btnRect, EditBtnText,
+                    TextRenderer.DrawText(g, "Edit", _editFont, btnRect, WerTheme.PrimaryColor,
                         TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter | TextFormatFlags.NoPrefix);
                 }
 
@@ -1000,7 +1008,7 @@ namespace Wer.Winforms.Toolkit.Controls
                 int nextY = y + RowHeight;
                 if (nextY < maxY && vi < view.Length - 1)
                 {
-                    using (var pen = new Pen(RowSep, 1f))
+                    using (var pen = new Pen(WerTheme.GridRowSep, 1f))
                         g.DrawLine(pen, CellPadding, nextY, totalWidth - CellPadding, nextY);
                 }
 
@@ -1013,7 +1021,7 @@ namespace Wer.Winforms.Toolkit.Controls
             int footerY = FooterTop;
 
             // Separator line
-            using (var pen = new Pen(HeaderSep, 1f))
+            using (var pen = new Pen(WerTheme.GridHeaderSep, 1f))
                 g.DrawLine(pen, 1, footerY, totalWidth - 2, footerY);
 
             // "1 – 25 of 229" on left
@@ -1023,7 +1031,7 @@ namespace Wer.Winforms.Toolkit.Controls
             string pageText = from + " \u2013 " + to + " of " + total;
 
             var pageRect = new Rectangle(CellPadding, footerY, 200, FooterHeight);
-            TextRenderer.DrawText(g, pageText, _footerFont, pageRect, DataText,
+            TextRenderer.DrawText(g, pageText, _footerFont, pageRect, WerTheme.TextColor,
                 TextFormatFlags.Left | TextFormatFlags.VerticalCenter | TextFormatFlags.NoPrefix);
 
             // Nav buttons: |<  <  >  >|  — centered
@@ -1046,14 +1054,14 @@ namespace Wer.Winforms.Toolkit.Controls
                 {
                     if (hovered)
                     {
-                        using (var brush = new SolidBrush(Color.FromArgb(240, 242, 245)))
+                        using (var brush = new SolidBrush(WerTheme.MenuHoverBg))
                             g.FillPath(brush, path);
                     }
-                    using (var pen = new Pen(enabled ? ContainerBorder : Color.FromArgb(230, 230, 230), 1f))
+                    using (var pen = new Pen(enabled ? WerTheme.InputBorder : WerTheme.ButtonDisabledBg, 1f))
                         g.DrawPath(pen, path);
                 }
 
-                var textColor = enabled ? DataText : Color.FromArgb(190, 190, 190);
+                var textColor = enabled ? WerTheme.TextColor : WerTheme.LabelDisabledColor;
                 TextRenderer.DrawText(g, NavLabels[i], _footerFont, btnRect, textColor,
                     TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter | TextFormatFlags.NoPrefix);
             }
@@ -1082,11 +1090,11 @@ namespace Wer.Winforms.Toolkit.Controls
                     var labelRect = new Rectangle(totalWidth - 220, footerY + 2, 200, FooterHeight / 2);
                     var valueRect = new Rectangle(totalWidth - 220, footerY + FooterHeight / 2 - 2, 200, FooterHeight / 2);
 
-                    TextRenderer.DrawText(g, totalLabel, _footerFont, labelRect, DataText,
+                    TextRenderer.DrawText(g, totalLabel, _footerFont, labelRect, WerTheme.TextColor,
                         TextFormatFlags.Right | TextFormatFlags.VerticalCenter | TextFormatFlags.NoPrefix);
 
                     using (var boldFont = new Font(WerTheme.FontFamily, 10f, FontStyle.Bold))
-                        TextRenderer.DrawText(g, totalValue, boldFont, valueRect, DataText,
+                        TextRenderer.DrawText(g, totalValue, boldFont, valueRect, WerTheme.TextColor,
                             TextFormatFlags.Right | TextFormatFlags.VerticalCenter | TextFormatFlags.NoPrefix);
                 }
             }

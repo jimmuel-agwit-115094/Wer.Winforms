@@ -32,17 +32,6 @@ namespace Wer.Winforms.Toolkit.Controls
         private const int InputPadH    = 10;
         private const int DropBtnW     = 28;
 
-        // ── Colors (same as WerTextField) ─────────────────────────
-        private static readonly Color LabelNormal      = Color.Black;
-        private static readonly Color LabelRequired    = Color.FromArgb(200, 100, 20);
-        private static readonly Color LabelDisabled    = Color.FromArgb(150, 150, 150);
-        private static readonly Color RequiredStar     = Color.FromArgb(210, 50, 50);
-        private static readonly Color BorderNormal     = Color.FromArgb(200, 210, 220);
-        private static readonly Color BorderFocus      = Color.FromArgb(12, 124, 146);
-        private static readonly Color PlaceholderColor = Color.FromArgb(160, 170, 180);
-        private static readonly Color BgNormal         = Color.White;
-        private static readonly Color BgDisabled       = Color.FromArgb(242, 242, 242);
-
         public event EventHandler ValueChanged;
 
         public WerDatePicker()
@@ -87,6 +76,26 @@ namespace Wer.Winforms.Toolkit.Controls
 
             Controls.Add(_dtp);
             LayoutInternals();
+        }
+
+        // ── Theme subscription ───────────────────────────────────────
+
+        protected override void OnHandleCreated(EventArgs e)
+        {
+            base.OnHandleCreated(e);
+            WerTheme.ThemeChanged += OnThemeChanged;
+        }
+
+        protected override void OnHandleDestroyed(EventArgs e)
+        {
+            base.OnHandleDestroyed(e);
+            WerTheme.ThemeChanged -= OnThemeChanged;
+        }
+
+        private void OnThemeChanged(object sender, EventArgs e)
+        {
+            Invalidate();
+            _inputBorder?.Invalidate();
         }
 
         // ── Public properties ─────────────────────────────────────
@@ -220,9 +229,9 @@ namespace Wer.Winforms.Toolkit.Controls
             if (!_showLabel) return;
 
             Color labelColor;
-            if (!Enabled)                    labelColor = LabelDisabled;
-            else if (_readOnly) labelColor = LabelNormal;
-            else                             labelColor = LabelNormal;
+            if (!Enabled)       labelColor = WerTheme.LabelDisabledColor;
+            else if (_readOnly) labelColor = WerTheme.LabelReadOnlyColor;
+            else                labelColor = WerTheme.LabelColor;
 
             var labelRect = new Rectangle(0, 0, Width, LabelHeight);
             TextRenderer.DrawText(g, _labelText, Font, labelRect, labelColor,
@@ -232,7 +241,7 @@ namespace Wer.Winforms.Toolkit.Controls
             {
                 int lw = TextRenderer.MeasureText(g, _labelText, Font).Width;
                 TextRenderer.DrawText(g, "*", Font, new Rectangle(lw + 2, 0, 12, LabelHeight),
-                    RequiredStar, TextFormatFlags.Left | TextFormatFlags.VerticalCenter);
+                    WerTheme.RequiredStarColor, TextFormatFlags.Left | TextFormatFlags.VerticalCenter);
             }
         }
 
@@ -250,13 +259,13 @@ namespace Wer.Winforms.Toolkit.Controls
 
             // Background fill
             using (var path = RoundedRect(rect, BorderRadius))
-            using (var brush = new SolidBrush(inactive ? BgDisabled : BgNormal))
+            using (var brush = new SolidBrush(inactive ? WerTheme.InputBgDisabled : WerTheme.InputBg))
                 g.FillPath(brush, path);
 
             // Border
             if (Enabled && !_readOnly)
             {
-                var borderColor = _hasFocus ? BorderFocus : BorderNormal;
+                var borderColor = _hasFocus ? WerTheme.InputBorderFocus : WerTheme.InputBorder;
                 using (var path = RoundedRect(rect, BorderRadius))
                 using (var pen  = new Pen(borderColor, _hasFocus ? 1.5f : 1f))
                     g.DrawPath(pen, path);
@@ -264,7 +273,7 @@ namespace Wer.Winforms.Toolkit.Controls
             else if (_readOnly)
             {
                 using (var path = RoundedRect(rect, BorderRadius))
-                using (var pen  = new Pen(BorderNormal, 1f))
+                using (var pen  = new Pen(WerTheme.InputBorder, 1f))
                     g.DrawPath(pen, path);
             }
 
@@ -273,13 +282,13 @@ namespace Wer.Winforms.Toolkit.Controls
 
             if (_hasValue)
             {
-                var textColor = !Enabled ? LabelDisabled : WerTheme.TextColor;
+                var textColor = !Enabled ? WerTheme.LabelDisabledColor : WerTheme.TextColor;
                 TextRenderer.DrawText(g, _dtp.Value.ToString("MMM. dd, yyyy"), Font, textRect, textColor,
                     TextFormatFlags.VerticalCenter | TextFormatFlags.SingleLine);
             }
             else
             {
-                TextRenderer.DrawText(g, "MM/DD/YYYY", Font, textRect, PlaceholderColor,
+                TextRenderer.DrawText(g, "MM/DD/YYYY", Font, textRect, WerTheme.PlaceholderColor,
                     TextFormatFlags.VerticalCenter | TextFormatFlags.SingleLine);
             }
 
@@ -287,7 +296,7 @@ namespace Wer.Winforms.Toolkit.Controls
             if (Enabled && !_readOnly)
             {
                 var chevronRect = new Rectangle(panel.Width - DropBtnW, 0, DropBtnW, panel.Height);
-                var chevronColor = _hasFocus ? BorderFocus : Color.FromArgb(140, 150, 160);
+                var chevronColor = _hasFocus ? WerTheme.InputBorderFocus : WerTheme.IconColor;
                 TextRenderer.DrawText(g, "▾", Font, chevronRect, chevronColor,
                     TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter);
             }

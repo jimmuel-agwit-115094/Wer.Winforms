@@ -117,16 +117,10 @@ namespace Wer.Winforms.Toolkit.Controls
         private const int BtnAreaH = 58;
         private const int CornerRadius = 12;
 
-        private static readonly Color BgColor = Color.White;
-        private static readonly Color TitleColor = Color.FromArgb(33, 37, 41);
-        private static readonly Color MessageColor = Color.FromArgb(100, 110, 120);
-        private static readonly Color BorderColor = Color.FromArgb(225, 228, 232);
-        private static readonly Color SepColor = Color.FromArgb(235, 238, 242);
-
-        private static readonly Color InfoColor = Color.FromArgb(12, 124, 146);
+        private static readonly Color InfoColor    = Color.FromArgb(12, 124, 146);
         private static readonly Color SuccessColor = Color.FromArgb(40, 167, 69);
         private static readonly Color WarningColor = Color.FromArgb(230, 126, 34);
-        private static readonly Color ErrorColor = Color.FromArgb(179, 58, 58);
+        private static readonly Color ErrorColor   = Color.FromArgb(179, 58, 58);
 
         public WerMessageForm(string message, string title, WerMessageIcon icon, WerMessageButtons buttons)
         {
@@ -138,7 +132,7 @@ namespace Wer.Winforms.Toolkit.Controls
             FormBorderStyle = FormBorderStyle.None;
             StartPosition = FormStartPosition.CenterParent;
             ShowInTaskbar = false;
-            BackColor = BgColor;
+            BackColor = WerTheme.SurfaceColor;
             DoubleBuffered = true;
             KeyPreview = true;
 
@@ -235,9 +229,9 @@ namespace Wer.Winforms.Toolkit.Controls
             var cardRect = new Rectangle(0, 0, Width - 1, Height - 1);
             using (var path = RoundedRect(cardRect, CornerRadius))
             {
-                using (var brush = new SolidBrush(BgColor))
+                using (var brush = new SolidBrush(WerTheme.SurfaceColor))
                     g.FillPath(brush, path);
-                using (var pen = new Pen(BorderColor, 1f))
+                using (var pen = new Pen(WerTheme.SurfaceBorderColor, 1f))
                     g.DrawPath(pen, path);
             }
 
@@ -253,7 +247,7 @@ namespace Wer.Winforms.Toolkit.Controls
 
             using (var font = new Font(WerTheme.FontFamily, 11f, FontStyle.Bold))
                 TextRenderer.DrawText(g, _title, font,
-                    new Rectangle(textX, y, Width - Pad - textX, TitleH), TitleColor,
+                    new Rectangle(textX, y, Width - Pad - textX, TitleH), WerTheme.TextColor,
                     TextFormatFlags.Left | TextFormatFlags.VerticalCenter | TextFormatFlags.NoPrefix);
 
             y += TitleH + MsgGap;
@@ -261,12 +255,12 @@ namespace Wer.Winforms.Toolkit.Controls
             using (var font = new Font(WerTheme.FontFamily, 9.75f, FontStyle.Regular))
             {
                 var msgRect = new Rectangle(x, y, Width - Pad - x, Height - BtnAreaH - y - 4);
-                TextRenderer.DrawText(g, _message, font, msgRect, MessageColor,
+                TextRenderer.DrawText(g, _message, font, msgRect, WerTheme.MutedColor,
                     TextFormatFlags.Left | TextFormatFlags.Top | TextFormatFlags.WordBreak | TextFormatFlags.NoPrefix);
             }
 
             int sepY = Height - BtnAreaH;
-            using (var pen = new Pen(SepColor, 1f))
+            using (var pen = new Pen(WerTheme.GridHeaderSep, 1f))
                 g.DrawLine(pen, 1, sepY, Width - 2, sepY);
         }
 

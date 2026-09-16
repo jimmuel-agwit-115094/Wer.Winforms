@@ -125,9 +125,6 @@ namespace Wer.Winforms.Toolkit.Controls
         private const int IconGap     = 10;
         private const int CornerR     = 8;
 
-        private static readonly Color BgColor     = Color.White;
-        private static readonly Color BorderColor = Color.FromArgb(220, 225, 230);
-
         public WerSnackbarForm(string message, WerSnackbarType type)
         {
             _message = message;
@@ -136,7 +133,7 @@ namespace Wer.Winforms.Toolkit.Controls
             FormBorderStyle = FormBorderStyle.None;
             StartPosition   = FormStartPosition.Manual;
             ShowInTaskbar   = false;
-            BackColor       = BgColor;
+            BackColor       = WerTheme.SurfaceColor;
             DoubleBuffered  = true;
             TopMost         = true;
             Size            = new Size(350, 52);
@@ -155,9 +152,9 @@ namespace Wer.Winforms.Toolkit.Controls
             var cardRect = new Rectangle(0, 0, Width - 1, Height - 1);
             using (var path = RoundedRect(cardRect, CornerR))
             {
-                using (var brush = new SolidBrush(BgColor))
+                using (var brush = new SolidBrush(WerTheme.SurfaceColor))
                     g.FillPath(brush, path);
-                using (var pen = new Pen(BorderColor, 1f))
+                using (var pen = new Pen(WerTheme.InputBorder, 1f))
                     g.DrawPath(pen, path);
             }
 

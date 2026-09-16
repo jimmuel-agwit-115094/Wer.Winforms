@@ -27,12 +27,6 @@ namespace Wer.Winforms.Toolkit.Controls
         private const int KnobPad     = 3;
         private const int TextGap     = 8;
 
-        private static readonly Color TrackOn      = Color.FromArgb(12, 124, 146);
-        private static readonly Color TrackOff     = Color.FromArgb(170, 175, 182);
-        private static readonly Color KnobColor    = Color.White;
-        private static readonly Color TextColor    = Color.FromArgb(33, 37, 41);
-        private static readonly Color DisabledTrack = Color.FromArgb(210, 212, 215);
-
         private Timer _animTimer;
 
         public event EventHandler CheckedChanged;
@@ -51,6 +45,22 @@ namespace Wer.Winforms.Toolkit.Controls
             _animTimer = new Timer { Interval = 12 };
             _animTimer.Tick += OnAnimTick;
         }
+
+        // ── Theme subscription ───────────────────────────────────────
+
+        protected override void OnHandleCreated(EventArgs e)
+        {
+            base.OnHandleCreated(e);
+            WerTheme.ThemeChanged += OnThemeChanged;
+        }
+
+        protected override void OnHandleDestroyed(EventArgs e)
+        {
+            base.OnHandleDestroyed(e);
+            WerTheme.ThemeChanged -= OnThemeChanged;
+        }
+
+        private void OnThemeChanged(object sender, EventArgs e) => Invalidate();
 
         /// <summary>
         /// The toggle state. true = on, false = off.
@@ -140,14 +150,18 @@ namespace Wer.Winforms.Toolkit.Controls
             int trackY = (Height - TrackH) / 2;
 
             // Track color interpolation
+            var trackOn      = WerTheme.PrimaryColor;
+            var trackOff     = WerTheme.ToggleTrackOff;
+            var disabledTrack = WerTheme.ToggleTrackDisabled;
+
             Color trackColor;
             if (!Enabled)
-                trackColor = DisabledTrack;
+                trackColor = disabledTrack;
             else
             {
-                int r = (int)(TrackOff.R + (TrackOn.R - TrackOff.R) * _animPos);
-                int gr = (int)(TrackOff.G + (TrackOn.G - TrackOff.G) * _animPos);
-                int b = (int)(TrackOff.B + (TrackOn.B - TrackOff.B) * _animPos);
+                int r = (int)(trackOff.R + (trackOn.R - trackOff.R) * _animPos);
+                int gr = (int)(trackOff.G + (trackOn.G - trackOff.G) * _animPos);
+                int b = (int)(trackOff.B + (trackOn.B - trackOff.B) * _animPos);
                 trackColor = Color.FromArgb(r, gr, b);
             }
 
@@ -176,14 +190,14 @@ namespace Wer.Winforms.Toolkit.Controls
                 g.FillEllipse(shadow, knobX + 0.5f, knobY + 1f, KnobSize, KnobSize);
 
             // Knob
-            using (var brush = new SolidBrush(KnobColor))
+            using (var brush = new SolidBrush(WerTheme.ToggleKnob))
                 g.FillEllipse(brush, knobX, knobY, KnobSize, KnobSize);
 
             // Label text
             if (!string.IsNullOrEmpty(Text))
             {
                 var textRect = new Rectangle(TrackW + TextGap, 0, Width - TrackW - TextGap, Height);
-                var textColor = Enabled ? TextColor : Color.FromArgb(150, 150, 150);
+                var textColor = Enabled ? WerTheme.TextColor : WerTheme.LabelDisabledColor;
                 TextRenderer.DrawText(g, Text, Font, textRect, textColor,
                     TextFormatFlags.Left | TextFormatFlags.VerticalCenter | TextFormatFlags.SingleLine | TextFormatFlags.NoPrefix);
             }

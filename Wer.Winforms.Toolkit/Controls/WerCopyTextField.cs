@@ -34,16 +34,6 @@ namespace Wer.Winforms.Toolkit.Controls
         private const int InputPadH    = 10;
         private const int CopyBtnW     = 36;
 
-        private static readonly Color LabelNormal      = Color.Black;
-        private static readonly Color LabelDisabled     = Color.FromArgb(150, 150, 150);
-        private static readonly Color BorderNormal      = Color.FromArgb(200, 210, 220);
-        private static readonly Color BorderHover       = Color.FromArgb(12, 124, 146);
-        private static readonly Color PlaceholderColor  = Color.FromArgb(160, 170, 180);
-        private static readonly Color BgNormal          = Color.FromArgb(245, 246, 248);
-        private static readonly Color CopyIconColor     = Color.FromArgb(100, 110, 120);
-        private static readonly Color CopyIconHover     = Color.FromArgb(12, 124, 146);
-        private static readonly Color CopiedBg          = Color.FromArgb(12, 124, 146);
-
         /// <summary>Fired after the value is copied to clipboard.</summary>
         public event EventHandler Copied;
 
@@ -67,7 +57,7 @@ namespace Wer.Winforms.Toolkit.Controls
             _input = new TextBox
             {
                 BorderStyle = BorderStyle.None,
-                BackColor   = BgNormal,
+                BackColor   = WerTheme.InputBgDisabled,
                 ForeColor   = WerTheme.TextColor,
                 Font        = WerTheme.BodyFont,
                 ReadOnly    = true,
@@ -79,6 +69,27 @@ namespace Wer.Winforms.Toolkit.Controls
             _copiedTimer.Tick += (s, e) => { _showCopied = false; _copiedTimer.Stop(); _inputBorder.Invalidate(); };
 
             LayoutInternals();
+        }
+
+        // ── Theme subscription ───────────────────────────────────────
+
+        protected override void OnHandleCreated(EventArgs e)
+        {
+            base.OnHandleCreated(e);
+            WerTheme.ThemeChanged += OnThemeChanged;
+        }
+
+        protected override void OnHandleDestroyed(EventArgs e)
+        {
+            base.OnHandleDestroyed(e);
+            WerTheme.ThemeChanged -= OnThemeChanged;
+        }
+
+        private void OnThemeChanged(object sender, EventArgs e)
+        {
+            if (_input != null) _input.BackColor = WerTheme.InputBgDisabled;
+            Invalidate();
+            _inputBorder?.Invalidate();
         }
 
         // ── Properties ──────────────────────────────────────────
@@ -197,7 +208,7 @@ namespace Wer.Winforms.Toolkit.Controls
 
             var labelRect = new Rectangle(0, 0, Width, LabelHeight);
             TextRenderer.DrawText(g, _labelText, Font, labelRect,
-                Enabled ? LabelNormal : LabelDisabled,
+                Enabled ? WerTheme.LabelColor : WerTheme.LabelDisabledColor,
                 TextFormatFlags.Left | TextFormatFlags.VerticalCenter | TextFormatFlags.SingleLine);
         }
 
@@ -214,25 +225,25 @@ namespace Wer.Winforms.Toolkit.Controls
 
             // Background
             using (var path = RoundedRect(rect, BorderRadius))
-            using (var brush = new SolidBrush(BgNormal))
+            using (var brush = new SolidBrush(WerTheme.InputBgDisabled))
                 g.FillPath(brush, path);
 
             // Border
-            var borderColor = _hoverCopy ? BorderHover : BorderNormal;
+            var borderColor = _hoverCopy ? WerTheme.InputBorderFocus : WerTheme.InputBorder;
             using (var path = RoundedRect(rect, BorderRadius))
             using (var pen = new Pen(borderColor, 1f))
                 g.DrawPath(pen, path);
 
             // Vertical separator before copy button
             int sepX = panel.Width - CopyBtnW;
-            using (var pen = new Pen(BorderNormal, 1f)) g.DrawLine(pen, sepX, 6, sepX, panel.Height - 6);
+            using (var pen = new Pen(WerTheme.InputBorder, 1f)) g.DrawLine(pen, sepX, 6, sepX, panel.Height - 6);
 
             // Copy button area
             if (_showCopied)
             {
                 // "Copied" feedback
                 var btnRect = new Rectangle(sepX + 1, 1, CopyBtnW - 2, panel.Height - 2);
-                using (var brush = new SolidBrush(CopiedBg))
+                using (var brush = new SolidBrush(WerTheme.PrimaryColor))
                 {
                     // Fill right side with rounded right corners
                     g.FillRectangle(brush, btnRect);
@@ -244,7 +255,7 @@ namespace Wer.Winforms.Toolkit.Controls
             else
             {
                 // Draw copy icon (two overlapping rectangles)
-                var iconColor = _hoverCopy ? CopyIconHover : CopyIconColor;
+                var iconColor = _hoverCopy ? WerTheme.PrimaryColor : WerTheme.MutedColor;
                 int iconSize = 14;
                 int ix = sepX + (CopyBtnW - iconSize) / 2;
                 int iy = (panel.Height - iconSize) / 2;
@@ -254,7 +265,7 @@ namespace Wer.Winforms.Toolkit.Controls
                     // Back rectangle
                     g.DrawRectangle(pen, ix + 3, iy, iconSize - 4, iconSize - 4);
                     // Front rectangle (overlapping)
-                    using (var brush = new SolidBrush(BgNormal))
+                    using (var brush = new SolidBrush(WerTheme.InputBgDisabled))
                         g.FillRectangle(brush, ix, iy + 3, iconSize - 4, iconSize - 4);
                     g.DrawRectangle(pen, ix, iy + 3, iconSize - 4, iconSize - 4);
                 }

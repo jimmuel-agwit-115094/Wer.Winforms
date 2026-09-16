@@ -11,9 +11,9 @@ namespace Wer.Winforms.Toolkit.Controls
     [DefaultProperty("Text")]
     public class WerLink : Label
     {
-        private Color _linkColor = WerTheme.PrimaryColor;
-        private Color _hoverColor = Color.FromArgb(8, 86, 102);
-        private Color _visitedColor = WerTheme.PrimaryColor;
+        private Color _linkColor;
+        private Color _hoverColor;
+        private Color _visitedColor;
         private bool _underlineOnHover = true;
         private bool _underline = false;
         private bool _isHovering;
@@ -21,11 +21,35 @@ namespace Wer.Winforms.Toolkit.Controls
 
         public WerLink()
         {
-            AutoSize = true;
-            Font = WerTheme.BodyFont;
+            _linkColor    = WerTheme.PrimaryColor;
+            _hoverColor   = WerTheme.LinkHoverColor;
+            _visitedColor = WerTheme.PrimaryColor;
+
+            AutoSize  = true;
+            Font      = WerTheme.BodyFont;
             ForeColor = _linkColor;
-            Cursor = Cursors.Hand;
+            Cursor    = Cursors.Hand;
             ApplyUnderline();
+        }
+
+        protected override void OnHandleCreated(EventArgs e)
+        {
+            base.OnHandleCreated(e);
+            WerTheme.ThemeChanged += OnThemeChanged;
+        }
+
+        protected override void OnHandleDestroyed(EventArgs e)
+        {
+            base.OnHandleDestroyed(e);
+            WerTheme.ThemeChanged -= OnThemeChanged;
+        }
+
+        private void OnThemeChanged(object sender, EventArgs e)
+        {
+            _linkColor    = WerTheme.PrimaryColor;
+            _hoverColor   = WerTheme.LinkHoverColor;
+            _visitedColor = WerTheme.PrimaryColor;
+            if (!_isHovering) ForeColor = _linkColor;
         }
 
         [Category("WerLink")]
