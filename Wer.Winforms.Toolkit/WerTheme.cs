@@ -1,4 +1,6 @@
+using System;
 using System.Drawing;
+using System.Linq;
 
 namespace Wer.Winforms.Toolkit
 {
@@ -99,6 +101,23 @@ namespace Wer.Winforms.Toolkit
         public static Font SubheadingFont => new Font(_fontFamily, _subheadingSize, FontStyle.Bold);
         public static Font BodyFont => new Font(_fontFamily, _bodySize, FontStyle.Regular);
         public static Font CaptionFont => new Font(_fontFamily, _captionSize, FontStyle.Regular);
-        public static Font ButtonFont => new Font(_fontFamily, _buttonSize, FontStyle.Regular);
+        // "Segoe UI Semibold" is a distinct face on Windows 10/11 — weight 600 without full bold.
+        // Cached on first call; falls back to Bold if the semibold face is unavailable.
+        private static bool? _semiboldAvailable;
+        public static Font ButtonFont
+        {
+            get
+            {
+                if (_semiboldAvailable == null)
+                {
+                    string semibold = _fontFamily + " Semibold";
+                    _semiboldAvailable = new System.Drawing.Text.InstalledFontCollection().Families
+                        .Any(f => f.Name.Equals(semibold, StringComparison.OrdinalIgnoreCase));
+                }
+                return _semiboldAvailable == true
+                    ? new Font(_fontFamily + " Semibold", _buttonSize, FontStyle.Regular)
+                    : new Font(_fontFamily, _buttonSize, FontStyle.Bold);
+            }
+        }
     }
 }

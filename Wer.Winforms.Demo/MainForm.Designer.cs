@@ -52,6 +52,7 @@ namespace Wer.Winforms.Demo
             this.werLeftNavMenu1.Controls.Add(this.werMenuButton1);
             this.werLeftNavMenu1.Dock = System.Windows.Forms.DockStyle.Left;
             this.werLeftNavMenu1.Location = new System.Drawing.Point(0, 0);
+            this.werLeftNavMenu1.LogoText = "BarPos";
             this.werLeftNavMenu1.Name = "werLeftNavMenu1";
             this.werLeftNavMenu1.Padding = new System.Windows.Forms.Padding(4, 68, 4, 8);
             this.werLeftNavMenu1.Size = new System.Drawing.Size(210, 657);

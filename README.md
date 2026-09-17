@@ -44,6 +44,7 @@ Install-Package Wer.Winforms.Toolkit
 | `WerDateRange` | Predefined date range dropdown (Past 7/30/60/90 days, etc.) |
 | `WerDateRangePicker` | Two-calendar from/to date picker |
 | `WerToggle` | On/off toggle switch |
+| `WerQuantitySelector` | `[ − \| 0 \| + ]` inline quantity stepper with min/max/step |
 
 ### Display
 | Control | Description |
@@ -120,6 +121,25 @@ werDataGrid1.DataSource = myList;
 
 werDataGrid1.EditClicked += (s, args) =>
     MessageBox.Show("Edit: " + args.PrimaryKey);
+
+// Keyboard row selection + SelectedRowId
+werDataGrid1.SelectedRowChanged += (s, id) =>
+    lblSelected.Text = id?.ToString();
+
+// POS / full-list mode — show all rows, no pagination footer
+werDataGrid1.ShowFooterPagination = false;
+```
+
+### Quantity Selector
+```csharp
+werQuantitySelector1.LabelText = "Qty";
+werQuantitySelector1.Minimum   = 0;
+werQuantitySelector1.Maximum   = 99;
+werQuantitySelector1.Step      = 1;
+werQuantitySelector1.Value     = 1;
+
+werQuantitySelector1.ValueChanged += (s, e) =>
+    lblQty.Text = werQuantitySelector1.Value.ToString();
 ```
 
 ### Navigation

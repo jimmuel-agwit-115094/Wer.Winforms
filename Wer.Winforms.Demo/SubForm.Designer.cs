@@ -85,12 +85,14 @@
             this.dgUsers.Name = "dgUsers";
             this.dgUsers.PrimaryKeyColumn = null;
             this.dgUsers.ShowAddButton = true;
+            this.dgUsers.ShowFooterPagination = false;
             this.dgUsers.Size = new System.Drawing.Size(1223, 541);
             this.dgUsers.TabIndex = 0;
             this.dgUsers.TabOptions = new string[] {
         "Active",
         "Inactive",
         "Blocked"};
+            this.dgUsers.Load += new System.EventHandler(this.dgUsers_Load);
             // 
             // werTabControl1
             // 

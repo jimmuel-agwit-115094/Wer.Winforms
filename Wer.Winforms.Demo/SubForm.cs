@@ -58,7 +58,14 @@ namespace Wer.Winforms.Demo
                 form.LoadUser(user);
                 form.ShowDialog();
 
-                // Refresh grid after edit
+                FilterByTab();
+            };
+
+            dgUsers.AddClicked += (s, args) =>
+            {
+                var form = new AddUserForm();
+                form.ShowDialog();
+
                 FilterByTab();
             };
         }
@@ -92,6 +99,9 @@ namespace Wer.Winforms.Demo
             werButtonOrange1.Text = "Add User";
         }
 
+        private void dgUsers_Load(object sender, EventArgs e)
+        {
 
+        }
     }
 }

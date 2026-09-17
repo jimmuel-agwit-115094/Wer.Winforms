@@ -62,6 +62,7 @@ namespace Wer.Winforms.Toolkit.Controls
         // --- Pagination ---
         private int _pageSize = 25;
         private int _currentPage = 0;
+        private bool _showFooterPagination = true;
         private string _totalAmountColumn;
         private int _hoverNavBtn = -1;
         private const int FooterHeight = 44;
@@ -230,6 +231,28 @@ namespace Wer.Winforms.Toolkit.Controls
         {
             get => _pageSize;
             set { _pageSize = Math.Max(1, value); _currentPage = 0; RecalcLayout(); InvalidateGrid(); }
+        }
+
+        /// <summary>
+        /// When true (default), the grid paginates rows and shows the footer with page nav and total amount.
+        /// When false, ALL rows are rendered at once (no page limit) with vertical scroll — ideal for POS
+        /// order lists or any view where the user needs to see every record without navigating pages.
+        /// Note: with very large datasets (1000+ rows), consider keeping pagination on for performance.
+        /// </summary>
+        [Category("Wer Data")]
+        [DefaultValue(true)]
+        [Description("Show pagination footer. Set false to render all rows at once (POS / full-list mode).")]
+        public bool ShowFooterPagination
+        {
+            get => _showFooterPagination;
+            set
+            {
+                _showFooterPagination = value;
+                _currentPage = 0;
+                _scrollOffset = 0;
+                RecalcLayout();
+                InvalidateGrid();
+            }
         }
 
         /// <summary>
@@ -446,7 +469,7 @@ namespace Wer.Winforms.Toolkit.Controls
                     break;
 
                 case Keys.PageDown:
-                    if (_currentPage < TotalPages - 1)
+                    if (_showFooterPagination && _currentPage < TotalPages - 1)
                     {
                         _currentPage++;
                         _selectedRowIndex = PageStartRow;
@@ -459,7 +482,7 @@ namespace Wer.Winforms.Toolkit.Controls
                     break;
 
                 case Keys.PageUp:
-                    if (_currentPage > 0)
+                    if (_showFooterPagination && _currentPage > 0)
                     {
                         _currentPage--;
                         _selectedRowIndex = PageStartRow;
@@ -555,7 +578,7 @@ namespace Wer.Winforms.Toolkit.Controls
 
         private int RowCount => ActiveTable?.Rows.Count ?? 0;
 
-        private bool ShowFooter => (_dataTable?.Rows.Count ?? 0) > 0;
+        private bool ShowFooter => _showFooterPagination && (_dataTable?.Rows.Count ?? 0) > 0;
 
         private int ContentAreaTop => CornerRadius + HeaderHeight + SearchBarHeight;
 
@@ -570,9 +593,10 @@ namespace Wer.Winforms.Toolkit.Controls
 
         private int TotalPages => RowCount > 0 ? (int)Math.Ceiling((double)RowCount / _pageSize) : 1;
 
-        private int PageStartRow => _currentPage * _pageSize;
+        // When pagination is off, expose all rows as a single "page"
+        private int PageStartRow => _showFooterPagination ? _currentPage * _pageSize : 0;
 
-        private int PageEndRow => Math.Min(PageStartRow + _pageSize, RowCount);
+        private int PageEndRow => _showFooterPagination ? Math.Min(PageStartRow + _pageSize, RowCount) : RowCount;
 
         private int VisibleRowCount
         {

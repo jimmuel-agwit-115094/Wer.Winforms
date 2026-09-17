@@ -138,14 +138,17 @@ grid.DataSource = products;        // List<T>, DataTable, IEnumerable
 | `ShowEditColumn` | `bool` | `false` | Appends an Edit button column |
 | `TotalAmountColumn` | `string` | `null` | Numeric property to sum in footer. String columns ignored |
 | `PageSize` | `int` | `25` | Rows per page. Footer with pagination shown when rows > PageSize |
+| `ShowFooterPagination` | `bool` | `true` | `false` = render all rows at once, no footer (POS / full-list mode) |
 | `AllowSorting` | `bool` | `true` | Click header to sort |
 | `ShowHorizontalScroll` | `bool` | `false` | Horizontal scrollbar when columns exceed width |
 | `TabOptions` | `string[]` | `null` | Filter tabs above grid (via Properties collection editor) |
 | `TabSelected` | `int` | `0` | Selected tab index |
 | `DataSource` | `object` | `null` | Accepts `List<T>`, `DataTable`, `IEnumerable` |
+| `SelectedRowId` | `object` | — | Read-only. Returns PrimaryKeyColumn value of selected row |
 
 ### Events
 - `EditClicked` → `WerDataGridEditEventArgs { PrimaryKey, RowIndex }`
+- `SelectedRowChanged` → `EventHandler<object>` — fires on keyboard or mouse row change; arg is the PK value
 - `TabChanged` → tab selection changed
 
 ### Features
@@ -259,6 +262,7 @@ All form fields share: `LabelText`, `Required`, `ReadOnly`, `ShowLabel` (default
 ### Selectors
 `WerDateRange` — Predefined date range dropdown (Past 7/30/60/90 Days, 6 Months, 1 Year). Access via `Result.StartDate` / `Result.EndDate`
 `WerDateRangePicker` — Two calendar pickers (From — To) with label. Access via `StartDate` / `EndDate`
+`WerQuantitySelector` — `[ − | value | + ]` inline stepper. Properties: `Value`, `Minimum`, `Maximum`, `Step`. Event: `ValueChanged`
 
 ### Display
 `WerLabel`, `WerHeading`, `WerLink`, `WerCheckbox`, `WerRadioButton`, `WerToggle`, `WerStatusIndicator`, `WerDivider`, `WerBanner` (Info/Positive/Negative/Notice variants), `WerBadge`, `WerIcon`
@@ -280,6 +284,9 @@ All form fields share: `LabelText`, `Required`, `ReadOnly`, `ShowLabel` (default
 
 ### Dialogs
 `WerMessageBox` (modern message box: Success/Error/Warning/Info), `WerForm` (themed base form)
+
+### Quantity Selector
+`WerQuantitySelector` — compact `[ − | 0 | + ]` stepper. Default size 140×60px. Keyboard: ←/→ or ↑/↓.
 
 ## New Controls API
 
@@ -305,6 +312,35 @@ werCard1.AccentColor = WerTheme.SuccessColor;
 werProgressBar1.Value = 75;         // 0-100
 werProgressBar1.BarColor = WerTheme.PrimaryColor;
 werProgressBar1.ShowLabel = true;   // shows "75%"
+```
+
+### WerQuantitySelector
+```csharp
+werQuantitySelector1.LabelText = "Qty";
+werQuantitySelector1.Minimum   = 0;
+werQuantitySelector1.Maximum   = 99;
+werQuantitySelector1.Step      = 1;
+werQuantitySelector1.Value     = 1;
+
+werQuantitySelector1.ValueChanged += (s, e) =>
+    lblQty.Text = werQuantitySelector1.Value.ToString();
+```
+- `−` dims when at `Minimum`, `+` dims when at `Maximum`
+- Keyboard: `←` / `↓` decrement · `→` / `↑` increment
+- Supports `ReadOnly`, `Required`, `ShowLabel`
+
+### WerDataGrid — Keyboard & POS mode
+```csharp
+// Row selection via keyboard
+werDataGrid1.SelectedRowChanged += (s, id) =>
+    LoadDetail(id);                       // id is the PrimaryKeyColumn value
+
+// POS / full-list mode (shows all rows, no pagination footer)
+werDataGrid1.ShowFooterPagination = false;
+
+// Async load pattern (safe — await before setting DataSource)
+var orders = await _service.GetOrders();
+werDataGrid1.DataSource = orders;
 ```
 
 ### WerSpinner

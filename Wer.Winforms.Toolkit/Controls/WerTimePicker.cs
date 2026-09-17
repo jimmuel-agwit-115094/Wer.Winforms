@@ -45,7 +45,7 @@ namespace Wer.Winforms.Toolkit.Controls
         private const int DropW         = 70;   // each dropdown width
         private const int ColonW        = 16;   // colon separator
         private const int AmPmW         = 36;   // AM/PM button width
-        private const int AmPmH         = 16;   // AM/PM button height
+        private const int AmPmH         = 14;   // AM/PM button height
         private const int AmPmGap       = 4;
         private const int Gap           = 6;    // between elements
 
@@ -278,7 +278,7 @@ namespace Wer.Winforms.Toolkit.Controls
             if (_hourBorder == null) return;
 
             int borderTop = _showLabel ? LabelHeight + LabelGap : 0;
-            int borderH   = Height - borderTop;
+            int borderH   = Math.Max(1, Height - borderTop - 2);  // 2px bottom margin prevents clipping
             int x = 0;
 
             // Hour dropdown
