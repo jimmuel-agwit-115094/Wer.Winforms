@@ -27,10 +27,12 @@ namespace Wer.Winforms.Toolkit.Controls
             StartPosition = FormStartPosition.CenterParent;
             AutoScaleMode = AutoScaleMode.Font;
 
-            // Clean look — no icon, no minimize/maximize by default
+            // Clean look — no icon, no minimize/maximize, not resizable
             ShowIcon = false;
             MinimizeBox = false;
             MaximizeBox = false;
+            FormBorderStyle = FormBorderStyle.FixedDialog;
+            Text = "Manage";
         }
     }
 }

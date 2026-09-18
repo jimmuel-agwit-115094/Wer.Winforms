@@ -227,23 +227,27 @@ namespace Wer.Winforms.Toolkit.Controls
             if (_formHost == null) return;
             if (_currentForm == form) return;
 
-            // Remove current (don't dispose — cached)
-            if (_currentForm != null)
+            _formHost.SuspendLayout();
+
+            // Prepare form for hosting (only needed once)
+            if (!_formHost.Controls.Contains(form))
             {
-                _currentForm.Hide();
-                _formHost.Controls.Remove(_currentForm);
+                form.TopLevel = false;
+                form.FormBorderStyle = FormBorderStyle.None;
+                form.Dock = DockStyle.Fill;
+                form.Visible = false;
+                _formHost.Controls.Add(form);
             }
 
-            _formHost.Controls.Clear();
+            // Toggle visibility — no remove/add, no handle churn
+            if (_currentForm != null)
+                _currentForm.Visible = false;
 
-            form.TopLevel = false;
-            form.FormBorderStyle = FormBorderStyle.None;
-            form.Dock = DockStyle.Fill;
-
-            _formHost.Controls.Add(form);
-            form.Show();
+            form.Visible = true;
             form.BringToFront();
             _currentForm = form;
+
+            _formHost.ResumeLayout(false);
         }
 
         // ── Paint ───────────────────────────────────────────────
