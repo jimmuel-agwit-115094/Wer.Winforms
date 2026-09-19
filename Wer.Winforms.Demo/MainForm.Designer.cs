@@ -15,13 +15,14 @@ namespace Wer.Winforms.Demo
 
         private void InitializeComponent()
         {
+            Wer.Winforms.Toolkit.Controls.SubMenuItem subMenuItem1 = new Wer.Winforms.Toolkit.Controls.SubMenuItem();
+            Wer.Winforms.Toolkit.Controls.SubMenuItem subMenuItem2 = new Wer.Winforms.Toolkit.Controls.SubMenuItem();
             this.panel1 = new System.Windows.Forms.Panel();
             this.werTopNav1 = new Wer.Winforms.Toolkit.Controls.WerTopNav();
             this.werLeftNavMenu1 = new Wer.Winforms.Toolkit.Controls.WerLeftNavMenu();
             this.werMenuButton3 = new Wer.Winforms.Toolkit.Controls.WerMenuButton();
             this.werMenuButton2 = new Wer.Winforms.Toolkit.Controls.WerMenuButton();
             this.werMenuButton1 = new Wer.Winforms.Toolkit.Controls.WerMenuButton();
-            this.werLeftNavMenu1.SuspendLayout();
             this.SuspendLayout();
             // 
             // panel1
@@ -44,7 +45,6 @@ namespace Wer.Winforms.Demo
             // 
             // werLeftNavMenu1
             // 
-            this.werLeftNavMenu1.AutoScroll = true;
             this.werLeftNavMenu1.BackColor = System.Drawing.Color.White;
             this.werLeftNavMenu1.ContentPanel = this.panel1;
             this.werLeftNavMenu1.Controls.Add(this.werMenuButton3);
@@ -54,7 +54,6 @@ namespace Wer.Winforms.Demo
             this.werLeftNavMenu1.Location = new System.Drawing.Point(0, 0);
             this.werLeftNavMenu1.LogoText = "BarPos";
             this.werLeftNavMenu1.Name = "werLeftNavMenu1";
-            this.werLeftNavMenu1.Padding = new System.Windows.Forms.Padding(4, 68, 4, 8);
             this.werLeftNavMenu1.Size = new System.Drawing.Size(210, 657);
             this.werLeftNavMenu1.TabIndex = 0;
             // 
@@ -64,10 +63,13 @@ namespace Wer.Winforms.Demo
             this.werMenuButton3.Cursor = System.Windows.Forms.Cursors.Hand;
             this.werMenuButton3.Dock = System.Windows.Forms.DockStyle.Top;
             this.werMenuButton3.Font = new System.Drawing.Font("Segoe UI", 9.75F);
+            this.werMenuButton3.HasActiveChild = false;
             this.werMenuButton3.IsActive = false;
-            this.werMenuButton3.Location = new System.Drawing.Point(4, 148);
+            this.werMenuButton3.IsExpanded = false;
+            this.werMenuButton3.IsSubItem = false;
+            this.werMenuButton3.Location = new System.Drawing.Point(4, 84);
             this.werMenuButton3.Name = "werMenuButton3";
-            this.werMenuButton3.Size = new System.Drawing.Size(202, 40);
+            this.werMenuButton3.Size = new System.Drawing.Size(194, 40);
             this.werMenuButton3.TabIndex = 2;
             this.werMenuButton3.Text = "Texts";
             this.werMenuButton3.Click += new System.EventHandler(this.werMenuButton3_Click);
@@ -78,10 +80,13 @@ namespace Wer.Winforms.Demo
             this.werMenuButton2.Cursor = System.Windows.Forms.Cursors.Hand;
             this.werMenuButton2.Dock = System.Windows.Forms.DockStyle.Top;
             this.werMenuButton2.Font = new System.Drawing.Font("Segoe UI", 9.75F);
+            this.werMenuButton2.HasActiveChild = false;
             this.werMenuButton2.IsActive = false;
-            this.werMenuButton2.Location = new System.Drawing.Point(4, 108);
+            this.werMenuButton2.IsExpanded = false;
+            this.werMenuButton2.IsSubItem = false;
+            this.werMenuButton2.Location = new System.Drawing.Point(4, 44);
             this.werMenuButton2.Name = "werMenuButton2";
-            this.werMenuButton2.Size = new System.Drawing.Size(202, 40);
+            this.werMenuButton2.Size = new System.Drawing.Size(194, 40);
             this.werMenuButton2.TabIndex = 1;
             this.werMenuButton2.Text = "Products";
             this.werMenuButton2.Click += new System.EventHandler(this.werMenuButton2_Click);
@@ -92,10 +97,19 @@ namespace Wer.Winforms.Demo
             this.werMenuButton1.Cursor = System.Windows.Forms.Cursors.Hand;
             this.werMenuButton1.Dock = System.Windows.Forms.DockStyle.Top;
             this.werMenuButton1.Font = new System.Drawing.Font("Segoe UI", 9.75F);
+            this.werMenuButton1.HasActiveChild = false;
             this.werMenuButton1.IsActive = false;
-            this.werMenuButton1.Location = new System.Drawing.Point(4, 68);
+            this.werMenuButton1.IsExpanded = false;
+            this.werMenuButton1.IsSubItem = false;
+            this.werMenuButton1.Location = new System.Drawing.Point(4, 4);
             this.werMenuButton1.Name = "werMenuButton1";
-            this.werMenuButton1.Size = new System.Drawing.Size(202, 40);
+            this.werMenuButton1.Size = new System.Drawing.Size(194, 40);
+            subMenuItem1.Action = null;
+            subMenuItem1.Text = "Active";
+            subMenuItem2.Action = null;
+            subMenuItem2.Text = "Test Inactuive";
+            this.werMenuButton1.SubItems.Add(subMenuItem1);
+            this.werMenuButton1.SubItems.Add(subMenuItem2);
             this.werMenuButton1.TabIndex = 0;
             this.werMenuButton1.Text = "Users";
             this.werMenuButton1.Click += new System.EventHandler(this.werMenuButton1_Click);
@@ -113,7 +127,6 @@ namespace Wer.Winforms.Demo
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Wer.Winforms Demo";
             this.Load += new System.EventHandler(this.MainForm_Load);
-            this.werLeftNavMenu1.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }

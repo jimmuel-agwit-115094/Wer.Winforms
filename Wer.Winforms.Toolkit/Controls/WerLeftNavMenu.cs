@@ -36,6 +36,11 @@ namespace Wer.Winforms.Toolkit.Controls
         private int _logoHeight = 60;
         private Font _titleLabelFont;
 
+        // Header panel that never scrolls (holds logo painting)
+        private Panel _headerPanel;
+        // Scroll panel that holds all WerMenuButton children
+        private Panel _scrollPanel;
+
         private static readonly Color NavBg = Color.White;
         private static readonly Color NavBorder = Color.FromArgb(232, 235, 240);
         private static readonly Color LogoColor = Color.FromArgb(130, 140, 150);
@@ -44,12 +49,38 @@ namespace Wer.Winforms.Toolkit.Controls
 
         public WerLeftNavMenu()
         {
-            BackColor = NavBg;
-            Dock = DockStyle.Left;
-            Width = 220;
-            Padding = new Padding(4, 68, 4, 8); // top padding = logoHeight + 8
-            AutoScroll = true;
+            BackColor    = NavBg;
+            Dock         = DockStyle.Left;
+            Width        = 220;
+            AutoScroll   = false;          // outer panel never scrolls
             DoubleBuffered = true;
+
+            BuildInternalLayout();
+        }
+
+        private void BuildInternalLayout()
+        {
+            // Non-scrolling header — painted logo lives here
+            _headerPanel = new Panel
+            {
+                Dock      = DockStyle.Top,
+                Height    = _logoHeight,
+                BackColor = NavBg,
+            };
+            _headerPanel.Paint += OnHeaderPaint;
+
+            // Scrollable button area below the header
+            _scrollPanel = new Panel
+            {
+                Dock       = DockStyle.Fill,
+                BackColor  = NavBg,
+                AutoScroll = true,
+                Padding    = new Padding(4, 4, 4, 8),
+            };
+
+            // Fill must be added before Top
+            Controls.Add(_scrollPanel);
+            Controls.Add(_headerPanel);
         }
 
         // ── Properties ──────────────────────────────────────────
@@ -61,7 +92,7 @@ namespace Wer.Winforms.Toolkit.Controls
         public string LogoText
         {
             get => _logoText;
-            set { _logoText = value; Invalidate(); }
+            set { _logoText = value; _headerPanel?.Invalidate(); }
         }
 
         /// <summary>Height of the logo area at the top. 0 = no logo area.</summary>
@@ -74,8 +105,9 @@ namespace Wer.Winforms.Toolkit.Controls
             set
             {
                 _logoHeight = Math.Max(0, value);
-                Padding = new Padding(4, _logoHeight + 8, 4, 8);
-                Invalidate();
+                if (_headerPanel != null)
+                    _headerPanel.Height = _logoHeight;
+                _headerPanel?.Invalidate();
             }
         }
 
@@ -132,12 +164,22 @@ namespace Wer.Winforms.Toolkit.Controls
         public WerMenuButton ActiveButton => _activeButton;
 
         // ── Auto-wire child buttons ─────────────────────────────
+        // Designer drops WerMenuButtons onto WerLeftNavMenu.
+        // Redirect them into _scrollPanel so they scroll independently of the logo header.
 
         protected override void OnControlAdded(ControlEventArgs e)
         {
             base.OnControlAdded(e);
-            if (e.Control is WerMenuButton btn)
+
+            if (e.Control is WerMenuButton btn && _scrollPanel != null
+                && !_scrollPanel.Controls.Contains(btn))
+            {
+                // Move from outer panel into scroll panel.
+                // Remove fires OnControlRemoved which unwires Click (no-op here since not yet wired).
+                Controls.Remove(btn);
                 btn.Click += OnButtonClick;
+                _scrollPanel.Controls.Add(btn);
+            }
         }
 
         protected override void OnControlRemoved(ControlEventArgs e)
@@ -154,14 +196,123 @@ namespace Wer.Winforms.Toolkit.Controls
         {
             if (!(sender is WerMenuButton btn)) return;
 
-            // Deactivate previous
-            if (_activeButton != null && _activeButton != btn)
-                _activeButton.IsActive = false;
+            // Sub-item clicked — delegate to parent logic then fire nav
+            if (btn.IsSubItem && btn.ParentButton != null)
+            {
+                SetActive(btn.ParentButton, btn);
+                btn.SourceItem?.Action?.Invoke();
+                NavigationChanged?.Invoke(this, EventArgs.Empty);
+                return;
+            }
 
-            btn.IsActive = true;
-            _activeButton = btn;
+            // Parent button with sub-items — toggle accordion, don't fire nav
+            if (btn.HasSubItems)
+            {
+                ToggleAccordion(btn);
+                return;
+            }
 
+            // Plain parent button — activate and fire nav
+            SetActive(btn, null);
             NavigationChanged?.Invoke(this, EventArgs.Empty);
+        }
+
+        private void SetActive(WerMenuButton parent, WerMenuButton subBtn)
+        {
+            // Deactivate old
+            if (_activeButton != null && _activeButton != parent)
+            {
+                _activeButton.IsActive      = false;
+                _activeButton.HasActiveChild = false;
+            }
+
+            if (subBtn != null)
+            {
+                // Deactivate old sub-item
+                foreach (Control c in _scrollPanel.Controls)
+                {
+                    if (c is WerMenuButton sb && sb.IsSubItem && sb != subBtn)
+                        sb.IsActive = false;
+                }
+                subBtn.IsActive      = true;
+                parent.IsActive      = false;
+                parent.HasActiveChild = true;
+            }
+            else
+            {
+                parent.IsActive       = true;
+                parent.HasActiveChild = false;
+            }
+
+            _activeButton = parent;
+        }
+
+        private void ToggleAccordion(WerMenuButton btn)
+        {
+            if (btn.IsExpanded)
+                CollapseButton(btn);
+            else
+                ExpandButton(btn);
+        }
+
+        private void ExpandButton(WerMenuButton btn)
+        {
+            // Collapse any other expanded button first.
+            // Collect before iterating — CollapseButton modifies _scrollPanel.Controls.
+            var toCollapse = new List<WerMenuButton>();
+            foreach (Control c in _scrollPanel.Controls)
+            {
+                if (c is WerMenuButton other && other != btn && other.IsExpanded)
+                    toCollapse.Add(other);
+            }
+            foreach (var other in toCollapse)
+                CollapseButton(other);
+
+            btn.IsExpanded = true;
+
+            // With Dock=Top, lower Z-index = visually lower (closer to bottom).
+            // Parent button sits at some Z-index; we insert sub-items at that same index
+            // each time (loop forward) so each sub-item ends up just below the parent,
+            // pushing parent up by 1 each iteration.
+            int insertIndex = _scrollPanel.Controls.GetChildIndex(btn);
+
+            _scrollPanel.SuspendLayout();
+            for (int i = 0; i < btn.SubItems.Count; i++)
+            {
+                var item = btn.SubItems[i];
+                var subBtn = new WerMenuButton
+                {
+                    Text         = item.Text,
+                    IsSubItem    = true,
+                    ParentButton = btn,
+                    SourceItem   = item,
+                };
+                subBtn.Click += OnButtonClick;
+                _scrollPanel.Controls.Add(subBtn);
+                _scrollPanel.Controls.SetChildIndex(subBtn, insertIndex);
+            }
+            _scrollPanel.ResumeLayout(true);
+        }
+
+        private void CollapseButton(WerMenuButton btn)
+        {
+            btn.IsExpanded    = false;
+            btn.HasActiveChild = false;
+
+            _scrollPanel.SuspendLayout();
+            var toRemove = new List<WerMenuButton>();
+            foreach (Control c in _scrollPanel.Controls)
+            {
+                if (c is WerMenuButton sub && sub.IsSubItem && sub.ParentButton == btn)
+                    toRemove.Add(sub);
+            }
+            foreach (var sub in toRemove)
+            {
+                sub.Click -= OnButtonClick;
+                _scrollPanel.Controls.Remove(sub);
+                sub.Dispose();
+            }
+            _scrollPanel.ResumeLayout(true);
         }
 
         // ── Form hosting API ────────────────────────────────────
@@ -252,31 +403,33 @@ namespace Wer.Winforms.Toolkit.Controls
 
         // ── Paint ───────────────────────────────────────────────
 
-        protected override void OnPaint(PaintEventArgs e)
+        // Logo header — fixed, never scrolls
+        private void OnHeaderPaint(object sender, PaintEventArgs e)
         {
-            base.OnPaint(e);
-            var g = e.Graphics;
+            var g   = e.Graphics;
+            var w   = _headerPanel.Width;
+            var h   = _headerPanel.Height;
             g.TextRenderingHint = System.Drawing.Text.TextRenderingHint.ClearTypeGridFit;
 
-            // Logo area
-            if (_logoHeight > 0 && !string.IsNullOrEmpty(_logoText))
+            if (!string.IsNullOrEmpty(_logoText))
             {
-                var logoRect = new Rectangle(12, 0, Width - 24, _logoHeight);
-                using (var font = new Font("Segoe UI Light", 14f, FontStyle.Regular))
-                    TextRenderer.DrawText(g, _logoText, font, logoRect, LogoColor,
+                var logoRect = new Rectangle(12, 0, w - 24, h);
+                using (var f = new Font("Segoe UI Light", 14f, FontStyle.Regular))
+                    TextRenderer.DrawText(g, _logoText, f, logoRect, LogoColor,
                         TextFormatFlags.Left | TextFormatFlags.VerticalCenter | TextFormatFlags.NoPrefix);
             }
 
-            // Separator under logo
-            if (_logoHeight > 0)
-            {
-                using (var pen = new Pen(NavBorder, 1f))
-                    g.DrawLine(pen, 12, _logoHeight, Width - 12, _logoHeight);
-            }
-
-            // Right border
+            // Separator at bottom of header
             using (var pen = new Pen(NavBorder, 1f))
-                g.DrawLine(pen, Width - 1, 0, Width - 1, Height);
+                g.DrawLine(pen, 12, h - 1, w - 12, h - 1);
+        }
+
+        // Right border on the outer panel
+        protected override void OnPaint(PaintEventArgs e)
+        {
+            base.OnPaint(e);
+            using (var pen = new Pen(NavBorder, 1f))
+                e.Graphics.DrawLine(pen, Width - 1, 0, Width - 1, Height);
         }
 
         // ── Dispose ─────────────────────────────────────────────
@@ -286,6 +439,15 @@ namespace Wer.Winforms.Toolkit.Controls
             if (disposing)
             {
                 _titleLabelFont?.Dispose();
+                _titleLabelFont = null;
+
+                // Unwire Paint event before base disposes the panel
+                if (_headerPanel != null)
+                {
+                    _headerPanel.Paint -= OnHeaderPaint;
+                    _headerPanel = null;
+                }
+
                 foreach (var kvp in _formCache)
                 {
                     if (kvp.Value != null && !kvp.Value.IsDisposed)
@@ -296,6 +458,7 @@ namespace Wer.Winforms.Toolkit.Controls
                 }
                 _formCache.Clear();
             }
+            // base.Dispose disposes all child Controls including _scrollPanel, _headerPanel, etc.
             base.Dispose(disposing);
         }
     }
