@@ -4,6 +4,20 @@ using System.Linq;
 
 namespace Wer.Winforms.Toolkit
 {
+    public enum WerButtonType
+    {
+        Primary,
+        Secondary
+    }
+
+    public enum WerButtonColor
+    {
+        Primary,
+        Warning,
+        Success,
+        Orange
+    }
+
     public static class WerTheme
     {
         // ── Font family ─────────────────────────────────────────
@@ -95,6 +109,19 @@ namespace Wer.Winforms.Toolkit
 
         /// <summary>Horizontal padding inside inputs: 10px</summary>
         public const int InputPadH = 10;
+
+        // ── Button color resolver ────────────────────────────
+        public static Color GetButtonColor(WerButtonColor color)
+        {
+            switch (color)
+            {
+                case WerButtonColor.Primary: return _primaryColor;
+                case WerButtonColor.Warning: return _warningColor;
+                case WerButtonColor.Success: return _successColor;
+                case WerButtonColor.Orange:  return _orangeColor;
+                default: return _primaryColor;
+            }
+        }
 
         // ── Pre-built fonts ─────────────────────────────────────
         public static Font HeadingFont => new Font(_fontFamily, _headingSize, FontStyle.Bold);

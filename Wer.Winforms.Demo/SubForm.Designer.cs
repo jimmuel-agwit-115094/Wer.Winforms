@@ -29,7 +29,7 @@
         private void InitializeComponent()
         {
             this.tabPage2 = new System.Windows.Forms.TabPage();
-            this.werButtonOrange1 = new Wer.Winforms.Toolkit.Controls.WerButtonOrange();
+            this.werButtonOrange1 = new Wer.Winforms.Toolkit.Controls.WerButton();
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.dgUsers = new Wer.Winforms.Toolkit.Controls.WerDataGrid();
             this.werTabControl1 = new Wer.Winforms.Toolkit.Controls.WerTabControl();
@@ -52,15 +52,11 @@
             // 
             // werButtonOrange1
             // 
-            this.werButtonOrange1.BorderColor = System.Drawing.Color.Empty;
-            this.werButtonOrange1.ButtonColor = System.Drawing.Color.FromArgb(((int)(((byte)(230)))), ((int)(((byte)(126)))), ((int)(((byte)(34)))));
+            this.werButtonOrange1.ColorType = Wer.Winforms.Toolkit.WerButtonColor.Orange;
             this.werButtonOrange1.Cursor = System.Windows.Forms.Cursors.Hand;
             this.werButtonOrange1.Font = new System.Drawing.Font("Segoe UI", 9.75F);
-            this.werButtonOrange1.ForeColor = System.Drawing.Color.White;
-            this.werButtonOrange1.HoverColor = System.Drawing.Color.FromArgb(((int)(((byte)(195)))), ((int)(((byte)(107)))), ((int)(((byte)(28)))));
             this.werButtonOrange1.Location = new System.Drawing.Point(273, 113);
             this.werButtonOrange1.Name = "werButtonOrange1";
-            this.werButtonOrange1.PressedColor = System.Drawing.Color.FromArgb(((int)(((byte)(161)))), ((int)(((byte)(88)))), ((int)(((byte)(23)))));
             this.werButtonOrange1.Size = new System.Drawing.Size(224, 36);
             this.werButtonOrange1.TabIndex = 0;
             this.werButtonOrange1.Text = "werButtonOrange1";
@@ -142,7 +138,7 @@
         #endregion
 
         private System.Windows.Forms.TabPage tabPage2;
-        private Toolkit.Controls.WerButtonOrange werButtonOrange1;
+        private Toolkit.Controls.WerButton werButtonOrange1;
         private System.Windows.Forms.TabPage tabPage1;
         private Toolkit.Controls.WerDataGrid dgUsers;
         private Toolkit.Controls.WerTabControl werTabControl1;

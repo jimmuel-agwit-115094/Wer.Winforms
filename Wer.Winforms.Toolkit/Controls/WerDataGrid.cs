@@ -77,7 +77,7 @@ namespace Wer.Winforms.Toolkit.Controls
         private bool _horizontalScroll;
         private int _hScrollOffset;
         private WerSearchField _searchBox;
-        private WerButtonPrimary _addButton;
+        private WerButton _addButton;
         private bool _showAddButton;
         private string _searchText = "";
         private DataTable _filteredTable;
@@ -384,7 +384,7 @@ namespace Wer.Winforms.Toolkit.Controls
             };
             Controls.Add(_searchBox);
 
-            _addButton = new WerButtonPrimary();
+            _addButton = new WerButton();
             _addButton.Text = "Add";
             _addButtonFont = new Font(WerTheme.FontFamily, 9.75f, FontStyle.Bold);
             _addButton.Font = _addButtonFont;

@@ -6,15 +6,12 @@ using System.Windows.Forms;
 
 namespace Wer.Winforms.Toolkit.Controls
 {
-    [ToolboxItem(false)]
+    [ToolboxItem(true)]
     public class WerButton : Control
     {
-        private Color _buttonColor = Color.FromArgb(12, 124, 146);
-        private Color _hoverColor = Color.FromArgb(10, 105, 124);
-        private Color _pressedColor = Color.FromArgb(8, 86, 102);
-        private Color _borderColor = Color.Empty;
+        private WerButtonType _buttonType = WerButtonType.Primary;
+        private WerButtonColor _colorType = WerButtonColor.Primary;
         private int _borderRadius = 20;
-        private int _borderWidth = 0;
         private bool _isHovering;
         private bool _isPressed;
         private string _iconCode = "";
@@ -30,50 +27,26 @@ namespace Wer.Winforms.Toolkit.Controls
                 true);
 
             Font = WerTheme.ButtonFont;
-            ForeColor = Color.White;
             Size = new Size(100, 36);
             Cursor = Cursors.Hand;
         }
 
         [Category("WerButtons")]
-        [Description("Fill color in normal state.")]
-        public Color ButtonColor
+        [DefaultValue(WerButtonType.Primary)]
+        [Description("Primary = filled, Secondary = outlined.")]
+        public WerButtonType ButtonType
         {
-            get => _buttonColor;
-            set { _buttonColor = value; Invalidate(); }
+            get => _buttonType;
+            set { _buttonType = value; Invalidate(); }
         }
 
         [Category("WerButtons")]
-        [Description("Fill color on hover.")]
-        public Color HoverColor
+        [DefaultValue(WerButtonColor.Primary)]
+        [Description("Color variant (Primary/teal, Warning/red, Success/green, Orange).")]
+        public WerButtonColor ColorType
         {
-            get => _hoverColor;
-            set { _hoverColor = value; Invalidate(); }
-        }
-
-        [Category("WerButtons")]
-        [Description("Fill color when pressed.")]
-        public Color PressedColor
-        {
-            get => _pressedColor;
-            set { _pressedColor = value; Invalidate(); }
-        }
-
-        [Category("WerButtons")]
-        [Description("Border color. Empty = no border.")]
-        public Color BorderColor
-        {
-            get => _borderColor;
-            set { _borderColor = value; Invalidate(); }
-        }
-
-        [Category("WerButtons")]
-        [DefaultValue(0)]
-        [Description("Border thickness in pixels.")]
-        public int BorderWidth
-        {
-            get => _borderWidth;
-            set { _borderWidth = Math.Max(0, value); Invalidate(); }
+            get => _colorType;
+            set { _colorType = value; Invalidate(); }
         }
 
         [Category("WerButtons")]
@@ -85,10 +58,6 @@ namespace Wer.Winforms.Toolkit.Controls
             set { _borderRadius = Math.Max(0, value); Invalidate(); }
         }
 
-        /// <summary>
-        /// Icon from Segoe MDL2 Assets. Use WerIcons constants.
-        /// Drawn to the left of the text. Empty = no icon.
-        /// </summary>
         [Category("WerButtons")]
         [DefaultValue("")]
         [Description("Icon code from WerIcons. Drawn left of text.")]
@@ -106,32 +75,72 @@ namespace Wer.Winforms.Toolkit.Controls
 
             var rect = new Rectangle(0, 0, Width - 1, Height - 1);
             var radius = Math.Min(_borderRadius, Math.Min(rect.Width, rect.Height) / 2);
+            var themeColor = WerTheme.GetButtonColor(_colorType);
+            bool isOutlined = _buttonType == WerButtonType.Secondary;
 
             if (!Enabled)
             {
-                using (var path = CreateRoundedRect(rect, radius))
-                using (var brush = new SolidBrush(Color.FromArgb(230, 232, 236)))
-                    g.FillPath(brush, path);
-
-                DrawContent(g, Color.FromArgb(170, 175, 182));
+                PaintDisabled(g, rect, radius, isOutlined);
                 return;
             }
 
-            Color fill = _isPressed ? _pressedColor : _isHovering ? _hoverColor : _buttonColor;
+            if (isOutlined)
+                PaintOutlined(g, rect, radius, themeColor);
+            else
+                PaintFilled(g, rect, radius, themeColor);
+        }
+
+        private void PaintFilled(Graphics g, Rectangle rect, int radius, Color color)
+        {
+            Color fill = _isPressed ? DarkenColor(color, 0.30)
+                       : _isHovering ? DarkenColor(color, 0.15)
+                       : color;
+
+            using (var path = CreateRoundedRect(rect, radius))
+            using (var brush = new SolidBrush(fill))
+                g.FillPath(brush, path);
+
+            DrawContent(g, Color.White);
+        }
+
+        private void PaintOutlined(Graphics g, Rectangle rect, int radius, Color color)
+        {
+            Color fill = _isPressed ? LightenColor(color, 0.85)
+                       : _isHovering ? LightenColor(color, 0.92)
+                       : Color.White;
 
             using (var path = CreateRoundedRect(rect, radius))
             {
                 using (var brush = new SolidBrush(fill))
                     g.FillPath(brush, path);
+                using (var pen = new Pen(color, 2))
+                    g.DrawPath(pen, path);
+            }
 
-                if (_borderWidth > 0 && _borderColor != Color.Empty)
+            DrawContent(g, color);
+        }
+
+        private void PaintDisabled(Graphics g, Rectangle rect, int radius, bool isOutlined)
+        {
+            var disabledText = Color.FromArgb(170, 175, 182);
+
+            using (var path = CreateRoundedRect(rect, radius))
+            {
+                if (isOutlined)
                 {
-                    using (var pen = new Pen(_borderColor, _borderWidth))
+                    using (var brush = new SolidBrush(Color.White))
+                        g.FillPath(brush, path);
+                    using (var pen = new Pen(Color.FromArgb(200, 205, 212), 2))
                         g.DrawPath(pen, path);
+                }
+                else
+                {
+                    using (var brush = new SolidBrush(Color.FromArgb(230, 232, 236)))
+                        g.FillPath(brush, path);
                 }
             }
 
-            DrawContent(g, ForeColor);
+            DrawContent(g, disabledText);
         }
 
         private void DrawContent(Graphics g, Color color)
@@ -143,7 +152,6 @@ namespace Wer.Winforms.Toolkit.Controls
 
             if (hasIcon && hasText)
             {
-                // Measure both to center together
                 using (var iconFont = new Font("Segoe MDL2 Assets", Font.Size, FontStyle.Regular))
                 {
                     int iconW = TextRenderer.MeasureText(g, _iconCode, iconFont).Width;
@@ -230,6 +238,24 @@ namespace Wer.Winforms.Toolkit.Controls
             _isPressed = false;
             Invalidate();
             base.OnMouseUp(e);
+        }
+
+        private static Color DarkenColor(Color color, double factor)
+        {
+            return Color.FromArgb(
+                color.A,
+                (int)(color.R * (1 - factor)),
+                (int)(color.G * (1 - factor)),
+                (int)(color.B * (1 - factor)));
+        }
+
+        private static Color LightenColor(Color color, double factor)
+        {
+            return Color.FromArgb(
+                color.A,
+                (int)(color.R + (255 - color.R) * factor),
+                (int)(color.G + (255 - color.G) * factor),
+                (int)(color.B + (255 - color.B) * factor));
         }
     }
 }

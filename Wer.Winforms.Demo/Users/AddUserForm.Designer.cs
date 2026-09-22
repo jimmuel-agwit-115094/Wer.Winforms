@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.werButtonPrimary1 = new Wer.Winforms.Toolkit.Controls.WerButtonPrimary();
+            this.werButtonPrimary1 = new Wer.Winforms.Toolkit.Controls.WerButton();
             this.werPhoneField1 = new Wer.Winforms.Toolkit.Controls.WerPhoneField();
             this.werRichTextField1 = new Wer.Winforms.Toolkit.Controls.WerRichTextField();
             this.werTextField3 = new Wer.Winforms.Toolkit.Controls.WerTextField();
@@ -40,15 +40,11 @@
             // 
             // werButtonPrimary1
             // 
-            this.werButtonPrimary1.BorderColor = System.Drawing.Color.Empty;
-            this.werButtonPrimary1.ButtonColor = System.Drawing.Color.FromArgb(((int)(((byte)(12)))), ((int)(((byte)(124)))), ((int)(((byte)(146)))));
+            this.werButtonPrimary1.ColorType = Wer.Winforms.Toolkit.WerButtonColor.Success;
             this.werButtonPrimary1.Cursor = System.Windows.Forms.Cursors.Hand;
             this.werButtonPrimary1.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F);
-            this.werButtonPrimary1.ForeColor = System.Drawing.Color.White;
-            this.werButtonPrimary1.HoverColor = System.Drawing.Color.FromArgb(((int)(((byte)(10)))), ((int)(((byte)(105)))), ((int)(((byte)(124)))));
             this.werButtonPrimary1.Location = new System.Drawing.Point(335, 440);
             this.werButtonPrimary1.Name = "werButtonPrimary1";
-            this.werButtonPrimary1.PressedColor = System.Drawing.Color.FromArgb(((int)(((byte)(8)))), ((int)(((byte)(86)))), ((int)(((byte)(102)))));
             this.werButtonPrimary1.Size = new System.Drawing.Size(123, 36);
             this.werButtonPrimary1.TabIndex = 5;
             this.werButtonPrimary1.Text = "Save";
@@ -137,7 +133,6 @@
             this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "AddUserForm";
             this.Padding = new System.Windows.Forms.Padding(19, 21, 19, 21);
-            this.Text = "Manage";
             this.Load += new System.EventHandler(this.AddUserForm_Load);
             this.werGroupBox1.ResumeLayout(false);
             this.ResumeLayout(false);
@@ -150,7 +145,7 @@
         private Toolkit.Controls.WerTextField werTextField2;
         private Toolkit.Controls.WerTextField werTextField1;
         private Toolkit.Controls.WerPhoneField werPhoneField1;
-        private Toolkit.Controls.WerButtonPrimary werButtonPrimary1;
+        private Toolkit.Controls.WerButton werButtonPrimary1;
         private Toolkit.Controls.WerGroupBox werGroupBox1;
     }
 }

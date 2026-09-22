@@ -211,9 +211,8 @@ namespace Wer.Winforms.Toolkit.Controls
             for (int i = 0; i < labels.Length; i++)
             {
                 bool isPrimary = i == labels.Length - 1;
-                var btn = isPrimary
-                    ? (WerButton)new WerButtonPrimary()
-                    : new WerButtonOutlinedPrimary();
+                var btn = new WerButton();
+                btn.ButtonType = isPrimary ? WerButtonType.Primary : WerButtonType.Secondary;
 
                 btn.Text = labels[i];
                 btn.Size = new Size(BtnW, BtnH);

@@ -43,34 +43,10 @@
     <Compile Include="Controls\WerButton.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Controls\WerButtonPrimary.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Controls\WerButtonWarning.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Controls\WerButtonSuccess.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Controls\WerButtonOrange.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Controls\WerHeading.cs">
+<Compile Include="Controls\WerHeading.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Controls\WerGroupBox.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Controls\WerButtonOutlinedPrimary.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Controls\WerButtonOutlinedWarning.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Controls\WerButtonOutlinedSuccess.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Controls\WerButtonOutlinedOrange.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Controls\WerCheckbox.cs">

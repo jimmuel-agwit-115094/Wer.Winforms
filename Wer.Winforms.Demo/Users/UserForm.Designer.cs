@@ -18,6 +18,7 @@ namespace Wer.Winforms.Demo
             this.dgUsers = new Wer.Winforms.Toolkit.Controls.WerDataGrid();
             this.werStatusIndicator1 = new Wer.Winforms.Toolkit.Controls.WerStatusIndicator();
             this.werStatusIndicator2 = new Wer.Winforms.Toolkit.Controls.WerStatusIndicator();
+            this.werButton1 = new Wer.Winforms.Toolkit.Controls.WerButton();
             this.SuspendLayout();
             // 
             // dgUsers
@@ -60,20 +61,24 @@ namespace Wer.Winforms.Demo
             this.werStatusIndicator2.TabIndex = 3;
             this.werStatusIndicator2.Text = "werStatusIndicator2";
             // 
+            // werButton1
+            // 
+            this.werButton1.BorderRadius = 5;
+            this.werButton1.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.werButton1.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F);
+            this.werButton1.Location = new System.Drawing.Point(41, 36);
+            this.werButton1.Name = "werButton1";
+            this.werButton1.Size = new System.Drawing.Size(146, 36);
+            this.werButton1.TabIndex = 0;
+            this.werButton1.Text = "werButton1";
+            // 
             // UserForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 17F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1121, 631);
-            this.Controls.Add(this.werStatusIndicator2);
-            this.Controls.Add(this.werStatusIndicator1);
-            this.Controls.Add(this.dgUsers);
-            this.Margin = new System.Windows.Forms.Padding(4);
+            this.ClientSize = new System.Drawing.Size(678, 386);
+            this.Controls.Add(this.werButton1);
             this.Name = "UserForm";
-            this.Padding = new System.Windows.Forms.Padding(19, 21, 19, 21);
-            this.Text = "User Details";
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
 
@@ -82,5 +87,6 @@ namespace Wer.Winforms.Demo
         private Toolkit.Controls.WerDataGrid dgUsers;
         private Toolkit.Controls.WerStatusIndicator werStatusIndicator1;
         private Toolkit.Controls.WerStatusIndicator werStatusIndicator2;
+        private Toolkit.Controls.WerButton werButton1;
     }
 }

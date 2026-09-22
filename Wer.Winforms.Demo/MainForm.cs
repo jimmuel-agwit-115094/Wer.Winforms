@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
+using Wer.Winforms.Demo.Order;
 using Wer.Winforms.Toolkit.Controls;
 
 namespace Wer.Winforms.Demo
@@ -145,6 +146,7 @@ namespace Wer.Winforms.Demo
 
         private void werMenuButton3_Click(object sender, EventArgs e)
         {
+            werLeftNavMenu1.ShowForm<OrderForm>("Orders");
         }
 
         private void werMenuButton2_Click(object sender, EventArgs e)

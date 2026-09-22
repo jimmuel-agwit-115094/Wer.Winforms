@@ -37,7 +37,7 @@
             this.werDateRangePicker1 = new Wer.Winforms.Toolkit.Controls.WerDateRangePicker();
             this.werDateRange1 = new Wer.Winforms.Toolkit.Controls.WerDateRange();
             this.werComboBox1 = new Wer.Winforms.Toolkit.Controls.WerComboBox();
-            this.werButtonWarning1 = new Wer.Winforms.Toolkit.Controls.WerButtonWarning();
+            this.werButtonWarning1 = new Wer.Winforms.Toolkit.Controls.WerButton();
             this.werBadge1 = new Wer.Winforms.Toolkit.Controls.WerBadge();
             this.werQuantitySelector1 = new Wer.Winforms.Toolkit.Controls.WerQuantitySelector();
             this.SuspendLayout();
@@ -141,15 +141,11 @@
             // 
             // werButtonWarning1
             // 
-            this.werButtonWarning1.BorderColor = System.Drawing.Color.Empty;
-            this.werButtonWarning1.ButtonColor = System.Drawing.Color.FromArgb(((int)(((byte)(179)))), ((int)(((byte)(58)))), ((int)(((byte)(58)))));
+            this.werButtonWarning1.ColorType = Wer.Winforms.Toolkit.WerButtonColor.Warning;
             this.werButtonWarning1.Cursor = System.Windows.Forms.Cursors.Hand;
             this.werButtonWarning1.Font = new System.Drawing.Font("Segoe UI", 9.75F);
-            this.werButtonWarning1.ForeColor = System.Drawing.Color.White;
-            this.werButtonWarning1.HoverColor = System.Drawing.Color.FromArgb(((int)(((byte)(152)))), ((int)(((byte)(49)))), ((int)(((byte)(49)))));
             this.werButtonWarning1.Location = new System.Drawing.Point(54, 121);
             this.werButtonWarning1.Name = "werButtonWarning1";
-            this.werButtonWarning1.PressedColor = System.Drawing.Color.FromArgb(((int)(((byte)(125)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))));
             this.werButtonWarning1.Size = new System.Drawing.Size(175, 36);
             this.werButtonWarning1.TabIndex = 1;
             this.werButtonWarning1.Text = "werButtonWarning1";
@@ -205,7 +201,7 @@
         #endregion
 
         private Toolkit.Controls.WerBadge werBadge1;
-        private Toolkit.Controls.WerButtonWarning werButtonWarning1;
+        private Toolkit.Controls.WerButton werButtonWarning1;
         private Toolkit.Controls.WerComboBox werComboBox1;
         private Toolkit.Controls.WerDateRange werDateRange1;
         private Toolkit.Controls.WerDateRangePicker werDateRangePicker1;
