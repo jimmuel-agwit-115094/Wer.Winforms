@@ -38,28 +38,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Order\OrderForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Order\OrderForm.Designer.cs">
-      <DependentUpon>OrderForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="ProductsForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="ProductsForm.Designer.cs">
-      <DependentUpon>ProductsForm.cs</DependentUpon>
-    </Compile>
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
-    </Compile>
-    <Compile Include="SubForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="SubForm.Designer.cs">
-      <DependentUpon>SubForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="MainForm.cs">
@@ -68,52 +50,15 @@
     <Compile Include="MainForm.Designer.cs">
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
-    <EmbeddedResource Include="Order\OrderForm.resx">
-      <DependentUpon>OrderForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="ProductsForm.resx">
-      <DependentUpon>ProductsForm.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="SubForm.resx">
-      <DependentUpon>SubForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
     </EmbeddedResource>
     <Compile Include="Product.cs" />
-    <Compile Include="TestForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="TestForm.Designer.cs">
-      <DependentUpon>TestForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Users\AddUserForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Users\AddUserForm.Designer.cs">
-      <DependentUpon>AddUserForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Users\UserForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Users\UserForm.Designer.cs">
-      <DependentUpon>UserForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Users\Users.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="TestForm.resx">
-      <DependentUpon>TestForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Users\AddUserForm.resx">
-      <DependentUpon>AddUserForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Users\UserForm.resx">
-      <DependentUpon>UserForm.cs</DependentUpon>
-    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Wer.Winforms.Toolkit\Wer.Winforms.Toolkit.csproj">
