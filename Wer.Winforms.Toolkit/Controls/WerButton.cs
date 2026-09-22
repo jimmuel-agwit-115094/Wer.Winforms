@@ -10,7 +10,7 @@ namespace Wer.Winforms.Toolkit.Controls
     public class WerButton : Control
     {
         private WerButtonType _buttonType = WerButtonType.Primary;
-        private WerButtonColor _colorType = WerButtonColor.Primary;
+        private WerButtonColor _colorType = WerButtonColor.Blue;
         private int _borderRadius = 20;
         private bool _isHovering;
         private bool _isPressed;
@@ -41,8 +41,8 @@ namespace Wer.Winforms.Toolkit.Controls
         }
 
         [Category("WerButtons")]
-        [DefaultValue(WerButtonColor.Primary)]
-        [Description("Color variant (Primary/teal, Warning/red, Success/green, Orange).")]
+        [DefaultValue(WerButtonColor.Blue)]
+        [Description("Color variant (Blue, Primary/teal, Warning/red, Success/green, Orange).")]
         public WerButtonColor ColorType
         {
             get => _colorType;

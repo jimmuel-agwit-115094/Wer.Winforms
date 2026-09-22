@@ -12,6 +12,7 @@ namespace Wer.Winforms.Toolkit
 
     public enum WerButtonColor
     {
+        Blue,
         Primary,
         Warning,
         Success,
@@ -43,6 +44,7 @@ namespace Wer.Winforms.Toolkit
         public static float ButtonSize { get => _buttonSize; set => _buttonSize = value; }
 
         // ── Brand / semantic colors ─────────────────────────────
+        private static Color _blueColor = Color.FromArgb(33, 150, 243);
         private static Color _primaryColor = Color.FromArgb(12, 124, 146);
         private static Color _warningColor = Color.FromArgb(179, 58, 58);
         private static Color _successColor = Color.FromArgb(40, 167, 69);
@@ -53,6 +55,7 @@ namespace Wer.Winforms.Toolkit
         private static Color _disabledColor = Color.FromArgb(180, 180, 180);
         private static Color _borderColor = Color.FromArgb(200, 200, 200);
 
+        public static Color BlueColor { get => _blueColor; set => _blueColor = value; }
         public static Color PrimaryColor { get => _primaryColor; set => _primaryColor = value; }
         public static Color WarningColor { get => _warningColor; set => _warningColor = value; }
         public static Color SuccessColor { get => _successColor; set => _successColor = value; }
@@ -115,11 +118,12 @@ namespace Wer.Winforms.Toolkit
         {
             switch (color)
             {
+                case WerButtonColor.Blue:    return _blueColor;
                 case WerButtonColor.Primary: return _primaryColor;
                 case WerButtonColor.Warning: return _warningColor;
                 case WerButtonColor.Success: return _successColor;
                 case WerButtonColor.Orange:  return _orangeColor;
-                default: return _primaryColor;
+                default: return _blueColor;
             }
         }
 

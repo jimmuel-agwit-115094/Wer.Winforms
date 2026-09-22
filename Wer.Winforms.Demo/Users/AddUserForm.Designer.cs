@@ -40,7 +40,6 @@
             // 
             // werButtonPrimary1
             // 
-            this.werButtonPrimary1.ColorType = Wer.Winforms.Toolkit.WerButtonColor.Success;
             this.werButtonPrimary1.Cursor = System.Windows.Forms.Cursors.Hand;
             this.werButtonPrimary1.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F);
             this.werButtonPrimary1.Location = new System.Drawing.Point(335, 440);
