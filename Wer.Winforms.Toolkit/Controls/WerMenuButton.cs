@@ -272,10 +272,13 @@ namespace Wer.Winforms.Toolkit.Controls
             {
                 string semibold = WerTheme.FontFamily + " Semibold";
                 _semiboldAvailable = false;
-                foreach (var fam in new System.Drawing.Text.InstalledFontCollection().Families)
+                using (var ifc = new System.Drawing.Text.InstalledFontCollection())
                 {
-                    if (string.Equals(fam.Name, semibold, StringComparison.OrdinalIgnoreCase))
-                    { _semiboldAvailable = true; break; }
+                    foreach (var fam in ifc.Families)
+                    {
+                        if (string.Equals(fam.Name, semibold, StringComparison.OrdinalIgnoreCase))
+                        { _semiboldAvailable = true; break; }
+                    }
                 }
             }
             return _semiboldAvailable == true

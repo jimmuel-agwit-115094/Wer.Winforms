@@ -127,27 +127,42 @@ namespace Wer.Winforms.Toolkit
             }
         }
 
-        // ── Pre-built fonts ─────────────────────────────────────
-        public static Font HeadingFont => new Font(_fontFamily, _headingSize, FontStyle.Bold);
-        public static Font SubheadingFont => new Font(_fontFamily, _subheadingSize, FontStyle.Bold);
-        public static Font BodyFont => new Font(_fontFamily, _bodySize, FontStyle.Regular);
-        public static Font CaptionFont => new Font(_fontFamily, _captionSize, FontStyle.Regular);
-        // "Segoe UI Semibold" is a distinct face on Windows 10/11 — weight 600 without full bold.
-        // Cached on first call; falls back to Bold if the semibold face is unavailable.
+        // ── Pre-built fonts (cached — do NOT dispose these) ─────
+        private static Font _headingFont;
+        private static Font _subheadingFont;
+        private static Font _bodyFont;
+        private static Font _captionFont;
+        private static Font _buttonFont;
         private static bool? _semiboldAvailable;
+
+        public static Font HeadingFont =>
+            _headingFont ?? (_headingFont = new Font(_fontFamily, _headingSize, FontStyle.Bold));
+
+        public static Font SubheadingFont =>
+            _subheadingFont ?? (_subheadingFont = new Font(_fontFamily, _subheadingSize, FontStyle.Bold));
+
+        public static Font BodyFont =>
+            _bodyFont ?? (_bodyFont = new Font(_fontFamily, _bodySize, FontStyle.Regular));
+
+        public static Font CaptionFont =>
+            _captionFont ?? (_captionFont = new Font(_fontFamily, _captionSize, FontStyle.Regular));
+
         public static Font ButtonFont
         {
             get
             {
+                if (_buttonFont != null) return _buttonFont;
                 if (_semiboldAvailable == null)
                 {
                     string semibold = _fontFamily + " Semibold";
-                    _semiboldAvailable = new System.Drawing.Text.InstalledFontCollection().Families
-                        .Any(f => f.Name.Equals(semibold, StringComparison.OrdinalIgnoreCase));
+                    using (var ifc = new System.Drawing.Text.InstalledFontCollection())
+                        _semiboldAvailable = ifc.Families
+                            .Any(f => f.Name.Equals(semibold, StringComparison.OrdinalIgnoreCase));
                 }
-                return _semiboldAvailable == true
+                _buttonFont = _semiboldAvailable == true
                     ? new Font(_fontFamily + " Semibold", _buttonSize, FontStyle.Regular)
                     : new Font(_fontFamily, _buttonSize, FontStyle.Bold);
+                return _buttonFont;
             }
         }
     }
