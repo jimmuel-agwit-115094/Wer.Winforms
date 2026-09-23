@@ -175,19 +175,18 @@ namespace Wer.Winforms.Toolkit.Controls
             else            PaintParent(g, rect);
         }
 
+        // Filled active background for parent
+        private static readonly Color FilledActiveBg = Color.FromArgb(12, 124, 146);
+
         private void PaintParent(Graphics g, Rectangle rect)
         {
             bool showActive = _isActive || _hasActiveChild;
 
             if (showActive)
             {
+                // Full teal filled background (like "Logistics" in ref)
                 using (var path = RoundedRect(rect, CornerRadius))
-                using (var b = new SolidBrush(ActiveBg))
-                    g.FillPath(b, path);
-
-                var bar = new Rectangle(0, 4, IndicatorW, Height - 8);
-                using (var path = RoundedRect(bar, 2))
-                using (var b = new SolidBrush(IndicatorColor))
+                using (var b = new SolidBrush(FilledActiveBg))
                     g.FillPath(b, path);
             }
             else if (_isHovering)
@@ -206,28 +205,33 @@ namespace Wer.Winforms.Toolkit.Controls
             {
                 string ch = _isExpanded ? "▾" : "▸";
                 var chevRect = new Rectangle(Width - ChevronW - 4, 0, ChevronW, Height);
+                var chevColor = showActive ? Color.White : ChevronColor;
                 using (var f = new Font(WerTheme.FontFamily, 9f, FontStyle.Regular))
-                    TextRenderer.DrawText(g, ch, f, chevRect, ChevronColor,
+                    TextRenderer.DrawText(g, ch, f, chevRect, chevColor,
                         TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter |
                         TextFormatFlags.NoPrefix);
             }
 
             int textRight = HasSubItems ? ChevronW + 8 : 8;
             var textRect  = new Rectangle(PadLeft, 0, Width - PadLeft - textRight, Height);
-            var textColor = showActive ? ActiveText : NormalText;
-            var style     = (showActive && _isActive) ? FontStyle.Bold : FontStyle.Regular;
-            using (var f = new Font(WerTheme.FontFamily, 9.75f, style))
+            var textColor = showActive ? Color.White : NormalText;
+            using (var f = showActive
+                ? new Font(WerTheme.FontFamily, 9.75f, FontStyle.Bold)
+                : CreateSemiboldFont(9.75f))
                 TextRenderer.DrawText(g, Text, f, textRect, textColor,
                     TextFormatFlags.Left | TextFormatFlags.VerticalCenter |
                     TextFormatFlags.EndEllipsis | TextFormatFlags.NoPrefix);
         }
+
+        // Light tint of teal for active sub-item background
+        private static readonly Color SubActiveBg = Color.FromArgb(232, 246, 249);
 
         private void PaintSubItem(Graphics g, Rectangle rect)
         {
             if (_isActive)
             {
                 using (var path = RoundedRect(rect, CornerRadius))
-                using (var b = new SolidBrush(ActiveBg))
+                using (var b = new SolidBrush(SubActiveBg))
                     g.FillPath(b, path);
             }
             else if (_isHovering)
@@ -242,19 +246,15 @@ namespace Wer.Winforms.Toolkit.Controls
             }
 
             // Vertical connector line (left rail)
-            using (var pen = new Pen(Color.FromArgb(210, 218, 226), 1f))
-                g.DrawLine(pen, 14, 0, 14, Height);
-
-            // Dot connector
-            int dotY = Height / 2;
-            int dotX = 10;
-            using (var b = new SolidBrush(_isActive ? IndicatorColor : Color.FromArgb(190, 200, 210)))
-                g.FillEllipse(b, dotX, dotY - 3, 6, 6);
+            using (var pen = new Pen(Color.FromArgb(220, 225, 230), 1.2f))
+                g.DrawLine(pen, PadLeft, 0, PadLeft, Height);
 
             var textRect  = new Rectangle(SubPadLeft, 0, Width - SubPadLeft - 8, Height);
             var textColor = _isActive ? ActiveText : SubNormalText;
-            var style     = _isActive ? FontStyle.Bold : FontStyle.Regular;
-            using (var f = new Font(WerTheme.FontFamily, 9.25f, style))
+            // Active = bold, normal = regular
+            using (var f = _isActive
+                ? new Font(WerTheme.FontFamily, 9.25f, FontStyle.Bold)
+                : new Font(WerTheme.FontFamily, 9.25f, FontStyle.Regular))
                 TextRenderer.DrawText(g, Text, f, textRect, textColor,
                     TextFormatFlags.Left | TextFormatFlags.VerticalCenter |
                     TextFormatFlags.EndEllipsis | TextFormatFlags.NoPrefix);
@@ -263,6 +263,25 @@ namespace Wer.Winforms.Toolkit.Controls
         protected override void OnResize(EventArgs e) { base.OnResize(e); Invalidate(); }
 
         // ── Helpers ──────────────────────────────────────────────
+
+        private static bool? _semiboldAvailable;
+
+        private static Font CreateSemiboldFont(float size)
+        {
+            if (_semiboldAvailable == null)
+            {
+                string semibold = WerTheme.FontFamily + " Semibold";
+                _semiboldAvailable = false;
+                foreach (var fam in new System.Drawing.Text.InstalledFontCollection().Families)
+                {
+                    if (string.Equals(fam.Name, semibold, StringComparison.OrdinalIgnoreCase))
+                    { _semiboldAvailable = true; break; }
+                }
+            }
+            return _semiboldAvailable == true
+                ? new Font(WerTheme.FontFamily + " Semibold", size, FontStyle.Regular)
+                : new Font(WerTheme.FontFamily, size, FontStyle.Bold);
+        }
 
         private static GraphicsPath RoundedRect(Rectangle rect, int radius)
         {

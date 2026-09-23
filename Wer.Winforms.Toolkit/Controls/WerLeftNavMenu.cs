@@ -205,35 +205,39 @@ namespace Wer.Winforms.Toolkit.Controls
                 return;
             }
 
-            // Parent button with sub-items — toggle accordion, don't fire nav
+            // Parent button with sub-items — collapse others, toggle accordion, activate
             if (btn.HasSubItems)
             {
+                CollapseAllExcept(btn);
+                SetActive(btn, null);
                 ToggleAccordion(btn);
                 return;
             }
 
-            // Plain parent button — activate and fire nav
+            // Plain parent button — activate, collapse others, fire nav
+            CollapseAllExcept(btn);
             SetActive(btn, null);
             NavigationChanged?.Invoke(this, EventArgs.Empty);
         }
 
         private void SetActive(WerMenuButton parent, WerMenuButton subBtn)
         {
-            // Deactivate old
+            // Deactivate old parent (keep accordion open)
             if (_activeButton != null && _activeButton != parent)
             {
                 _activeButton.IsActive      = false;
                 _activeButton.HasActiveChild = false;
             }
 
+            // Deactivate all sub-items first
+            foreach (Control c in _scrollPanel.Controls)
+            {
+                if (c is WerMenuButton sb && sb.IsSubItem)
+                    sb.IsActive = false;
+            }
+
             if (subBtn != null)
             {
-                // Deactivate old sub-item
-                foreach (Control c in _scrollPanel.Controls)
-                {
-                    if (c is WerMenuButton sb && sb.IsSubItem && sb != subBtn)
-                        sb.IsActive = false;
-                }
                 subBtn.IsActive      = true;
                 parent.IsActive      = false;
                 parent.HasActiveChild = true;
@@ -247,6 +251,18 @@ namespace Wer.Winforms.Toolkit.Controls
             _activeButton = parent;
         }
 
+        private void CollapseAllExcept(WerMenuButton keep)
+        {
+            var toCollapse = new List<WerMenuButton>();
+            foreach (Control c in _scrollPanel.Controls)
+            {
+                if (c is WerMenuButton other && other != keep && other.IsExpanded)
+                    toCollapse.Add(other);
+            }
+            foreach (var other in toCollapse)
+                CollapseButton(other);
+        }
+
         private void ToggleAccordion(WerMenuButton btn)
         {
             if (btn.IsExpanded)
@@ -257,17 +273,6 @@ namespace Wer.Winforms.Toolkit.Controls
 
         private void ExpandButton(WerMenuButton btn)
         {
-            // Collapse any other expanded button first.
-            // Collect before iterating — CollapseButton modifies _scrollPanel.Controls.
-            var toCollapse = new List<WerMenuButton>();
-            foreach (Control c in _scrollPanel.Controls)
-            {
-                if (c is WerMenuButton other && other != btn && other.IsExpanded)
-                    toCollapse.Add(other);
-            }
-            foreach (var other in toCollapse)
-                CollapseButton(other);
-
             btn.IsExpanded = true;
 
             // With Dock=Top, lower Z-index = visually lower (closer to bottom).

@@ -112,7 +112,7 @@ namespace Wer.Winforms.Demo
             this.werMenuButton1.SubItems.Add(subMenuItem2);
             this.werMenuButton1.TabIndex = 0;
             this.werMenuButton1.Text = "Users";
-            this.werMenuButton1.Click += new System.EventHandler(this.werMenuButton1_Click);
+            // No Click handler — sub-items handle navigation via Actions
             // 
             // MainForm
             // 

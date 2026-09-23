@@ -15,6 +15,10 @@ namespace Wer.Winforms.Demo
             werLeftNavMenu1.LogoText = "MyApp";
             werTopNav1.UserName = "Agwit Jim";
             werTopNav1.LogoutClicked += (s, e) => Application.Exit();
+
+            // Wire sub-item Actions for "Users" menu button
+            werMenuButton1.SubItems[0].Action = () => werLeftNavMenu1.ShowForm<DetailsForm>("Active Users");
+            werMenuButton1.SubItems[1].Action = () => werLeftNavMenu1.ShowForm<DetailsForm>("Inactive Users");
             SetupDataGrid();
         }
 
