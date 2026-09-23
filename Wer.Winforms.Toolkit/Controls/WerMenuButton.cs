@@ -57,6 +57,17 @@ namespace Wer.Winforms.Toolkit.Controls
 
         // ── Public properties (designer-visible) ─────────────────
 
+        /// <summary>Icon from Segoe MDL2 Assets. Use WerIcons constants. Drawn left of text.</summary>
+        [Category("WerMenuButton")]
+        [DefaultValue("")]
+        [Description("Icon code from WerIcons. Drawn left of text on parent buttons.")]
+        public string IconCode
+        {
+            get => _iconCode;
+            set { _iconCode = value ?? ""; Invalidate(); }
+        }
+        private string _iconCode = "";
+
         /// <summary>Sub-menu items. Configure Text in the Collection Editor; set Action in code.</summary>
         [Category("WerMenuButton")]
         [Description("Sub-menu items shown when this button is expanded. Set Action on each item in code.")]
@@ -213,8 +224,23 @@ namespace Wer.Winforms.Toolkit.Controls
             }
 
             int textRight = HasSubItems ? ChevronW + 8 : 8;
-            var textRect  = new Rectangle(PadLeft, 0, Width - PadLeft - textRight, Height);
             var textColor = showActive ? Color.White : NormalText;
+            bool hasIcon = !string.IsNullOrEmpty(_iconCode);
+            int iconSpace = hasIcon ? 24 : 0;
+            int textLeft = PadLeft + iconSpace;
+
+            // Icon
+            if (hasIcon)
+            {
+                var iconColor = showActive ? Color.White : Color.FromArgb(120, 130, 145);
+                var iconRect = new Rectangle(PadLeft, 0, 20, Height);
+                using (var iconFont = new Font("Segoe MDL2 Assets", 10f, FontStyle.Regular))
+                    TextRenderer.DrawText(g, _iconCode, iconFont, iconRect, iconColor,
+                        TextFormatFlags.Left | TextFormatFlags.VerticalCenter | TextFormatFlags.NoPrefix);
+            }
+
+            // Text
+            var textRect = new Rectangle(textLeft, 0, Width - textLeft - textRight, Height);
             using (var f = showActive
                 ? new Font(WerTheme.FontFamily, 9.75f, FontStyle.Bold)
                 : CreateSemiboldFont(9.75f))

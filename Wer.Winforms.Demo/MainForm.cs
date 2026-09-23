@@ -58,6 +58,9 @@ namespace Wer.Winforms.Demo
 
         private void MainForm_Load(object sender, System.EventArgs e)
         {
+            werMenuButton1.IconCode = WerIcons.People;    // Users
+            werMenuButton2.IconCode = WerIcons.Grid;      // Products
+            werMenuButton3.IconCode = WerIcons.Person;       // Texts
         }
 
         private void werTabControl1_SelectedIndexChanged(object sender, System.EventArgs e)
