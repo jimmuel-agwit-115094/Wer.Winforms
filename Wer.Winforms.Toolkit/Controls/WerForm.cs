@@ -24,7 +24,7 @@ namespace Wer.Winforms.Toolkit.Controls
             Font = WerTheme.BodyFont;
             Padding = new Padding(16);
             DoubleBuffered = true;
-            StartPosition = FormStartPosition.CenterParent;
+            StartPosition = FormStartPosition.CenterScreen;
             AutoScaleMode = AutoScaleMode.Font;
 
             // Clean look — no icon, no minimize/maximize, not resizable

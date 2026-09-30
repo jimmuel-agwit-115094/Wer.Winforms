@@ -177,6 +177,44 @@ namespace Wer.Winforms.Toolkit.Controls
         [Browsable(false)]
         public object SelectedItem => _combo.SelectedItem;
 
+        /// <summary>Selected value from ValueMember column. Returns the ID when DataSource is bound.</summary>
+        [Browsable(false)]
+        public object SelectedValue
+        {
+            get => _combo.SelectedValue;
+            set { _combo.SelectedValue = value; _inputBorder.Invalidate(); }
+        }
+
+        /// <summary>Bind a list/table as data source. Use with DisplayMember and ValueMember.</summary>
+        [Category("WerComboBox")]
+        [DefaultValue(null)]
+        [Description("Data source (List, DataTable, etc). Use with DisplayMember and ValueMember.")]
+        public object DataSource
+        {
+            get => _combo.DataSource;
+            set { _combo.DataSource = value; _inputBorder.Invalidate(); }
+        }
+
+        /// <summary>Property name to display in the dropdown.</summary>
+        [Category("WerComboBox")]
+        [DefaultValue("")]
+        [Description("Property or column name to display.")]
+        public string DisplayMember
+        {
+            get => _combo.DisplayMember;
+            set => _combo.DisplayMember = value;
+        }
+
+        /// <summary>Property name to use as the value (e.g. ID column).</summary>
+        [Category("WerComboBox")]
+        [DefaultValue("")]
+        [Description("Property or column name to return as SelectedValue (e.g. Id).")]
+        public string ValueMember
+        {
+            get => _combo.ValueMember;
+            set => _combo.ValueMember = value;
+        }
+
         [Browsable(true)]
         [Category("WerComboBox")]
         public override string Text

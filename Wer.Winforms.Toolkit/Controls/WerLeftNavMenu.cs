@@ -171,11 +171,11 @@ namespace Wer.Winforms.Toolkit.Controls
         {
             base.OnControlAdded(e);
 
-            if (e.Control is WerMenuButton btn && _scrollPanel != null
+            // At design time, leave buttons parented to this control directly.
+            // At runtime, OnHandleCreated moves them into _scrollPanel.
+            if (!DesignMode && e.Control is WerMenuButton btn && _scrollPanel != null
                 && !_scrollPanel.Controls.Contains(btn))
             {
-                // Move from outer panel into scroll panel.
-                // Remove fires OnControlRemoved which unwires Click (no-op here since not yet wired).
                 Controls.Remove(btn);
                 btn.Click += OnButtonClick;
                 _scrollPanel.Controls.Add(btn);
@@ -189,6 +189,29 @@ namespace Wer.Winforms.Toolkit.Controls
             {
                 btn.Click -= OnButtonClick;
                 if (_activeButton == btn) _activeButton = null;
+            }
+        }
+
+        /// <summary>
+        /// At runtime, migrate any WerMenuButtons the designer left parented to this control
+        /// into _scrollPanel so they scroll independently of the logo header.
+        /// </summary>
+        protected override void OnHandleCreated(EventArgs e)
+        {
+            base.OnHandleCreated(e);
+            if (DesignMode || _scrollPanel == null) return;
+
+            var toMove = new List<WerMenuButton>();
+            foreach (Control c in Controls)
+            {
+                if (c is WerMenuButton btn && !_scrollPanel.Controls.Contains(btn))
+                    toMove.Add(btn);
+            }
+            foreach (var btn in toMove)
+            {
+                Controls.Remove(btn);
+                btn.Click += OnButtonClick;
+                _scrollPanel.Controls.Add(btn);
             }
         }
 
