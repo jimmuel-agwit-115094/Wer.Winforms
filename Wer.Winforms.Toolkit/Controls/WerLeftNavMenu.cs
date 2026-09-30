@@ -134,6 +134,7 @@ namespace Wer.Winforms.Toolkit.Controls
                         Padding = new Padding(16, 6, 0, 2),
                         Visible = false,
                     };
+                    _titleLabelFont?.Dispose();
                     _titleLabelFont = new Font(WerTheme.FontFamily, 14f, FontStyle.Bold);
                     _titleLabel = new Label
                     {

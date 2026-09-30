@@ -22,6 +22,7 @@ namespace Wer.Winforms.Toolkit.Controls
         private bool   _required;
         private bool   _readOnly;
         private bool   _hasFocus;
+        private bool   _wasEmpty = true;
 
         // ── Layout ───────────────────────────────────────────────────
         private int LabelHeight => Math.Max(20, (int)(Font.GetHeight() + 4));
@@ -51,8 +52,8 @@ namespace Wer.Winforms.Toolkit.Controls
             Font      = WerTheme.BodyFont;
             Size      = new Size(300, LabelHeight + LabelGap + 120);
 
-            // Border panel
-            _inputBorder = new Panel { BackColor = Color.Transparent };
+            // Border panel — double-buffered to prevent flicker
+            _inputBorder = new DoubleBufferedPanel { BackColor = Color.Transparent };
             _inputBorder.Paint += OnBorderPaint;
             Controls.Add(_inputBorder);
 
@@ -68,7 +69,15 @@ namespace Wer.Winforms.Toolkit.Controls
                 WordWrap     = true,
                 DetectUrls   = false,
             };
-            _input.TextChanged  += (s, e) => { OnTextChanged(e); _inputBorder.Invalidate(); };
+            _input.TextChanged  += (s, e) =>
+            {
+                bool wasEmpty = _wasEmpty;
+                bool isEmpty  = string.IsNullOrEmpty(_input.Text);
+                _wasEmpty = isEmpty;
+                OnTextChanged(e);
+                // Only repaint border when placeholder visibility changes
+                if (wasEmpty != isEmpty) _inputBorder.Invalidate();
+            };
             _input.GotFocus     += (s, e) => { _hasFocus = true;  _inputBorder.Invalidate(); };
             _input.LostFocus    += (s, e) => { _hasFocus = false; _inputBorder.Invalidate(); };
             _inputBorder.Controls.Add(_input);
@@ -228,7 +237,7 @@ namespace Wer.Winforms.Toolkit.Controls
             else                             labelColor = LabelNormal;
 
             var labelRect = new Rectangle(0, 0, Width, LabelHeight);
-            TextRenderer.DrawText(g, _labelText, Font, labelRect, labelColor,
+            TextRenderer.DrawText(g, _labelText, WerTheme.LabelFont, labelRect, labelColor,
                 TextFormatFlags.Left | TextFormatFlags.VerticalCenter | TextFormatFlags.SingleLine);
 
             if (_required && Enabled)
@@ -290,6 +299,15 @@ namespace Wer.Winforms.Toolkit.Controls
             path.AddArc(rect.X, rect.Bottom - d, d, d, 90, 90);
             path.CloseFigure();
             return path;
+        }
+
+        private class DoubleBufferedPanel : Panel
+        {
+            public DoubleBufferedPanel()
+            {
+                SetStyle(ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint |
+                         ControlStyles.OptimizedDoubleBuffer, true);
+            }
         }
     }
 }

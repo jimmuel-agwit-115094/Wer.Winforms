@@ -131,6 +131,7 @@ namespace Wer.Winforms.Toolkit
         private static Font _headingFont;
         private static Font _subheadingFont;
         private static Font _bodyFont;
+        private static Font _labelFont;
         private static Font _captionFont;
         private static Font _buttonFont;
         private static bool? _semiboldAvailable;
@@ -143,6 +144,26 @@ namespace Wer.Winforms.Toolkit
 
         public static Font BodyFont =>
             _bodyFont ?? (_bodyFont = new Font(_fontFamily, _bodySize, FontStyle.Regular));
+
+        /// <summary>Bold variant of BodyFont — used for form field labels.</summary>
+        public static Font LabelFont
+        {
+            get
+            {
+                if (_labelFont != null) return _labelFont;
+                if (_semiboldAvailable == null)
+                {
+                    string semibold = _fontFamily + " Semibold";
+                    using (var ifc = new System.Drawing.Text.InstalledFontCollection())
+                        _semiboldAvailable = ifc.Families
+                            .Any(f => f.Name.Equals(semibold, StringComparison.OrdinalIgnoreCase));
+                }
+                _labelFont = _semiboldAvailable == true
+                    ? new Font(_fontFamily + " Semibold", _bodySize, FontStyle.Regular)
+                    : new Font(_fontFamily, _bodySize, FontStyle.Bold);
+                return _labelFont;
+            }
+        }
 
         public static Font CaptionFont =>
             _captionFont ?? (_captionFont = new Font(_fontFamily, _captionSize, FontStyle.Regular));

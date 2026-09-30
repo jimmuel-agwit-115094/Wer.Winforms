@@ -156,5 +156,10 @@ namespace Wer.Winforms.Demo
         private void werMenuButton2_Click(object sender, EventArgs e)
         {
         }
+
+        private void werTopNav1_LogoutClicked(object sender, EventArgs e)
+        {
+
+        }
     }
 }

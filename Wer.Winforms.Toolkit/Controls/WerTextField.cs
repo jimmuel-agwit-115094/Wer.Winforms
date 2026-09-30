@@ -205,7 +205,7 @@ namespace Wer.Winforms.Toolkit.Controls
             var labelRect = new Rectangle(0, 0, Width, LabelHeight);
 
             // Draw label text
-            TextRenderer.DrawText(g, _labelText, Font, labelRect, labelColor,
+            TextRenderer.DrawText(g, _labelText, WerTheme.LabelFont, labelRect, labelColor,
                 TextFormatFlags.Left | TextFormatFlags.VerticalCenter | TextFormatFlags.SingleLine);
 
             // Draw red asterisk if required

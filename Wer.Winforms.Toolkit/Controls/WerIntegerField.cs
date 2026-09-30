@@ -316,7 +316,7 @@ namespace Wer.Winforms.Toolkit.Controls
             else                             labelColor = LabelNormal;
 
             var labelRect = new Rectangle(0, 0, Width, LabelHeight);
-            TextRenderer.DrawText(g, _labelText, Font, labelRect, labelColor,
+            TextRenderer.DrawText(g, _labelText, WerTheme.LabelFont, labelRect, labelColor,
                 TextFormatFlags.Left | TextFormatFlags.VerticalCenter | TextFormatFlags.SingleLine);
 
             if (_required && Enabled)

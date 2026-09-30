@@ -196,7 +196,7 @@ namespace Wer.Winforms.Toolkit.Controls
             if (!_showLabel) return;
 
             var labelRect = new Rectangle(0, 0, Width, LabelHeight);
-            TextRenderer.DrawText(g, _labelText, Font, labelRect,
+            TextRenderer.DrawText(g, _labelText, WerTheme.LabelFont, labelRect,
                 Enabled ? LabelNormal : LabelDisabled,
                 TextFormatFlags.Left | TextFormatFlags.VerticalCenter | TextFormatFlags.SingleLine);
         }

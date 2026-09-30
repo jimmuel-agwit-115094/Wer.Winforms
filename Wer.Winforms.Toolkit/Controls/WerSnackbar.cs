@@ -45,9 +45,13 @@ namespace Wer.Winforms.Toolkit.Controls
 
         private static void Show(IWin32Window owner, string message, WerSnackbarType type)
         {
+            // Resolve to top-level form — embedded forms (TopLevel=false) have local Bounds
             Form ownerForm = null;
-            if (owner is Form f) ownerForm = f;
-            else if (owner is Control c) ownerForm = c.FindForm();
+            if (owner is Control ctrl)
+            {
+                var topForm = ctrl.TopLevelControl as Form;
+                ownerForm = topForm ?? ctrl.FindForm();
+            }
             if (ownerForm == null) ownerForm = Form.ActiveForm;
 
             // Calculate Y offset for stacking

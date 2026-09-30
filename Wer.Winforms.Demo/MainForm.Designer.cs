@@ -15,8 +15,8 @@ namespace Wer.Winforms.Demo
 
         private void InitializeComponent()
         {
-            Wer.Winforms.Toolkit.Controls.SubMenuItem subMenuItem1 = new Wer.Winforms.Toolkit.Controls.SubMenuItem();
-            Wer.Winforms.Toolkit.Controls.SubMenuItem subMenuItem2 = new Wer.Winforms.Toolkit.Controls.SubMenuItem();
+            Wer.Winforms.Toolkit.Controls.SubMenuItem subMenuItem3 = new Wer.Winforms.Toolkit.Controls.SubMenuItem();
+            Wer.Winforms.Toolkit.Controls.SubMenuItem subMenuItem4 = new Wer.Winforms.Toolkit.Controls.SubMenuItem();
             this.panel1 = new System.Windows.Forms.Panel();
             this.werTopNav1 = new Wer.Winforms.Toolkit.Controls.WerTopNav();
             this.werLeftNavMenu1 = new Wer.Winforms.Toolkit.Controls.WerLeftNavMenu();
@@ -47,6 +47,7 @@ namespace Wer.Winforms.Demo
             this.werTopNav1.Size = new System.Drawing.Size(1083, 41);
             this.werTopNav1.TabIndex = 1;
             this.werTopNav1.Text = "werTopNav1";
+            this.werTopNav1.LogoutClicked += new System.EventHandler(this.werTopNav1_LogoutClicked);
             // 
             // werLeftNavMenu1
             // 
@@ -96,12 +97,12 @@ namespace Wer.Winforms.Demo
             this.werMenuButton1.Location = new System.Drawing.Point(0, 0);
             this.werMenuButton1.Name = "werMenuButton1";
             this.werMenuButton1.Size = new System.Drawing.Size(210, 40);
-            subMenuItem1.Action = null;
-            subMenuItem1.Text = "Active";
-            subMenuItem2.Action = null;
-            subMenuItem2.Text = "Test Inactuive";
-            this.werMenuButton1.SubItems.Add(subMenuItem1);
-            this.werMenuButton1.SubItems.Add(subMenuItem2);
+            subMenuItem3.Action = null;
+            subMenuItem3.Text = "Active";
+            subMenuItem4.Action = null;
+            subMenuItem4.Text = "Test Inactuive";
+            this.werMenuButton1.SubItems.Add(subMenuItem3);
+            this.werMenuButton1.SubItems.Add(subMenuItem4);
             this.werMenuButton1.TabIndex = 0;
             this.werMenuButton1.Text = "Users";
             // 

@@ -49,7 +49,7 @@ namespace Wer.Winforms.Toolkit.Controls
             _label = new Label
             {
                 Text      = _labelText,
-                Font      = WerTheme.BodyFont,
+                Font      = WerTheme.LabelFont,
                 ForeColor = Color.Black,
                 AutoSize  = false,
                 BackColor = Color.Transparent,
@@ -59,7 +59,7 @@ namespace Wer.Winforms.Toolkit.Controls
             _fromPicker = new WerDatePicker
             {
                 ShowLabel = false,
-                Font      = WerTheme.BodyFont,
+                Font      = WerTheme.LabelFont,
             };
             _fromPicker.ValueChanged += OnPickerChanged;
 
@@ -67,7 +67,7 @@ namespace Wer.Winforms.Toolkit.Controls
             _separator = new Label
             {
                 Text      = "—",
-                Font      = WerTheme.BodyFont,
+                Font      = WerTheme.LabelFont,
                 ForeColor = WerTheme.MutedColor,
                 TextAlign = ContentAlignment.MiddleCenter,
                 BackColor = Color.Transparent,
@@ -78,7 +78,7 @@ namespace Wer.Winforms.Toolkit.Controls
             _toPicker = new WerDatePicker
             {
                 ShowLabel = false,
-                Font      = WerTheme.BodyFont,
+                Font      = WerTheme.LabelFont,
             };
             _toPicker.ValueChanged += OnPickerChanged;
 
@@ -142,7 +142,7 @@ namespace Wer.Winforms.Toolkit.Controls
         {
             base.OnFontChanged(e);
             if (_label == null) return;
-            _label.Font      = Font;
+            _label.Font      = WerTheme.LabelFont;
             _fromPicker.Font = Font;
             _toPicker.Font   = Font;
             _separator.Font  = Font;

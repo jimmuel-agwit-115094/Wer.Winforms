@@ -140,28 +140,21 @@ namespace Wer.Winforms.Toolkit.Controls
                     g.DrawPath(p, path);
             }
 
-            // Heading
+            // Heading — do NOT wrap shared WerTheme fonts in using()
             if (!string.IsNullOrEmpty(_headingText))
             {
-                using (var f = WerTheme.SubheadingFont)
-                {
-                    var r = new Rectangle(PadH, HeadingTopPad, Width - PadH * 2, 22);
-                    TextRenderer.DrawText(g, _headingText, f, r, WerTheme.TextColor,
-                        TextFormatFlags.Left | TextFormatFlags.Top | TextFormatFlags.SingleLine);
-                }
+                var r = new Rectangle(PadH, HeadingTopPad, Width - PadH * 2, 22);
+                TextRenderer.DrawText(g, _headingText, WerTheme.SubheadingFont, r, WerTheme.TextColor,
+                    TextFormatFlags.Left | TextFormatFlags.Top | TextFormatFlags.SingleLine);
             }
 
             // Subheading
             if (!string.IsNullOrEmpty(_subheadingText))
             {
-                using (var sf = WerTheme.SubheadingFont)
-                using (var cf = WerTheme.CaptionFont)
-                {
-                    int top = HeadingTopPad + (int)sf.GetHeight(g) + SubheadingGap;
-                    var r   = new Rectangle(PadH, top, Width - PadH * 2, 18);
-                    TextRenderer.DrawText(g, _subheadingText, cf, r, WerTheme.MutedColor,
-                        TextFormatFlags.Left | TextFormatFlags.Top | TextFormatFlags.SingleLine);
-                }
+                int top = HeadingTopPad + (int)WerTheme.SubheadingFont.GetHeight(g) + SubheadingGap;
+                var r   = new Rectangle(PadH, top, Width - PadH * 2, 18);
+                TextRenderer.DrawText(g, _subheadingText, WerTheme.CaptionFont, r, WerTheme.MutedColor,
+                    TextFormatFlags.Left | TextFormatFlags.Top | TextFormatFlags.SingleLine);
             }
         }
 
