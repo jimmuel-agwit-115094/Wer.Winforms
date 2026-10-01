@@ -50,6 +50,7 @@ namespace Wer.Winforms.Toolkit.Controls
             BackColor = Color.Transparent;
             Font      = WerTheme.BodyFont;
             Size      = new Size(350, 60);
+            TabStop   = false;  // only inner TextBox should receive tab focus
 
             // Border panel — draws the rounded rectangle
             _inputBorder = new Panel { BackColor = Color.Transparent };

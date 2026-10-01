@@ -51,6 +51,7 @@ namespace Wer.Winforms.Toolkit.Controls
             BackColor = Color.Transparent;
             Font      = WerTheme.BodyFont;
             Size      = new Size(300, LabelHeight + LabelGap + 120);
+            TabStop   = false;
 
             // Border panel — double-buffered to prevent flicker
             _inputBorder = new DoubleBufferedPanel { BackColor = Color.Transparent };

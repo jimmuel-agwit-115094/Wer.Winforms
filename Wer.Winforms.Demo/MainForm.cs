@@ -12,13 +12,13 @@ namespace Wer.Winforms.Demo
             InitializeComponent();
 
             werLeftNavMenu1.ContentPanel = panel1;
-            werLeftNavMenu1.LogoText = "MyApp";
-            werTopNav1.UserName = "Agwit Jim";
+            werLeftNavMenu1.LogoText = "PointPro";
+            werTopNav1.UserName = "Jimmuel Agwit";
             werTopNav1.LogoutClicked += (s, e) => Application.Exit();
 
-            // Wire sub-item Actions for "Users" menu button
-            werMenuButton1.SubItems[0].Action = () => werLeftNavMenu1.ShowForm<DetailsForm>("Active Users");
-            werMenuButton1.SubItems[1].Action = () => werLeftNavMenu1.ShowForm<DetailsForm>("Inactive Users");
+            // Wire sub-item Actions for "Users" menu button (werMenuButton7)
+            werMenuButton7.SubItems[0].Action = () => werLeftNavMenu1.ShowForm<DetailsForm>("Active Users");
+            werMenuButton7.SubItems[1].Action = () => werLeftNavMenu1.ShowForm<DetailsForm>("Inactive Users");
             SetupDataGrid();
         }
 
@@ -58,9 +58,6 @@ namespace Wer.Winforms.Demo
 
         private void MainForm_Load(object sender, System.EventArgs e)
         {
-            werMenuButton1.IconCode = WerIcons.People;    // Users
-            werMenuButton2.IconCode = WerIcons.Grid;      // Products
-            werMenuButton3.IconCode = WerIcons.Person;       // Texts
         }
 
         private void werTabControl1_SelectedIndexChanged(object sender, System.EventArgs e)

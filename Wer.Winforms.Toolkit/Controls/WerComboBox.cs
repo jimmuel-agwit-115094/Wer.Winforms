@@ -57,6 +57,7 @@ namespace Wer.Winforms.Toolkit.Controls
             ForeColor = WerTheme.TextColor;
             BackColor = Color.Transparent;
             Size      = new Size(350, 60);
+            TabStop   = false;
 
             // Custom-painted input face
             _inputBorder = new Panel { BackColor = Color.Transparent, Cursor = Cursors.Hand };

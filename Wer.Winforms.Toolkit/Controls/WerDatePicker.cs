@@ -54,6 +54,7 @@ namespace Wer.Winforms.Toolkit.Controls
             BackColor = Color.Transparent;
             Font      = WerTheme.BodyFont;
             Size      = new Size(350, 60);
+            TabStop   = false;
 
             // Border panel — we paint everything ourselves
             _inputBorder = new Panel { BackColor = Color.Transparent, Cursor = Cursors.Hand };

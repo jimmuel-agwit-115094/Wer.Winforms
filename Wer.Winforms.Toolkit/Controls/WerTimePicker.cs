@@ -73,6 +73,7 @@ namespace Wer.Winforms.Toolkit.Controls
             BackColor = Color.Transparent;
             Font      = WerTheme.BodyFont;
             Size      = new Size(350, 60);
+            TabStop   = false;
 
             // --- Hour combo (hidden, behind painted panel) ---
             _hourCombo = CreateCombo();

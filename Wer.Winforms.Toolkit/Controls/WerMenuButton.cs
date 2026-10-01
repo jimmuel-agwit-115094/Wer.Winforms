@@ -30,18 +30,15 @@ namespace Wer.Winforms.Toolkit.Controls
         private const int PadLeft     = 16;
         private const int SubPadLeft  = 28;
         private const int CornerRadius = 8;
-        private const int IndicatorW  = 3;
         private const int ChevronW    = 24;
 
         // ── Colors ───────────────────────────────────────────────
-        private static readonly Color NormalBg      = Color.White;
-        private static readonly Color ActiveBg      = Color.FromArgb(236, 247, 250);
-        private static readonly Color HoverBg       = Color.FromArgb(246, 248, 250);
+        private static readonly Color NormalBg      = Color.FromArgb(247, 248, 250);
+        private static readonly Color HoverBg       = Color.FromArgb(237, 240, 244);
         private static readonly Color SubHoverBg    = Color.FromArgb(241, 248, 251);
         private static readonly Color NormalText    = Color.FromArgb(75, 85, 100);
         private static readonly Color ActiveText    = Color.FromArgb(12, 124, 146);
         private static readonly Color SubNormalText = Color.FromArgb(90, 100, 115);
-        private static readonly Color IndicatorColor = Color.FromArgb(12, 124, 146);
         private static readonly Color ChevronColor  = Color.FromArgb(150, 160, 170);
 
         public WerMenuButton()
@@ -186,8 +183,8 @@ namespace Wer.Winforms.Toolkit.Controls
             else            PaintParent(g, rect);
         }
 
-        // Filled active background for parent
-        private static readonly Color FilledActiveBg = Color.FromArgb(12, 124, 146);
+        // Light teal tint for active parent background
+        private static readonly Color ActiveTintBg = Color.FromArgb(218, 242, 248);
 
         private void PaintParent(Graphics g, Rectangle rect)
         {
@@ -195,9 +192,8 @@ namespace Wer.Winforms.Toolkit.Controls
 
             if (showActive)
             {
-                // Full teal filled background (like "Logistics" in ref)
                 using (var path = RoundedRect(rect, CornerRadius))
-                using (var b = new SolidBrush(FilledActiveBg))
+                using (var b = new SolidBrush(ActiveTintBg))
                     g.FillPath(b, path);
             }
             else if (_isHovering)
@@ -216,7 +212,7 @@ namespace Wer.Winforms.Toolkit.Controls
             {
                 string ch = _isExpanded ? "▾" : "▸";
                 var chevRect = new Rectangle(Width - ChevronW - 4, 0, ChevronW, Height);
-                var chevColor = showActive ? Color.White : ChevronColor;
+                var chevColor = showActive ? ActiveText : ChevronColor;
                 using (var f = new Font(WerTheme.FontFamily, 9f, FontStyle.Regular))
                     TextRenderer.DrawText(g, ch, f, chevRect, chevColor,
                         TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter |
@@ -224,7 +220,7 @@ namespace Wer.Winforms.Toolkit.Controls
             }
 
             int textRight = HasSubItems ? ChevronW + 8 : 8;
-            var textColor = showActive ? Color.White : NormalText;
+            var textColor = showActive ? ActiveText : NormalText;
             bool hasIcon = !string.IsNullOrEmpty(_iconCode);
             int iconSpace = hasIcon ? 24 : 0;
             int textLeft = PadLeft + iconSpace;
@@ -232,7 +228,7 @@ namespace Wer.Winforms.Toolkit.Controls
             // Icon
             if (hasIcon)
             {
-                var iconColor = showActive ? Color.White : Color.FromArgb(120, 130, 145);
+                var iconColor = showActive ? ActiveText : Color.FromArgb(120, 130, 145);
                 var iconRect = new Rectangle(PadLeft, 0, 20, Height);
                 using (var iconFont = new Font("Segoe MDL2 Assets", 10f, FontStyle.Regular))
                     TextRenderer.DrawText(g, _iconCode, iconFont, iconRect, iconColor,

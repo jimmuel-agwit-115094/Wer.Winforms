@@ -41,7 +41,7 @@ namespace Wer.Winforms.Toolkit.Controls
         // Scroll panel that holds all WerMenuButton children
         private Panel _scrollPanel;
 
-        private static readonly Color NavBg = Color.White;
+        private static readonly Color NavBg = Color.FromArgb(247, 248, 250);
         private static readonly Color NavBorder = Color.FromArgb(232, 235, 240);
         private static readonly Color LogoColor = Color.FromArgb(130, 140, 150);
 

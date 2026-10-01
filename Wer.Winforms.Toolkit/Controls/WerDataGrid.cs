@@ -352,7 +352,7 @@ namespace Wer.Winforms.Toolkit.Controls
             SetStyle(ControlStyles.AllPaintingInWmPaint | ControlStyles.OptimizedDoubleBuffer |
                      ControlStyles.ResizeRedraw | ControlStyles.UserPaint, true);
 
-            _headerFont = new Font(WerTheme.FontFamily, 9.75f, FontStyle.Regular);
+            _headerFont = new Font(WerTheme.FontFamily, 9.75f, FontStyle.Bold);
             _dataFont = new Font(WerTheme.FontFamily, 9.75f, FontStyle.Regular);
             _editFont = new Font(WerTheme.FontFamily, 8.5f, FontStyle.Regular);
             _footerFont = new Font(WerTheme.FontFamily, 9f, FontStyle.Regular);
