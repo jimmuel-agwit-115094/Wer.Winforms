@@ -427,6 +427,9 @@ namespace Wer.Winforms.Toolkit.Controls
             _currentForm = form;
 
             _formHost.ResumeLayout(false);
+
+            if (form is WerForm werForm)
+                werForm.OnFormShown();
         }
 
         // ── Paint ───────────────────────────────────────────────

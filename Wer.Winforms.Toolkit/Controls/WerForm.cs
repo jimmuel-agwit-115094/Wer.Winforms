@@ -34,5 +34,11 @@ namespace Wer.Winforms.Toolkit.Controls
             FormBorderStyle = FormBorderStyle.FixedDialog;
             Text = "Manage";
         }
+
+        /// <summary>
+        /// Called by WerLeftNavMenu.ShowForm every time the form is displayed,
+        /// including cached re-shows. Override to reload stale data.
+        /// </summary>
+        public virtual void OnFormShown() { }
     }
 }

@@ -213,6 +213,18 @@ namespace Wer.Winforms.Toolkit.Controls
             set { _showEditColumn = value; RecalcLayout(); InvalidateGrid(); }
         }
 
+        private string _editButtonText = "Edit";
+
+        /// <summary>Text displayed on the row action button (e.g. "Edit", "View").</summary>
+        [Category("Wer Data")]
+        [DefaultValue("Edit")]
+        [Description("Text displayed on the row action button (e.g. Edit, View).")]
+        public string EditButtonText
+        {
+            get => _editButtonText;
+            set { _editButtonText = value ?? "Edit"; InvalidateGrid(); }
+        }
+
         [Category("Wer Data")]
         [DefaultValue(true)]
         public bool AllowSorting
@@ -1041,11 +1053,9 @@ namespace Wer.Winforms.Toolkit.Controls
                             g.DrawPath(pen, path);
                     }
 
-                    // Draw pencil icon (Segoe MDL2 Assets)
                     var btnRect = new Rectangle(btnX, btnY, EditBtnWidth, EditBtnHeight);
-                    using (var iconFont = new Font("Segoe MDL2 Assets", 11f, FontStyle.Regular))
-                        TextRenderer.DrawText(g, "\uE70F", iconFont, btnRect, EditBtnText,
-                            TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter | TextFormatFlags.NoPrefix);
+                    TextRenderer.DrawText(g, _editButtonText, _editFont, btnRect, EditBtnText,
+                        TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter | TextFormatFlags.NoPrefix);
                 }
 
                 // Row separator (below each row, except last visible)
