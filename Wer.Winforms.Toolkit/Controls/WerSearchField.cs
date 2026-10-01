@@ -57,7 +57,7 @@ namespace Wer.Winforms.Toolkit.Controls
             };
             _input.GotFocus   += (s, e) => { _hasFocus = true;  _inputBorder.Invalidate(); };
             _input.LostFocus  += (s, e) => { _hasFocus = false; _inputBorder.Invalidate(); };
-            _input.TextChanged += (s, e) => { _inputBorder.Invalidate(); OnTextChanged(e); };
+            _input.TextChanged += (s, e) => { OnTextChanged(e); };
             _input.KeyDown    += (s, e) => { if (e.KeyCode == Keys.Enter) { e.SuppressKeyPress = true; Search?.Invoke(this, EventArgs.Empty); } };
             _inputBorder.Controls.Add(_input);
 

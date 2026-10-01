@@ -106,6 +106,7 @@
     <Compile Include="Controls\WerCurrencyField.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Design\WerMenuButtonDesigner.cs" />
     <Compile Include="Design\WerTabControlDesigner.cs" />
     <Compile Include="Controls\DateRangeResult.cs" />
     <Compile Include="Controls\WerDateRange.cs">

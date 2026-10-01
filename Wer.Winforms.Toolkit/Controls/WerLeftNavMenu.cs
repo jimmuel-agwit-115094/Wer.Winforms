@@ -77,7 +77,6 @@ namespace Wer.Winforms.Toolkit.Controls
                 AutoScroll = true,
                 Padding    = new Padding(4, 4, 4, 8),
             };
-
             // Fill must be added before Top
             Controls.Add(_scrollPanel);
             Controls.Add(_headerPanel);

@@ -59,8 +59,8 @@ namespace Wer.Winforms.Toolkit.Controls
             Size      = new Size(350, 60);
             TabStop   = false;
 
-            // Custom-painted input face
-            _inputBorder = new Panel { BackColor = Color.Transparent, Cursor = Cursors.Hand };
+            // Custom-painted input face — use DoubleBufferedPanel to prevent flicker
+            _inputBorder = new DoubleBufferedPanel { BackColor = Color.Transparent, Cursor = Cursors.Hand };
             _inputBorder.Paint      += OnBorderPaint;
             _inputBorder.MouseClick += OnInputAreaClick;
             Controls.Add(_inputBorder);
@@ -412,6 +412,16 @@ namespace Wer.Winforms.Toolkit.Controls
             path.AddArc(rect.X, rect.Bottom - d, d, d, 90, 90);
             path.CloseFigure();
             return path;
+        }
+
+        /// <summary>Panel with double buffering enabled to prevent flicker.</summary>
+        private class DoubleBufferedPanel : Panel
+        {
+            public DoubleBufferedPanel()
+            {
+                SetStyle(ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint |
+                         ControlStyles.OptimizedDoubleBuffer, true);
+            }
         }
     }
 }

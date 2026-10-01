@@ -7,14 +7,20 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Wer.Winforms.Toolkit.Controls;
 
 namespace Wer.Winforms.Demo
 {
-    public partial class DetailsForm : Form
+    public partial class DetailsForm : WerForm
     {
         public DetailsForm()
         {
             InitializeComponent();
+        }
+
+        private void DetailsForm_Load(object sender, EventArgs e)
+        {
+
         }
     }
 }

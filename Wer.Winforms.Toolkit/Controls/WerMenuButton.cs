@@ -5,6 +5,7 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Text;
 using System.Windows.Forms;
+using Wer.Winforms.Toolkit.Design;
 
 namespace Wer.Winforms.Toolkit.Controls
 {
@@ -12,6 +13,7 @@ namespace Wer.Winforms.Toolkit.Controls
     [Description("Navigation menu button for WerLeftNavMenu. Add SubItems in Properties for accordion sub-menu.")]
     [DefaultEvent("Click")]
     [DefaultProperty("Text")]
+    [Designer(typeof(WerMenuButtonDesigner))]
     public class WerMenuButton : Control
     {
         // ── State ────────────────────────────────────────────────

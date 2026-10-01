@@ -12,6 +12,7 @@ namespace Wer.Winforms.Toolkit.Controls
     ///   werMenuButton1.SubItems.Add(new SubMenuItem("Users",
     ///       () => werLeftNavMenu1.ShowForm&lt;UsersForm&gt;("Users")));
     /// </summary>
+    [Serializable]
     [TypeConverter(typeof(ExpandableObjectConverter))]
     public class SubMenuItem
     {
@@ -29,7 +30,16 @@ namespace Wer.Winforms.Toolkit.Controls
 
         /// <summary>Invoked when the sub-item is clicked. Set in code.</summary>
         [Browsable(false)]
-        public Action Action { get; set; }
+        [NonSerialized]
+        private Action _action;
+
+        [Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public Action Action
+        {
+            get => _action;
+            set => _action = value;
+        }
 
         public override string ToString() =>
             string.IsNullOrWhiteSpace(Text) ? "Sub Item" : Text;

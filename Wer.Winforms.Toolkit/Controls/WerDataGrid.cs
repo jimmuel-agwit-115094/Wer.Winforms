@@ -118,6 +118,32 @@ namespace Wer.Winforms.Toolkit.Controls
             }
         }
 
+        private string _addButtonText = "Add";
+
+        /// <summary>Text displayed on the Add button (e.g. "Add Sales", "New Order").</summary>
+        [Category("Wer Data")]
+        [DefaultValue("Add")]
+        [Description("Text displayed on the Add button.")]
+        public string AddButtonText
+        {
+            get => _addButtonText;
+            set
+            {
+                _addButtonText = value ?? "Add";
+                if (_addButton != null)
+                {
+                    _addButton.Text = _addButtonText;
+                    // Auto-size button width to text
+                    using (var g = _addButton.CreateGraphics())
+                    {
+                        int textW = TextRenderer.MeasureText(g, _addButtonText, _addButton.Font).Width;
+                        _addButton.Width = Math.Max(80, textW + 24);
+                    }
+                    PositionSearchBox();
+                }
+            }
+        }
+
         /// <summary>
         /// Tab labels shown at the top-left of the grid.
         /// Set via Properties panel (collection editor) or code.
@@ -1015,9 +1041,11 @@ namespace Wer.Winforms.Toolkit.Controls
                             g.DrawPath(pen, path);
                     }
 
+                    // Draw pencil icon (Segoe MDL2 Assets)
                     var btnRect = new Rectangle(btnX, btnY, EditBtnWidth, EditBtnHeight);
-                    TextRenderer.DrawText(g, "Edit", _editFont, btnRect, EditBtnText,
-                        TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter | TextFormatFlags.NoPrefix);
+                    using (var iconFont = new Font("Segoe MDL2 Assets", 11f, FontStyle.Regular))
+                        TextRenderer.DrawText(g, "\uE70F", iconFont, btnRect, EditBtnText,
+                            TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter | TextFormatFlags.NoPrefix);
                 }
 
                 // Row separator (below each row, except last visible)

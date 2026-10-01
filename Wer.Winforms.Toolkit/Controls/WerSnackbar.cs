@@ -100,7 +100,8 @@ namespace Wer.Winforms.Toolkit.Controls
                 }
             };
 
-            toast.Show(ownerForm);
+            // Show without owner to avoid cascade disposal when owner closes
+            toast.Show();
 
             // Auto-dismiss timer
             var timer = new Timer { Interval = AutoDismissMs };
@@ -115,6 +116,31 @@ namespace Wer.Winforms.Toolkit.Controls
                 }
             };
             timer.Start();
+
+            // If owner disposes while toast is alive, dismiss the toast
+            if (ownerForm != null)
+            {
+                FormClosedEventHandler onOwnerClosed = null;
+                onOwnerClosed = (s, e) =>
+                {
+                    ownerForm.FormClosed -= onOwnerClosed;
+                    timer.Stop();
+                    timer.Dispose();
+                    if (!toast.IsDisposed)
+                    {
+                        toast.Close();
+                        toast.Dispose();
+                    }
+                };
+                ownerForm.FormClosed += onOwnerClosed;
+
+                // Unwire if toast closes before owner
+                toast.FormClosed += (s, e) =>
+                {
+                    if (!ownerForm.IsDisposed)
+                        ownerForm.FormClosed -= onOwnerClosed;
+                };
+            }
         }
     }
 
