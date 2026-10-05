@@ -27,6 +27,7 @@ namespace Wer.Winforms.Toolkit.Controls
         private int     _decimalPlaces  = 2;
         private decimal? _minValue;
         private decimal? _maxValue;
+        private bool    _boldFont;
 
         // ── Layout ───────────────────────────────────────────────────
         private int LabelHeight => Math.Max(20, (int)(Font.GetHeight() + 4));
@@ -181,6 +182,22 @@ namespace Wer.Winforms.Toolkit.Controls
             set => _maxValue = value;
         }
 
+        [Category("WerCurrencyField")]
+        [DefaultValue(false)]
+        [Description("Use bold font for the value text.")]
+        public bool BoldFont
+        {
+            get => _boldFont;
+            set
+            {
+                _boldFont = value;
+                _input.Font = value
+                    ? new Font(Font.FontFamily, Font.Size, FontStyle.Bold)
+                    : new Font(Font.FontFamily, Font.Size, FontStyle.Regular);
+                _inputBorder.Invalidate();
+            }
+        }
+
         /// <summary>
         /// Returns the current value as decimal. Default is 0.
         /// No parsing needed — just use: decimal amount = werCurrencyField1.Value;
@@ -323,7 +340,9 @@ namespace Wer.Winforms.Toolkit.Controls
         {
             base.OnFontChanged(e);
             if (_input == null) return;
-            _input.Font = Font;
+            _input.Font = _boldFont
+                ? new Font(Font.FontFamily, Font.Size, FontStyle.Bold)
+                : Font;
             LayoutInternals();
         }
 

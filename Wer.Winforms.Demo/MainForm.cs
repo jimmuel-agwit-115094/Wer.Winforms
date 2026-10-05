@@ -17,8 +17,7 @@ namespace Wer.Winforms.Demo
             werTopNav1.LogoutClicked += (s, e) => Application.Exit();
 
             // Wire sub-item Actions for "Users" menu button (werMenuButton7)
-            werMenuButton7.SubItems[0].Action = () => werLeftNavMenu1.ShowForm<DetailsForm>("Active Users");
-            werMenuButton7.SubItems[1].Action = () => werLeftNavMenu1.ShowForm<DetailsForm>("Inactive Users");
+            settingsBtn.SubItems[0].Action = () => werLeftNavMenu1.ShowForm<DetailsForm>("Active Users");
             SetupDataGrid();
         }
 
@@ -155,6 +154,11 @@ namespace Wer.Winforms.Demo
         }
 
         private void werTopNav1_LogoutClicked(object sender, EventArgs e)
+        {
+
+        }
+
+        private void werMenuButton9_Click(object sender, EventArgs e)
         {
 
         }

@@ -29,7 +29,8 @@ namespace Wer.Winforms.Toolkit.Controls
         // --- Metrics ---
         private const int CornerRadius = 8;
         private const int HeaderHeight = 44;
-        private const int RowHeight = 42;
+        private const int DefaultRowHeight = 42;
+        private int _rowHeight = DefaultRowHeight;
         private const int CellPadding = 14;
         private const int EditBtnWidth = 60;
         private const int EditBtnHeight = 28;
@@ -66,7 +67,7 @@ namespace Wer.Winforms.Toolkit.Controls
         private string _totalAmountColumn;
         private int _hoverNavBtn = -1;
         private const int FooterHeight = 44;
-        private const int SearchBarHeight = 42;
+        private const int SearchBarHeightDefault = 42;
         private const int TabHeight = 30;
         private const int TabPadH = 14;
         private const int TabGap = 2;
@@ -79,6 +80,8 @@ namespace Wer.Winforms.Toolkit.Controls
         private WerSearchField _searchBox;
         private WerButton _addButton;
         private bool _showAddButton;
+        private bool _showSearchField = true;
+        private bool _readOnly;
         private string _searchText = "";
         private DataTable _filteredTable;
         private Font _headerFont;
@@ -248,6 +251,66 @@ namespace Wer.Winforms.Toolkit.Controls
                 _hScroll.Visible = value;
                 _hScrollOffset = 0;
                 RecalcLayout();
+                InvalidateGrid();
+            }
+        }
+
+        /// <summary>
+        /// Row height in pixels. Range 24 to 42. Default 42.
+        /// </summary>
+        [Category("Wer Data")]
+        [DefaultValue(42)]
+        [Description("Row height in pixels. Range 24 to 42 (default).")]
+        public int RowHeight
+        {
+            get => _rowHeight;
+            set
+            {
+                _rowHeight = Math.Max(24, Math.Min(DefaultRowHeight, value));
+                RecalcLayout();
+                InvalidateGrid();
+            }
+        }
+
+        /// <summary>
+        /// Show or hide the search text field above the grid.
+        /// </summary>
+        [Category("Wer Data")]
+        [DefaultValue(true)]
+        [Description("Show or hide the search text field above the grid.")]
+        public bool ShowSearchField
+        {
+            get => _showSearchField;
+            set
+            {
+                _showSearchField = value;
+                if (_searchBox != null) _searchBox.Visible = value;
+                if (!value)
+                {
+                    _searchText = "";
+                    _filteredTable = null;
+                }
+                PositionSearchBox();
+                RecalcLayout();
+                InvalidateGrid();
+            }
+        }
+
+        /// <summary>
+        /// When true, the grid is dimmed and non-interactive (no row selection, no edit clicks, no sorting).
+        /// Scrolling and pagination still work.
+        /// </summary>
+        [Category("Wer Data")]
+        [DefaultValue(false)]
+        [Description("Dim the grid and block row selection, edit clicks, and sorting.")]
+        public bool ReadOnly
+        {
+            get => _readOnly;
+            set
+            {
+                _readOnly = value;
+                if (_searchBox != null) _searchBox.Enabled = !value;
+                if (_addButton != null) _addButton.Enabled = !value;
                 InvalidateGrid();
             }
         }
@@ -447,7 +510,7 @@ namespace Wer.Winforms.Toolkit.Controls
             return base.IsInputKey(keyData);
         }
 
-        // Intercept arrow/page keys before any child control (VScrollBar) gets them
+        // Intercept arrow/page keys before any child control (VScrollBar, SearchBox) gets them
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
         {
             switch (keyData)
@@ -456,8 +519,9 @@ namespace Wer.Winforms.Toolkit.Controls
                 case Keys.Down:
                 case Keys.PageUp:
                 case Keys.PageDown:
+                    this.Focus();
                     OnKeyDown(new KeyEventArgs(keyData));
-                    return true; // consumed — scrollbar never sees it
+                    return true; // consumed — scrollbar/search never sees it
             }
             return base.ProcessCmdKey(ref msg, keyData);
         }
@@ -477,6 +541,7 @@ namespace Wer.Winforms.Toolkit.Controls
         protected override void OnKeyDown(KeyEventArgs e)
         {
             base.OnKeyDown(e);
+            if (_readOnly) return;
 
             int startRow = PageStartRow;
             int endRow = PageEndRow;
@@ -594,8 +659,10 @@ namespace Wer.Winforms.Toolkit.Controls
             var filtered = _dataTable.Clone(); // schema only
             string search = _searchText.ToLowerInvariant();
 
-            foreach (DataRow dr in _dataTable.Rows)
+            for (int ri = 0; ri < _dataTable.Rows.Count; ri++)
             {
+                var dr = _dataTable.Rows[ri];
+                bool matched = false;
                 foreach (var col in _columns)
                 {
                     var val = dr[col.PropertyName];
@@ -604,11 +671,13 @@ namespace Wer.Winforms.Toolkit.Controls
                         string text = FormatValue(val).ToLowerInvariant();
                         if (text.Contains(search))
                         {
-                            filtered.ImportRow(dr);
+                            matched = true;
                             break;
                         }
                     }
                 }
+                if (matched)
+                    filtered.Rows.Add(dr.ItemArray);
             }
 
             _filteredTable = filtered;
@@ -617,6 +686,8 @@ namespace Wer.Winforms.Toolkit.Controls
         private int RowCount => ActiveTable?.Rows.Count ?? 0;
 
         private bool ShowFooter => _showFooterPagination && (_dataTable?.Rows.Count ?? 0) > 0;
+
+        private int SearchBarHeight => (_showSearchField || (_tabOptions != null && _tabOptions.Length > 0)) ? SearchBarHeightDefault : 0;
 
         private int ContentAreaTop => CornerRadius + HeaderHeight + SearchBarHeight;
 
@@ -919,14 +990,16 @@ namespace Wer.Winforms.Toolkit.Controls
             int headerY = SearchBarHeight;
 
             // Header background with rounded top corners
+            var headerBgColor = _readOnly ? Color.FromArgb(240, 241, 243) : HeaderBg;
             using (var path = RoundedRectTop(1, headerY, totalWidth - 2, HeaderHeight + CornerRadius, CornerRadius))
-            using (var brush = new SolidBrush(HeaderBg))
+            using (var brush = new SolidBrush(headerBgColor))
                 g.FillPath(brush, path);
 
             // Header bottom line
             using (var pen = new Pen(HeaderSep, 1f))
                 g.DrawLine(pen, 1, headerY + HeaderHeight, totalWidth - 2, headerY + HeaderHeight);
 
+            var headerTextColor = _readOnly ? Color.FromArgb(140, 150, 160) : HeaderText;
             var widths = GetColumnWidths();
             int x = 1 - _hScrollOffset;
 
@@ -937,14 +1010,14 @@ namespace Wer.Winforms.Toolkit.Controls
 
                 // Header text
                 var headerText = _columns[i].HeaderText ?? _columns[i].PropertyName;
-                if (_sortColumnIndex == i)
+                if (!_readOnly && _sortColumnIndex == i)
                     headerText += _sortAscending ? "  \u25B2" : "  \u25BC";
 
-                TextRenderer.DrawText(g, headerText, _headerFont, textRect, HeaderText,
+                TextRenderer.DrawText(g, headerText, _headerFont, textRect, headerTextColor,
                     TextFormatFlags.Left | TextFormatFlags.VerticalCenter | TextFormatFlags.EndEllipsis | TextFormatFlags.NoPrefix);
 
                 // Vertical separator (subtle, only in header)
-                if (i < _columns.Count - 1 || _showEditColumn)
+                if (i < _columns.Count - 1 || (_showEditColumn && !_readOnly))
                 {
                     using (var pen = new Pen(HeaderSep, 1f))
                         g.DrawLine(pen, x + colW, headerY + 10, x + colW, headerY + HeaderHeight - 10);
@@ -953,12 +1026,12 @@ namespace Wer.Winforms.Toolkit.Controls
                 x += colW;
             }
 
-            // "Actions" header if edit column
-            if (_showEditColumn && widths.Length > _columns.Count)
+            // "Actions" header if edit column (hidden when read-only)
+            if (!_readOnly && _showEditColumn && widths.Length > _columns.Count)
             {
                 int editW = widths[_columns.Count];
                 var textRect = new Rectangle(x + CellPadding, headerY, editW - CellPadding * 2, HeaderHeight);
-                TextRenderer.DrawText(g, "Actions", _headerFont, textRect, HeaderText,
+                TextRenderer.DrawText(g, "Actions", _headerFont, textRect, headerTextColor,
                     TextFormatFlags.Left | TextFormatFlags.VerticalCenter | TextFormatFlags.NoPrefix);
             }
         }
@@ -986,11 +1059,13 @@ namespace Wer.Winforms.Toolkit.Controls
             int startRow = PageStartRow + _scrollOffset;
             int endRow = Math.Min(PageEndRow, view.Length);
 
+            var cellTextColor = _readOnly ? Color.FromArgb(140, 150, 160) : DataText;
+
             for (int vi = startRow; vi < endRow && y + RowHeight <= maxY; vi++)
             {
                 var row = view[vi];
-                bool selected = vi == _selectedRowIndex;
-                bool hovered = vi == _hoverRowIndex && !selected;
+                bool selected = !_readOnly && vi == _selectedRowIndex;
+                bool hovered = !_readOnly && vi == _hoverRowIndex && !selected;
 
                 // Selected row: rounded highlight
                 if (selected)
@@ -1027,14 +1102,14 @@ namespace Wer.Winforms.Toolkit.Controls
                             ? TextFormatFlags.HorizontalCenter
                             : TextFormatFlags.Left;
 
-                    TextRenderer.DrawText(g, text, _dataFont, textRect, DataText,
+                    TextRenderer.DrawText(g, text, _dataFont, textRect, cellTextColor,
                         align | TextFormatFlags.VerticalCenter | TextFormatFlags.EndEllipsis | TextFormatFlags.NoPrefix);
 
                     x += colW;
                 }
 
-                // Edit button
-                if (_showEditColumn && widths.Length > _columns.Count)
+                // Edit button (hidden when read-only)
+                if (!_readOnly && _showEditColumn && widths.Length > _columns.Count)
                 {
                     int editColW = widths[_columns.Count];
                     int btnX = x + (editColW - EditBtnWidth) / 2;
@@ -1182,6 +1257,24 @@ namespace Wer.Winforms.Toolkit.Controls
         {
             base.OnMouseMove(e);
 
+            if (_readOnly)
+            {
+                // Allow pagination hover only
+                if (ShowFooter && e.Y >= FooterTop)
+                {
+                    int oldNav = _hoverNavBtn;
+                    _hoverNavBtn = GetNavButtonAt(e.X, e.Y);
+                    Cursor = _hoverNavBtn >= 0 ? Cursors.Hand : Cursors.Default;
+                    if (oldNav != _hoverNavBtn) InvalidateGrid();
+                }
+                else
+                {
+                    if (_hoverNavBtn != -1) { _hoverNavBtn = -1; InvalidateGrid(); }
+                    Cursor = Cursors.Default;
+                }
+                return;
+            }
+
             // Active resize drag
             if (_resizingCol >= 0)
             {
@@ -1285,6 +1378,20 @@ namespace Wer.Winforms.Toolkit.Controls
         {
             base.OnMouseDown(e);
             if (e.Button != MouseButtons.Left) return;
+
+            if (_readOnly)
+            {
+                // Only allow pagination nav clicks when read-only
+                if (ShowFooter && e.Y >= FooterTop)
+                {
+                    int btn = GetNavButtonAt(e.X, e.Y);
+                    if (btn == 0 && _currentPage > 0) { _currentPage = 0; InvalidateGrid(); }
+                    else if (btn == 1 && _currentPage > 0) { _currentPage--; InvalidateGrid(); }
+                    else if (btn == 2 && _currentPage < TotalPages - 1) { _currentPage++; InvalidateGrid(); }
+                    else if (btn == 3 && _currentPage < TotalPages - 1) { _currentPage = TotalPages - 1; InvalidateGrid(); }
+                }
+                return;
+            }
 
             // Tab click?
             if (e.Y < SearchBarHeight && _tabOptions != null && _tabOptions.Length > 0)
@@ -1427,7 +1534,7 @@ namespace Wer.Winforms.Toolkit.Controls
         {
             if (y <= ContentAreaTop) return -1;
             int relY = y - ContentAreaTop;
-            return _scrollOffset + relY / RowHeight;
+            return PageStartRow + _scrollOffset + relY / RowHeight;
         }
 
         private int GetColumnAtX(int x)

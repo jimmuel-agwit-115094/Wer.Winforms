@@ -1,4 +1,4 @@
-﻿namespace Wer.Winforms.Demo
+namespace Wer.Winforms.Demo
 {
     partial class DetailsForm
     {
@@ -28,30 +28,30 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.werDataGrid1 = new Wer.Winforms.Toolkit.Controls.WerDataGrid();
+            this.SampleGrid = new Wer.Winforms.Toolkit.Controls.WerDataGrid();
             this.SuspendLayout();
             // 
-            // werDataGrid1
+            // SampleGrid
             // 
-            this.werDataGrid1.AddButtonText = "Add User";
-            this.werDataGrid1.BackColor = System.Drawing.Color.White;
-            this.werDataGrid1.DataSource = null;
-            this.werDataGrid1.Location = new System.Drawing.Point(22, 8);
-            this.werDataGrid1.Name = "werDataGrid1";
-            this.werDataGrid1.PrimaryKeyColumn = null;
-            this.werDataGrid1.ShowAddButton = true;
-            this.werDataGrid1.ShowEditColumn = true;
-            this.werDataGrid1.Size = new System.Drawing.Size(1145, 564);
-            this.werDataGrid1.TabIndex = 0;
-            this.werDataGrid1.TabOptions = new string[0];
+            this.SampleGrid.BackColor = System.Drawing.Color.White;
+            this.SampleGrid.DataSource = null;
+            this.SampleGrid.Location = new System.Drawing.Point(22, 8);
+            this.SampleGrid.Name = "SampleGrid";
+            this.SampleGrid.PrimaryKeyColumn = null;
+            this.SampleGrid.RowHeight = 40;
+            this.SampleGrid.ShowFooterPagination = false;
+            this.SampleGrid.ShowSearchField = false;
+            this.SampleGrid.Size = new System.Drawing.Size(1521, 822);
+            this.SampleGrid.TabIndex = 1;
+            this.SampleGrid.TabOptions = new string[0];
             // 
             // DetailsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 17F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1360, 612);
-            this.Controls.Add(this.werDataGrid1);
-            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.ClientSize = new System.Drawing.Size(1565, 1040);
+            this.Controls.Add(this.SampleGrid);
+            this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "DetailsForm";
             this.Padding = new System.Windows.Forms.Padding(19, 21, 19, 21);
             this.Text = "Details";
@@ -62,6 +62,6 @@
 
         #endregion
 
-        private Toolkit.Controls.WerDataGrid werDataGrid1;
+        private Toolkit.Controls.WerDataGrid SampleGrid;
     }
 }

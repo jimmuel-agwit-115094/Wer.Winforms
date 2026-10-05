@@ -20,18 +20,26 @@ namespace Wer.Winforms.Toolkit.Controls
         private bool _checked;
         private bool _hovering;
         private float _animPos; // 0 = off, 1 = on
+        private string _labelText = "Toggle Label";
+        private bool _showLabel = true;
+        private bool _required;
 
         private const int TrackW      = 44;
         private const int TrackH      = 24;
         private const int KnobSize    = 18;
         private const int KnobPad     = 3;
         private const int TextGap     = 8;
+        private const int LabelGap    = 4;
+
+        private int LabelHeight => _showLabel ? Math.Max(20, (int)(Font.GetHeight() + 4)) : 0;
 
         private static readonly Color TrackOn      = Color.FromArgb(12, 124, 146);
         private static readonly Color TrackOff     = Color.FromArgb(170, 175, 182);
         private static readonly Color KnobColor    = Color.White;
-        private static readonly Color TextColor    = Color.FromArgb(33, 37, 41);
+        private static readonly Color TextColorNormal = Color.FromArgb(33, 37, 41);
         private static readonly Color DisabledTrack = Color.FromArgb(210, 212, 215);
+        private static readonly Color LabelDisabled = Color.FromArgb(150, 150, 150);
+        private static readonly Color RequiredStar  = Color.FromArgb(210, 50, 50);
 
         private Timer _animTimer;
 
@@ -45,11 +53,40 @@ namespace Wer.Winforms.Toolkit.Controls
 
             BackColor = Color.Transparent;
             Font      = WerTheme.BodyFont;
-            Size      = new Size(130, 26);
+            Size      = new Size(200, 60);
             Cursor    = Cursors.Hand;
 
             _animTimer = new Timer { Interval = 12 };
             _animTimer.Tick += OnAnimTick;
+        }
+
+        // ── Properties ──────────────────────────────────────────
+
+        [Category("WerToggle")]
+        [DefaultValue(true)]
+        [Description("Show or hide the label above the toggle.")]
+        public bool ShowLabel
+        {
+            get => _showLabel;
+            set { _showLabel = value; Invalidate(); }
+        }
+
+        [Category("WerToggle")]
+        [DefaultValue("Toggle Label")]
+        [Description("Label displayed above the toggle.")]
+        public string LabelText
+        {
+            get => _labelText;
+            set { _labelText = value; Invalidate(); }
+        }
+
+        [Category("WerToggle")]
+        [DefaultValue(false)]
+        [Description("Show red asterisk after label when true.")]
+        public bool Required
+        {
+            get => _required;
+            set { _required = value; Invalidate(); }
         }
 
         /// <summary>
@@ -137,7 +174,29 @@ namespace Wer.Winforms.Toolkit.Controls
             g.SmoothingMode     = SmoothingMode.AntiAlias;
             g.TextRenderingHint = TextRenderingHint.ClearTypeGridFit;
 
-            int trackY = (Height - TrackH) / 2;
+            int labelH = LabelHeight;
+            int toggleTop = _showLabel ? labelH + LabelGap : 0;
+
+            // ── Label ──
+            if (_showLabel)
+            {
+                var labelColor = Enabled ? Color.Black : LabelDisabled;
+                var labelRect = new Rectangle(0, 0, Width, labelH);
+                TextRenderer.DrawText(g, _labelText, WerTheme.LabelFont, labelRect, labelColor,
+                    TextFormatFlags.Left | TextFormatFlags.VerticalCenter | TextFormatFlags.SingleLine);
+
+                if (_required && Enabled)
+                {
+                    int labelW = TextRenderer.MeasureText(g, _labelText, WerTheme.LabelFont).Width;
+                    var starRect = new Rectangle(labelW + 2, 0, 12, labelH);
+                    TextRenderer.DrawText(g, "*", Font, starRect, RequiredStar,
+                        TextFormatFlags.Left | TextFormatFlags.VerticalCenter);
+                }
+            }
+
+            // ── Toggle track ──
+            int trackAreaH = Height - toggleTop;
+            int trackY = toggleTop + (trackAreaH - TrackH) / 2;
 
             // Track color interpolation
             Color trackColor;
@@ -179,11 +238,11 @@ namespace Wer.Winforms.Toolkit.Controls
             using (var brush = new SolidBrush(KnobColor))
                 g.FillEllipse(brush, knobX, knobY, KnobSize, KnobSize);
 
-            // Label text
+            // Inline text (to the right of toggle)
             if (!string.IsNullOrEmpty(Text))
             {
-                var textRect = new Rectangle(TrackW + TextGap, 0, Width - TrackW - TextGap, Height);
-                var textColor = Enabled ? TextColor : Color.FromArgb(150, 150, 150);
+                var textRect = new Rectangle(TrackW + TextGap, toggleTop, Width - TrackW - TextGap, trackAreaH);
+                var textColor = Enabled ? TextColorNormal : Color.FromArgb(150, 150, 150);
                 TextRenderer.DrawText(g, Text, Font, textRect, textColor,
                     TextFormatFlags.Left | TextFormatFlags.VerticalCenter | TextFormatFlags.SingleLine | TextFormatFlags.NoPrefix);
             }

@@ -19,10 +19,10 @@ namespace Wer.Winforms.Demo
             this.panel1 = new System.Windows.Forms.Panel();
             this.werTopNav1 = new Wer.Winforms.Toolkit.Controls.WerTopNav();
             this.werLeftNavMenu1 = new Wer.Winforms.Toolkit.Controls.WerLeftNavMenu();
-            this.werMenuButton9 = new Wer.Winforms.Toolkit.Controls.WerMenuButton();
+            this.settingsBtn = new Wer.Winforms.Toolkit.Controls.WerMenuButton();
             this.werMenuButton8 = new Wer.Winforms.Toolkit.Controls.WerMenuButton();
-            this.werMenuButton7 = new Wer.Winforms.Toolkit.Controls.WerMenuButton();
             this.werMenuButton6 = new Wer.Winforms.Toolkit.Controls.WerMenuButton();
+            this.werMenuButton7 = new Wer.Winforms.Toolkit.Controls.WerMenuButton();
             this.werMenuButton5 = new Wer.Winforms.Toolkit.Controls.WerMenuButton();
             this.werMenuButton4 = new Wer.Winforms.Toolkit.Controls.WerMenuButton();
             this.werMenuButton3 = new Wer.Winforms.Toolkit.Controls.WerMenuButton();
@@ -54,7 +54,7 @@ namespace Wer.Winforms.Demo
             // 
             this.werLeftNavMenu1.BackColor = System.Drawing.Color.White;
             this.werLeftNavMenu1.ContentPanel = this.panel1;
-            this.werLeftNavMenu1.Controls.Add(this.werMenuButton9);
+            this.werLeftNavMenu1.Controls.Add(this.settingsBtn);
             this.werLeftNavMenu1.Controls.Add(this.werMenuButton8);
             this.werLeftNavMenu1.Controls.Add(this.werMenuButton6);
             this.werLeftNavMenu1.Controls.Add(this.werMenuButton7);
@@ -70,22 +70,24 @@ namespace Wer.Winforms.Demo
             this.werLeftNavMenu1.Size = new System.Drawing.Size(210, 657);
             this.werLeftNavMenu1.TabIndex = 0;
             // 
-            // werMenuButton9
+            // settingsBtn
             // 
-            this.werMenuButton9.BackColor = System.Drawing.Color.White;
-            this.werMenuButton9.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.werMenuButton9.Dock = System.Windows.Forms.DockStyle.Top;
-            this.werMenuButton9.Font = new System.Drawing.Font("Segoe UI", 9.75F);
-            this.werMenuButton9.HasActiveChild = false;
-            this.werMenuButton9.IconCode = "";
-            this.werMenuButton9.IsActive = false;
-            this.werMenuButton9.IsExpanded = false;
-            this.werMenuButton9.IsSubItem = false;
-            this.werMenuButton9.Location = new System.Drawing.Point(0, 320);
-            this.werMenuButton9.Name = "werMenuButton9";
-            this.werMenuButton9.Size = new System.Drawing.Size(210, 40);
-            this.werMenuButton9.TabIndex = 8;
-            this.werMenuButton9.Text = "Settings";
+            this.settingsBtn.BackColor = System.Drawing.Color.White;
+            this.settingsBtn.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.settingsBtn.Dock = System.Windows.Forms.DockStyle.Top;
+            this.settingsBtn.Font = new System.Drawing.Font("Segoe UI", 9.75F);
+            this.settingsBtn.HasActiveChild = false;
+            this.settingsBtn.IconCode = "";
+            this.settingsBtn.IsActive = false;
+            this.settingsBtn.IsExpanded = false;
+            this.settingsBtn.IsSubItem = false;
+            this.settingsBtn.Location = new System.Drawing.Point(0, 320);
+            this.settingsBtn.Name = "settingsBtn";
+            this.settingsBtn.Size = new System.Drawing.Size(210, 40);
+            this.settingsBtn.SubItems.Add(((Wer.Winforms.Toolkit.Controls.SubMenuItem)(resources.GetObject("settingsBtn.SubItems"))));
+            this.settingsBtn.TabIndex = 8;
+            this.settingsBtn.Text = "Settings";
+            this.settingsBtn.Click += new System.EventHandler(this.werMenuButton9_Click);
             // 
             // werMenuButton8
             // 
@@ -104,23 +106,6 @@ namespace Wer.Winforms.Demo
             this.werMenuButton8.TabIndex = 7;
             this.werMenuButton8.Text = "Reports";
             // 
-            // werMenuButton7
-            // 
-            this.werMenuButton7.BackColor = System.Drawing.Color.White;
-            this.werMenuButton7.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.werMenuButton7.Dock = System.Windows.Forms.DockStyle.Top;
-            this.werMenuButton7.Font = new System.Drawing.Font("Segoe UI", 9.75F);
-            this.werMenuButton7.HasActiveChild = false;
-            this.werMenuButton7.IconCode = "";
-            this.werMenuButton7.IsActive = false;
-            this.werMenuButton7.IsExpanded = false;
-            this.werMenuButton7.IsSubItem = false;
-            this.werMenuButton7.Location = new System.Drawing.Point(0, 200);
-            this.werMenuButton7.Name = "werMenuButton7";
-            this.werMenuButton7.Size = new System.Drawing.Size(210, 40);
-            this.werMenuButton7.TabIndex = 6;
-            this.werMenuButton7.Text = "Users";
-            // 
             // werMenuButton6
             // 
             this.werMenuButton6.BackColor = System.Drawing.Color.White;
@@ -137,6 +122,23 @@ namespace Wer.Winforms.Demo
             this.werMenuButton6.Size = new System.Drawing.Size(210, 40);
             this.werMenuButton6.TabIndex = 5;
             this.werMenuButton6.Text = "Customers";
+            // 
+            // werMenuButton7
+            // 
+            this.werMenuButton7.BackColor = System.Drawing.Color.White;
+            this.werMenuButton7.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.werMenuButton7.Dock = System.Windows.Forms.DockStyle.Top;
+            this.werMenuButton7.Font = new System.Drawing.Font("Segoe UI", 9.75F);
+            this.werMenuButton7.HasActiveChild = false;
+            this.werMenuButton7.IconCode = "";
+            this.werMenuButton7.IsActive = false;
+            this.werMenuButton7.IsExpanded = false;
+            this.werMenuButton7.IsSubItem = false;
+            this.werMenuButton7.Location = new System.Drawing.Point(0, 200);
+            this.werMenuButton7.Name = "werMenuButton7";
+            this.werMenuButton7.Size = new System.Drawing.Size(210, 40);
+            this.werMenuButton7.TabIndex = 6;
+            this.werMenuButton7.Text = "Users";
             // 
             // werMenuButton5
             // 
@@ -254,7 +256,7 @@ namespace Wer.Winforms.Demo
         private Toolkit.Controls.WerMenuButton werMenuButton6;
         private Toolkit.Controls.WerMenuButton werMenuButton7;
         private Toolkit.Controls.WerMenuButton werMenuButton8;
-        private Toolkit.Controls.WerMenuButton werMenuButton9;
+        private Toolkit.Controls.WerMenuButton settingsBtn;
         private Toolkit.Controls.WerTopNav werTopNav1;
         private System.Windows.Forms.Panel panel1;
     }
