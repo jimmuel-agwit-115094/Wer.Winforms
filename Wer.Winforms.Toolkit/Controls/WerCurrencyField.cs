@@ -64,7 +64,7 @@ namespace Wer.Winforms.Toolkit.Controls
             // Border panel
             _inputBorder = new Panel { BackColor = Color.Transparent };
             _inputBorder.Paint += OnBorderPaint;
-            _inputBorder.Click += (s, ev) => { _input.Visible = true; _input.Focus(); };
+            _inputBorder.Click += (s, ev) => { if (!Enabled || _readOnly) return; _input.Visible = true; _input.Focus(); };
             Controls.Add(_inputBorder);
 
             // Inner TextBox
@@ -324,7 +324,7 @@ namespace Wer.Winforms.Toolkit.Controls
         {
             bool inactive = !Enabled || _readOnly;
             _input.BackColor = inactive ? BgDisabled : BgNormal;
-            _input.ForeColor = !Enabled ? LabelDisabled : WerTheme.TextColor;
+            _input.ForeColor = WerTheme.TextColor;
             _input.ReadOnly  = !Enabled || _readOnly;
         }
 
@@ -421,7 +421,7 @@ namespace Wer.Winforms.Toolkit.Controls
 
             // Currency symbol prefix
             var prefixRect = new Rectangle(InputPadH, 0, PrefixWidth, panel.Height);
-            var prefixCol  = inactive ? LabelDisabled : PrefixColor;
+            var prefixCol  = !Enabled ? WerTheme.TextColor : PrefixColor;
             TextRenderer.DrawText(g, _currencySymbol, Font, prefixRect, prefixCol,
                 TextFormatFlags.Left | TextFormatFlags.VerticalCenter | TextFormatFlags.SingleLine);
 

@@ -144,9 +144,10 @@ namespace Wer.Winforms.Toolkit.Controls
                 TextFormatFlags.VerticalCenter | TextFormatFlags.SingleLine);
         }
 
-        private void GetPalette(out Color bg, out Color dot, out Color text)
+        /// <summary>Returns the pill badge palette (background, dot, text) for a given status.</summary>
+        public static void GetPalette(WerStatus status, out Color bg, out Color dot, out Color text)
         {
-            switch (_status)
+            switch (status)
             {
                 case WerStatus.Informative:
                     bg = InfoBg; dot = InfoDot; text = InfoText; break;
@@ -159,6 +160,11 @@ namespace Wer.Winforms.Toolkit.Controls
                 default:
                     bg = NeutralBg; dot = NeutralDot; text = NeutralText; break;
             }
+        }
+
+        private void GetPalette(out Color bg, out Color dot, out Color text)
+        {
+            GetPalette(_status, out bg, out dot, out text);
         }
 
         private static GraphicsPath RoundedRect(Rectangle rect, int radius)

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Wer.Winforms.Toolkit.Controls;
+using System.Drawing;
 
 namespace Wer.Winforms.Demo
 {
@@ -48,22 +49,15 @@ namespace Wer.Winforms.Demo
                 new Product { Id = 27, Name = "Wrist Rest Gel",       Category = "Accessories", Qty = 38,  Price = 16.50m,   Total = 627.00m,   OrderDate = new DateTime(2026, 10, 1), Status = "Delivered" },
             };
 
-            // SampleGrid — read-only, no search, no pagination, compact rows
-            SampleGrid.FieldOptions = new[] { "Name", "Category", "Qty", "Price", "Total" };
-            SampleGrid.PrimaryKeyColumn = "Id";
-            SampleGrid.DataSource = new List<Product>
+            SampleGrid.ShowEditColumn = true;
+            SampleGrid.TotalAmountColumn = "Total";
+            SampleGrid.StatusColumn = "Status";
+            SampleGrid.StatusMap = new Dictionary<string, WerStatus>
             {
-                new Product { Id = 101, Name = "Rice - Sinandomeng",     Category = "Grains",     Qty = 50,  Price = 48.00m,  Total = 2400.00m },
-                new Product { Id = 102, Name = "Coca Cola 330ml Can",    Category = "Beverages",  Qty = 120, Price = 35.00m,  Total = 4200.00m },
-                new Product { Id = 103, Name = "Purple Brown Coffee 35g",Category = "Beverages",  Qty = 80,  Price = 12.50m,  Total = 1000.00m },
-                new Product { Id = 104, Name = "Lucky Me Kalamansi Original", Category = "Noodles", Qty = 200, Price = 8.75m, Total = 1750.00m },
-                new Product { Id = 105, Name = "Birch Tree Fortified Milk 1L", Category = "Dairy", Qty = 36, Price = 95.00m,  Total = 3420.00m },
-                new Product { Id = 106, Name = "Argentina Corned Beef 260g", Category = "Canned",  Qty = 48,  Price = 62.00m,  Total = 2976.00m },
-                new Product { Id = 107, Name = "Pork Belly",             Category = "Meat",       Qty = 25,  Price = 320.00m, Total = 8000.00m },
-                new Product { Id = 108, Name = "Lumpiang Soup 125g",     Category = "Frozen",     Qty = 60,  Price = 45.00m,  Total = 2700.00m },
-                new Product { Id = 109, Name = "San Miguel Pale Pilsen 330ml", Category = "Beverages", Qty = 96, Price = 52.00m, Total = 4992.00m },
-                new Product { Id = 110, Name = "Tide Powder Detergent 80g", Category = "Household", Qty = 150, Price = 9.50m,  Total = 1425.00m },
-                new Product { Id = 111, Name = "Eden Cheese 160g",       Category = "Dairy",      Qty = 30,  Price = 78.00m,  Total = 2340.00m },
+                { "Delivered",  WerStatus.Positive },
+                { "Shipped",    WerStatus.Informative },
+                { "Processing", WerStatus.Negative },
+                { "Pending",    WerStatus.Neutral },
             };
         }
     }

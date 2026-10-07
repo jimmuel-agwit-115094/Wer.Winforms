@@ -84,6 +84,8 @@ namespace Wer.Winforms.Toolkit.Controls
         private bool _readOnly;
         private string _searchText = "";
         private DataTable _filteredTable;
+        private string _statusColumn;
+        private Dictionary<string, WerStatus> _statusMap;
         private Font _headerFont;
         private Font _dataFont;
         private Font _editFont;
@@ -368,6 +370,32 @@ namespace Wer.Winforms.Toolkit.Controls
             set { _totalAmountColumn = value; InvalidateGrid(); }
         }
 
+        /// <summary>
+        /// Column name that contains status values to render as pill badges.
+        /// Values are matched against StatusMap to determine the badge style.
+        /// </summary>
+        [Category("Wer Data")]
+        [DefaultValue(null)]
+        [Description("Column name to render as status pill badges.")]
+        public string StatusColumn
+        {
+            get => _statusColumn;
+            set { _statusColumn = value; InvalidateGrid(); }
+        }
+
+        /// <summary>
+        /// Maps status text values to WerStatus styles for pill badge rendering.
+        /// Usage: grid.StatusMap = new Dictionary&lt;string, WerStatus&gt; { { "Active", WerStatus.Positive } };
+        /// Unmatched values render as plain text.
+        /// </summary>
+        [Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public Dictionary<string, WerStatus> StatusMap
+        {
+            get => _statusMap;
+            set { _statusMap = value; InvalidateGrid(); }
+        }
+
         [Browsable(false)]
         public object DataSource
         {
@@ -636,14 +664,29 @@ namespace Wer.Winforms.Toolkit.Controls
                 foreach (var field in FieldOptions)
                 {
                     if (_dataTable.Columns.Contains(field))
-                        _columns.Add(new WerDataGridColumn(field, field));
+                        _columns.Add(new WerDataGridColumn(field, SplitPascalCase(field)));
                 }
             }
             else
             {
                 foreach (DataColumn dc in _dataTable.Columns)
-                    _columns.Add(new WerDataGridColumn(dc.ColumnName, dc.ColumnName));
+                    _columns.Add(new WerDataGridColumn(dc.ColumnName, SplitPascalCase(dc.ColumnName)));
             }
+        }
+
+        /// <summary>Splits "UserName" → "User Name", "OrderDate" → "Order Date".</summary>
+        private static string SplitPascalCase(string name)
+        {
+            if (string.IsNullOrEmpty(name)) return name;
+            var sb = new System.Text.StringBuilder(name.Length + 4);
+            sb.Append(name[0]);
+            for (int i = 1; i < name.Length; i++)
+            {
+                if (char.IsUpper(name[i]) && !char.IsUpper(name[i - 1]))
+                    sb.Append(' ');
+                sb.Append(name[i]);
+            }
+            return sb.ToString();
         }
 
         private DataTable ActiveTable => _filteredTable ?? _dataTable;
@@ -1089,6 +1132,18 @@ namespace Wer.Winforms.Toolkit.Controls
 
                     var val = row[_columns[i].PropertyName];
                     string text = FormatValue(val);
+
+                    // Status pill badge
+                    if (_statusMap != null && _statusColumn != null &&
+                        string.Equals(_columns[i].PropertyName, _statusColumn, StringComparison.OrdinalIgnoreCase) &&
+                        val != null && val != DBNull.Value &&
+                        _statusMap.TryGetValue(text, out WerStatus status))
+                    {
+                        DrawStatusBadge(g, textRect, text, status);
+                        x += colW;
+                        continue;
+                    }
+
                     var colAlign = _columns[i].Alignment;
 
                     // Auto right-align numeric types
@@ -1143,6 +1198,37 @@ namespace Wer.Winforms.Toolkit.Controls
 
                 y += RowHeight;
             }
+        }
+
+        private void DrawStatusBadge(Graphics g, Rectangle cellRect, string text, WerStatus status)
+        {
+            WerStatusIndicator.GetPalette(status, out Color bg, out Color dot, out Color textColor);
+
+            const int dotSize = 8;
+            const int dotTextGap = 6;
+            const int padH = 10;
+            const int badgeRadius = 12;
+
+            int textW = TextRenderer.MeasureText(g, text, _dataFont).Width;
+            int badgeW = padH + dotSize + dotTextGap + textW + padH;
+            int badgeH = Math.Min(24, cellRect.Height - 6);
+            int badgeX = cellRect.X;
+            int badgeY = cellRect.Y + (cellRect.Height - badgeH) / 2;
+
+            // Pill background
+            using (var path = RoundedRect(badgeX, badgeY, badgeW, badgeH, badgeRadius))
+            using (var brush = new SolidBrush(bg))
+                g.FillPath(brush, path);
+
+            // Dot
+            int dotY = badgeY + (badgeH - dotSize) / 2;
+            using (var brush = new SolidBrush(dot))
+                g.FillEllipse(brush, badgeX + padH, dotY, dotSize, dotSize);
+
+            // Text
+            var textRect = new Rectangle(badgeX + padH + dotSize + dotTextGap, badgeY, textW, badgeH);
+            TextRenderer.DrawText(g, text, _dataFont, textRect, textColor,
+                TextFormatFlags.Left | TextFormatFlags.VerticalCenter | TextFormatFlags.SingleLine | TextFormatFlags.NoPrefix);
         }
 
         private void DrawFooter(Graphics g, int totalWidth, int totalHeight)

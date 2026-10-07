@@ -147,15 +147,16 @@ namespace Wer.Winforms.Toolkit.Controls
         {
             bool hasIcon = !string.IsNullOrEmpty(_iconCode);
             bool hasText = !string.IsNullOrEmpty(Text);
+            var textFont = WerTheme.ButtonFont;
 
             if (!hasIcon && !hasText) return;
 
             if (hasIcon && hasText)
             {
-                using (var iconFont = new Font("Segoe MDL2 Assets", Font.Size, FontStyle.Regular))
+                using (var iconFont = new Font("Segoe MDL2 Assets", textFont.Size, FontStyle.Regular))
                 {
                     int iconW = TextRenderer.MeasureText(g, _iconCode, iconFont).Width;
-                    int textW = TextRenderer.MeasureText(g, Text, Font).Width;
+                    int textW = TextRenderer.MeasureText(g, Text, textFont).Width;
                     int gap = 6;
                     int totalW = iconW + gap + textW;
                     int startX = (Width - totalW) / 2;
@@ -165,19 +166,19 @@ namespace Wer.Winforms.Toolkit.Controls
                         TextFormatFlags.Left | TextFormatFlags.VerticalCenter | TextFormatFlags.NoPrefix);
 
                     var textRect = new Rectangle(startX + iconW + gap, 0, textW, Height);
-                    TextRenderer.DrawText(g, Text, Font, textRect, color,
+                    TextRenderer.DrawText(g, Text, textFont, textRect, color,
                         TextFormatFlags.Left | TextFormatFlags.VerticalCenter | TextFormatFlags.NoPrefix);
                 }
             }
             else if (hasIcon)
             {
-                using (var iconFont = new Font("Segoe MDL2 Assets", Font.Size, FontStyle.Regular))
+                using (var iconFont = new Font("Segoe MDL2 Assets", textFont.Size, FontStyle.Regular))
                     TextRenderer.DrawText(g, _iconCode, iconFont, ClientRectangle, color,
                         TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter | TextFormatFlags.NoPrefix);
             }
             else
             {
-                TextRenderer.DrawText(g, Text, Font, ClientRectangle, color,
+                TextRenderer.DrawText(g, Text, textFont, ClientRectangle, color,
                     TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter | TextFormatFlags.SingleLine | TextFormatFlags.NoPadding);
             }
         }
