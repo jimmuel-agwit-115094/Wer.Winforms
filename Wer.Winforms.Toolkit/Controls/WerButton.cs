@@ -15,6 +15,9 @@ namespace Wer.Winforms.Toolkit.Controls
         private bool _isHovering;
         private bool _isPressed;
         private string _iconCode = "";
+        private float _fontSize = 0f;
+        private bool _boldFont;
+        private Font _customFont;
 
         public WerButton()
         {
@@ -66,6 +69,55 @@ namespace Wer.Winforms.Toolkit.Controls
             get => _iconCode;
             set { _iconCode = value ?? ""; Invalidate(); }
         }
+
+        /// <summary>
+        /// Custom font size for button label. 0 = use default theme size.
+        /// </summary>
+        [Category("WerButtons")]
+        [DefaultValue(0f)]
+        [Description("Custom font size for label text. 0 = default theme size.")]
+        public float FontSize
+        {
+            get => _fontSize;
+            set
+            {
+                _fontSize = Math.Max(0f, value);
+                RebuildCustomFont();
+                Invalidate();
+            }
+        }
+
+        /// <summary>
+        /// Use bold font weight for button label.
+        /// </summary>
+        [Category("WerButtons")]
+        [DefaultValue(false)]
+        [Description("Use bold font weight for button label.")]
+        public bool BoldFont
+        {
+            get => _boldFont;
+            set
+            {
+                _boldFont = value;
+                RebuildCustomFont();
+                Invalidate();
+            }
+        }
+
+        private void RebuildCustomFont()
+        {
+            _customFont?.Dispose();
+            _customFont = null;
+
+            float size = _fontSize > 0 ? _fontSize : WerTheme.ButtonSize;
+            FontStyle style = _boldFont ? FontStyle.Bold : WerTheme.ButtonFont.Style;
+
+            // Only create custom font if different from theme default
+            if (_fontSize > 0 || _boldFont)
+                _customFont = new Font(WerTheme.FontFamily, size, style);
+        }
+
+        private Font ActiveFont => _customFont ?? WerTheme.ButtonFont;
 
         protected override void OnPaint(PaintEventArgs e)
         {
@@ -147,7 +199,7 @@ namespace Wer.Winforms.Toolkit.Controls
         {
             bool hasIcon = !string.IsNullOrEmpty(_iconCode);
             bool hasText = !string.IsNullOrEmpty(Text);
-            var textFont = WerTheme.ButtonFont;
+            var textFont = ActiveFont;
 
             if (!hasIcon && !hasText) return;
 
@@ -257,6 +309,13 @@ namespace Wer.Winforms.Toolkit.Controls
                 (int)(color.R + (255 - color.R) * factor),
                 (int)(color.G + (255 - color.G) * factor),
                 (int)(color.B + (255 - color.B) * factor));
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+                _customFont?.Dispose();
+            base.Dispose(disposing);
         }
     }
 }

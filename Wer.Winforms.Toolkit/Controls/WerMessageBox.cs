@@ -6,7 +6,7 @@ using System.Windows.Forms;
 
 namespace Wer.Winforms.Toolkit.Controls
 {
-    public enum WerMessageIcon { None, Info, Success, Warning, Error }
+    public enum WerMessageIcon { None, Info, Success, Warning, Error, Question }
     public enum WerMessageButtons { OK, OKCancel, YesNo, YesNoCancel }
 
     /// <summary>
@@ -27,6 +27,7 @@ namespace Wer.Winforms.Toolkit.Controls
         public static readonly WerMessageBoxType Error = new WerMessageBoxType(WerMessageIcon.Error, "Error");
         public static readonly WerMessageBoxType Warning = new WerMessageBoxType(WerMessageIcon.Warning, "Warning");
         public static readonly WerMessageBoxType Info = new WerMessageBoxType(WerMessageIcon.Info, "Information");
+        public static readonly WerMessageBoxType Question = new WerMessageBoxType(WerMessageIcon.Question, "Confirm", WerMessageButtons.YesNo);
 
         /// <summary>Show with no icon.</summary>
         public static DialogResult Show(string message, string title = "Message",
@@ -80,21 +81,26 @@ namespace Wer.Winforms.Toolkit.Controls
     {
         private readonly WerMessageIcon _icon;
         private readonly string _defaultTitle;
+        private readonly WerMessageButtons _defaultButtons;
 
-        internal WerMessageBoxType(WerMessageIcon icon, string defaultTitle)
+        internal WerMessageBoxType(WerMessageIcon icon, string defaultTitle,
+            WerMessageButtons defaultButtons = WerMessageButtons.OK)
         {
             _icon = icon;
             _defaultTitle = defaultTitle;
+            _defaultButtons = defaultButtons;
         }
 
         /// <summary>
         /// Show message box with this icon type.
         /// Title defaults to the type name (e.g. "Success") but can be overridden.
+        /// Buttons default to OK for most types, YesNo for Question.
         /// </summary>
         public DialogResult Show(string message, string title = null,
-            WerMessageButtons buttons = WerMessageButtons.OK, IWin32Window owner = null)
+            WerMessageButtons? buttons = null, IWin32Window owner = null)
         {
-            return WerMessageBox.ShowInternal(message, title ?? _defaultTitle, _icon, buttons, owner);
+            return WerMessageBox.ShowInternal(message, title ?? _defaultTitle, _icon,
+                buttons ?? _defaultButtons, owner);
         }
     }
 
@@ -127,6 +133,7 @@ namespace Wer.Winforms.Toolkit.Controls
         private static readonly Color SuccessColor = Color.FromArgb(40, 167, 69);
         private static readonly Color WarningColor = Color.FromArgb(230, 126, 34);
         private static readonly Color ErrorColor = Color.FromArgb(179, 58, 58);
+        private static readonly Color QuestionColor = Color.FromArgb(33, 150, 243);
 
         public WerMessageForm(string message, string title, WerMessageIcon icon, WerMessageButtons buttons)
         {
@@ -275,10 +282,11 @@ namespace Wer.Winforms.Toolkit.Controls
             string symbol;
             switch (_icon)
             {
-                case WerMessageIcon.Info:    iconColor = InfoColor;    symbol = "i"; break;
-                case WerMessageIcon.Success: iconColor = SuccessColor; symbol = "✓"; break;
-                case WerMessageIcon.Warning: iconColor = WarningColor; symbol = "!"; break;
-                case WerMessageIcon.Error:   iconColor = ErrorColor;   symbol = "✕"; break;
+                case WerMessageIcon.Info:     iconColor = InfoColor;     symbol = "i"; break;
+                case WerMessageIcon.Success:  iconColor = SuccessColor;  symbol = "✓"; break;
+                case WerMessageIcon.Warning:  iconColor = WarningColor;  symbol = "!"; break;
+                case WerMessageIcon.Error:    iconColor = ErrorColor;    symbol = "✕"; break;
+                case WerMessageIcon.Question: iconColor = QuestionColor; symbol = "?"; break;
                 default: return;
             }
 

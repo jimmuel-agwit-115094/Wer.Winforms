@@ -58,7 +58,6 @@ namespace Wer.Winforms.Demo
             this.werCurrencyField1.Size = new System.Drawing.Size(350, 60);
             this.werCurrencyField1.TabIndex = 2;
             this.werCurrencyField1.TabStop = false;
-            this.werCurrencyField1.Text = "werCurrencyField1";
             this.werCurrencyField1.Value = new decimal(new int[] {
             0,
             0,
@@ -67,13 +66,16 @@ namespace Wer.Winforms.Demo
             // 
             // werButton1
             // 
+            this.werButton1.BoldFont = true;
             this.werButton1.Cursor = System.Windows.Forms.Cursors.Hand;
             this.werButton1.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F);
+            this.werButton1.FontSize = 13F;
             this.werButton1.Location = new System.Drawing.Point(462, 35);
             this.werButton1.Name = "werButton1";
             this.werButton1.Size = new System.Drawing.Size(192, 36);
             this.werButton1.TabIndex = 3;
-            this.werButton1.Text = "werButton1";
+            this.werButton1.Text = "Pay";
+            this.werButton1.Click += new System.EventHandler(this.werButton1_Click);
             // 
             // DetailsForm
             // 

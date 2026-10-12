@@ -60,5 +60,12 @@ namespace Wer.Winforms.Demo
                 { "Pending",    WerStatus.Neutral },
             };
         }
+
+        private void werButton1_Click(object sender, EventArgs e)
+        {
+            var result = WerMessageBox.Question.Show(
+              "Suspend this order and start a new one?",
+              "Suspend Order", WerMessageButtons.YesNo);
+        }
     }
 }
