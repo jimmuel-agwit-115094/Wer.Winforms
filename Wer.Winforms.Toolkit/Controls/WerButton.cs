@@ -7,17 +7,19 @@ using System.Windows.Forms;
 namespace Wer.Winforms.Toolkit.Controls
 {
     [ToolboxItem(true)]
-    public class WerButton : Control
+    public class WerButton : Control, IButtonControl
     {
         private WerButtonType _buttonType = WerButtonType.Primary;
         private WerButtonColor _colorType = WerButtonColor.Blue;
         private int _borderRadius = 20;
         private bool _isHovering;
         private bool _isPressed;
+        private bool _isDefault;
         private string _iconCode = "";
         private float _fontSize = 0f;
         private bool _boldFont;
         private Font _customFont;
+        private DialogResult _dialogResult = DialogResult.None;
 
         public WerButton()
         {
@@ -33,6 +35,30 @@ namespace Wer.Winforms.Toolkit.Controls
             Size = new Size(100, 36);
             Cursor = Cursors.Hand;
         }
+
+        // ── IButtonControl ───────────────────────────────────────
+
+        [Category("WerButtons")]
+        [DefaultValue(DialogResult.None)]
+        [Description("DialogResult returned when this button is clicked on a modal form.")]
+        public DialogResult DialogResult
+        {
+            get => _dialogResult;
+            set => _dialogResult = value;
+        }
+
+        public void NotifyDefault(bool value)
+        {
+            _isDefault = value;
+            Invalidate();
+        }
+
+        public void PerformClick()
+        {
+            OnClick(EventArgs.Empty);
+        }
+
+        // ── Properties ──────────────────────────────────────────
 
         [Category("WerButtons")]
         [DefaultValue(WerButtonType.Primary)]
@@ -232,6 +258,17 @@ namespace Wer.Winforms.Toolkit.Controls
             {
                 TextRenderer.DrawText(g, Text, textFont, ClientRectangle, color,
                     TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter | TextFormatFlags.SingleLine | TextFormatFlags.NoPadding);
+            }
+        }
+
+        protected override void OnClick(EventArgs e)
+        {
+            base.OnClick(e);
+            if (_dialogResult != DialogResult.None)
+            {
+                var form = FindForm();
+                if (form != null)
+                    form.DialogResult = _dialogResult;
             }
         }
 
