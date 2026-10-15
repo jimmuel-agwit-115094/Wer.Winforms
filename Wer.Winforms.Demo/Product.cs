@@ -19,5 +19,7 @@ namespace Wer.Winforms.Demo
         public decimal Discount { get; set; }
         public decimal Tax { get; set; }
         public string Priority { get; set; }
+        public DateTime CreatedAt { get; set; }
+        public DateTime StartTime { get; set; }
     }
 }

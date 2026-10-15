@@ -396,6 +396,27 @@ namespace Wer.Winforms.Toolkit.Controls
             set { _statusMap = value; InvalidateGrid(); }
         }
 
+        /// <summary>
+        /// Column names to format as full date+time: "MMMM dd, yyyy | hh:mm:ss tt"
+        /// </summary>
+        [Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public List<string> DateTimeColumns { get; set; }
+
+        /// <summary>
+        /// Column names to format as date only: "MMM dd, yyyy"
+        /// </summary>
+        [Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public List<string> DateOnlyColumns { get; set; }
+
+        /// <summary>
+        /// Column names to format as time only: "hh:mm:ss tt"
+        /// </summary>
+        [Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public List<string> TimeOnlyColumns { get; set; }
+
         [Browsable(false)]
         public object DataSource
         {
@@ -711,7 +732,7 @@ namespace Wer.Winforms.Toolkit.Controls
                     var val = dr[col.PropertyName];
                     if (val != null && val != DBNull.Value)
                     {
-                        string text = FormatValue(val).ToLowerInvariant();
+                        string text = FormatValue(val, col.PropertyName).ToLowerInvariant();
                         if (text.Contains(search))
                         {
                             matched = true;
@@ -860,7 +881,7 @@ namespace Wer.Winforms.Toolkit.Controls
                         for (int r = 0; r < sampleCount; r++)
                         {
                             var val = measureTable.Rows[r][_columns[i].PropertyName];
-                            string text = FormatValue(val);
+                            string text = FormatValue(val, _columns[i].PropertyName);
                             int tw = TextRenderer.MeasureText(g, text, _dataFont).Width + CellPadding * 2 + 4;
                             if (tw > maxW) maxW = tw;
                         }
@@ -905,14 +926,29 @@ namespace Wer.Winforms.Toolkit.Controls
             Invalidate(new Rectangle(0, SearchBarHeight, Width, Height - SearchBarHeight));
         }
 
-        private static string FormatValue(object val)
+        private string FormatValue(object val, string columnName = null)
         {
             if (val == null || val == DBNull.Value) return "";
             if (val is decimal decVal) return decVal.ToString("#,##0.00");
             if (val is double dblVal) return dblVal.ToString("#,##0.00");
             if (val is float fltVal) return fltVal.ToString("#,##0.00");
-            if (val is DateTime dtVal) return dtVal.ToString("MMM. dd, yyyy");
+            if (val is DateTime dtVal)
+            {
+                if (columnName != null && DateTimeColumns != null && ContainsIgnoreCase(DateTimeColumns, columnName))
+                    return dtVal.ToString("MMM. dd, yyyy | hh:mm:ss tt");
+                if (columnName != null && TimeOnlyColumns != null && ContainsIgnoreCase(TimeOnlyColumns, columnName))
+                    return dtVal.ToString("hh:mm:ss tt");
+                return dtVal.ToString("MMM. dd, yyyy");
+            }
             return val.ToString();
+        }
+
+        private static bool ContainsIgnoreCase(List<string> list, string value)
+        {
+            for (int i = 0; i < list.Count; i++)
+                if (string.Equals(list[i], value, StringComparison.OrdinalIgnoreCase))
+                    return true;
+            return false;
         }
 
         protected override void OnPaint(PaintEventArgs e)
@@ -1131,7 +1167,7 @@ namespace Wer.Winforms.Toolkit.Controls
                     var textRect = new Rectangle(x + CellPadding, y, colW - CellPadding * 2, RowHeight);
 
                     var val = row[_columns[i].PropertyName];
-                    string text = FormatValue(val);
+                    string text = FormatValue(val, _columns[i].PropertyName);
 
                     // Status pill badge
                     if (_statusMap != null && _statusColumn != null &&
