@@ -130,7 +130,7 @@ namespace Wer.Winforms.Toolkit.Controls
         public const string Clock = "\uE823";
         public const string Folder = "\uE8B7";
         public const string Document = "\uE8A5";
-        public const string Photo = "\uE722";
+        public const string Photo = "\uE91B";
         public const string Camera = "\uE722";
         public const string Globe = "\uE774";
         public const string Link = "\uE71B";
@@ -138,7 +138,7 @@ namespace Wer.Winforms.Toolkit.Controls
         public const string Tag = "\uE8EC";
         public const string Flag = "\uE7C1";
         public const string Cart = "\uE7BF";
-        public const string Money = "\uE7BF";
+        public const string Money = "\uE775";
         public const string Database = "\uEE94";
         public const string Cloud = "\uE753";
         public const string Key = "\uE8D7";
