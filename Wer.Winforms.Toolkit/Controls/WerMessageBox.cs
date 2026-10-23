@@ -153,17 +153,13 @@ namespace Wer.Winforms.Toolkit.Controls
             Region = CreateRoundedRegion(new Rectangle(0, 0, Width, Height), CornerRadius);
             CreateButtons();
 
+            // Escape fallback — AcceptButton/CancelButton handle Enter/Escape natively,
+            // but for OK-only dialogs CancelButton isn't set, so Escape still needs handling.
             KeyDown += (s, e) =>
             {
-                if (e.KeyCode == Keys.Escape)
+                if (e.KeyCode == Keys.Escape && _buttons == WerMessageButtons.OK)
                 {
-                    DialogResult = _buttons == WerMessageButtons.OK ? DialogResult.OK : DialogResult.Cancel;
-                    Close();
-                }
-                else if (e.KeyCode == Keys.Enter)
-                {
-                    DialogResult = (_buttons == WerMessageButtons.YesNo || _buttons == WerMessageButtons.YesNoCancel)
-                        ? DialogResult.Yes : DialogResult.OK;
+                    DialogResult = DialogResult.OK;
                     Close();
                 }
             };
@@ -225,10 +221,22 @@ namespace Wer.Winforms.Toolkit.Controls
                 btn.Size = new Size(BtnW, BtnH);
                 btn.Location = new Point(startX + i * (BtnW + BtnGap), btnY);
                 btn.Font = WerTheme.BodyFont;
+                btn.DialogResult = results[i];
 
-                var result = results[i];
+                var result = results[i]; // capture value, not loop variable
                 btn.Click += (s, e) => { DialogResult = result; Close(); };
                 Controls.Add(btn);
+
+                if (isPrimary)
+                {
+                    AcceptButton = btn;
+                    ActiveControl = btn;
+                }
+                else if (result == DialogResult.Cancel ||
+                         (result == DialogResult.No && _buttons == WerMessageButtons.YesNo))
+                {
+                    CancelButton = btn;
+                }
             }
         }
 

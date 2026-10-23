@@ -31,6 +31,7 @@ namespace Wer.Winforms.Demo
             this.SampleGrid = new Wer.Winforms.Toolkit.Controls.WerDataGrid();
             this.werCurrencyField1 = new Wer.Winforms.Toolkit.Controls.WerCurrencyField();
             this.werButton1 = new Wer.Winforms.Toolkit.Controls.WerButton();
+            this.werTextField1 = new Wer.Winforms.Toolkit.Controls.WerTextField();
             this.SuspendLayout();
             // 
             // SampleGrid
@@ -77,11 +78,23 @@ namespace Wer.Winforms.Demo
             this.werButton1.Text = "Pay";
             this.werButton1.Click += new System.EventHandler(this.werButton1_Click);
             // 
+            // werTextField1
+            // 
+            this.werTextField1.BackColor = System.Drawing.Color.Transparent;
+            this.werTextField1.Font = new System.Drawing.Font("Segoe UI", 9.75F);
+            this.werTextField1.LabelText = "TextField Label";
+            this.werTextField1.Location = new System.Drawing.Point(713, 11);
+            this.werTextField1.Name = "werTextField1";
+            this.werTextField1.Size = new System.Drawing.Size(350, 60);
+            this.werTextField1.TabIndex = 4;
+            this.werTextField1.TabStop = false;
+            // 
             // DetailsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 17F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1565, 1040);
+            this.Controls.Add(this.werTextField1);
             this.Controls.Add(this.werButton1);
             this.Controls.Add(this.werCurrencyField1);
             this.Controls.Add(this.SampleGrid);
@@ -99,5 +112,6 @@ namespace Wer.Winforms.Demo
         private Toolkit.Controls.WerDataGrid SampleGrid;
         private Toolkit.Controls.WerCurrencyField werCurrencyField1;
         private Toolkit.Controls.WerButton werButton1;
+        private Toolkit.Controls.WerTextField werTextField1;
     }
 }

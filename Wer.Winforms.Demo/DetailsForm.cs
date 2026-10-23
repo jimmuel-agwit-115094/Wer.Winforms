@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using Wer.Winforms.Toolkit.Controls;
-using System.Drawing;
 
 namespace Wer.Winforms.Demo
 {
@@ -10,10 +9,12 @@ namespace Wer.Winforms.Demo
         public DetailsForm()
         {
             InitializeComponent();
+            werTextField1.FocusOnLoad = true;
         }
 
         private void DetailsForm_Load(object sender, EventArgs e)
         {
+            
             SampleGrid.FieldOptions = new[] { "Name", "Category", "Qty", "Price", "Total", "OrderDate", "CreatedAt", "StartTime", "Status" };
             SampleGrid.PrimaryKeyColumn = "Id";
             SampleGrid.TotalAmountColumn = "Total";
@@ -70,6 +71,15 @@ namespace Wer.Winforms.Demo
             var result = WerMessageBox.Question.Show(
               "Suspend this order and start a new one?",
               "Suspend Order", WerMessageButtons.YesNo);
+
+            if (result == System.Windows.Forms.DialogResult.Yes)
+            {
+                WerMessageBox.Success.Show("Order suspended successfully.", "Success");
+            }
+            else
+            {
+                WerMessageBox.Error.Show("Order suspension canceled.", "Canceled");
+            }
         }
     }
 }

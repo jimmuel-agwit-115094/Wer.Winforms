@@ -28,7 +28,8 @@ namespace Wer.Winforms.Toolkit.Controls
                 ControlStyles.UserPaint |
                 ControlStyles.ResizeRedraw |
                 ControlStyles.OptimizedDoubleBuffer |
-                ControlStyles.SupportsTransparentBackColor,
+                ControlStyles.SupportsTransparentBackColor |
+                ControlStyles.Selectable,
                 true);
 
             Font = WerTheme.ButtonFont;
