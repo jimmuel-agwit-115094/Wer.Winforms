@@ -93,6 +93,16 @@ namespace Wer.Winforms.Toolkit.Controls
         // ── Public properties ────────────────────────────────────────
 
         private bool _showLabel = true;
+        private bool _focusOnLoad;
+
+        [Category("WerCurrencyField")]
+        [DefaultValue(false)]
+        [Description("Automatically focus this field when the parent form loads.")]
+        public bool FocusOnLoad
+        {
+            get => _focusOnLoad;
+            set => _focusOnLoad = value;
+        }
 
         [Category("WerCurrencyField")]
         [DefaultValue(true)]
@@ -310,6 +320,15 @@ namespace Wer.Winforms.Toolkit.Controls
         }
 
         // ── Enable/disable ───────────────────────────────────────────
+
+        protected override void OnVisibleChanged(EventArgs e)
+        {
+            base.OnVisibleChanged(e);
+            if (_focusOnLoad && Visible && IsHandleCreated)
+            {
+                BeginInvoke(new Action(() => _input.Focus()));
+            }
+        }
 
         protected override void OnEnabledChanged(EventArgs e)
         {

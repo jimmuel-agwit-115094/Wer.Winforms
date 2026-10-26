@@ -32,6 +32,7 @@ namespace Wer.Winforms.Demo
             this.werCurrencyField1 = new Wer.Winforms.Toolkit.Controls.WerCurrencyField();
             this.werButton1 = new Wer.Winforms.Toolkit.Controls.WerButton();
             this.werTextField1 = new Wer.Winforms.Toolkit.Controls.WerTextField();
+            this.werBadge1 = new Wer.Winforms.Toolkit.Controls.WerBadge();
             this.SuspendLayout();
             // 
             // SampleGrid
@@ -68,14 +69,17 @@ namespace Wer.Winforms.Demo
             // werButton1
             // 
             this.werButton1.BoldFont = true;
+            this.werButton1.ButtonType = Wer.Winforms.Toolkit.WerButtonType.Secondary;
+            this.werButton1.ColorType = Wer.Winforms.Toolkit.WerButtonColor.Gray;
             this.werButton1.Cursor = System.Windows.Forms.Cursors.Hand;
             this.werButton1.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F);
             this.werButton1.FontSize = 13F;
             this.werButton1.Location = new System.Drawing.Point(462, 35);
             this.werButton1.Name = "werButton1";
-            this.werButton1.Size = new System.Drawing.Size(192, 36);
+            this.werButton1.Size = new System.Drawing.Size(202, 44);
             this.werButton1.TabIndex = 3;
             this.werButton1.Text = "Pay";
+            this.werButton1.TextAlign = Wer.Winforms.Toolkit.WerButtonTextAlign.Left;
             this.werButton1.Click += new System.EventHandler(this.werButton1_Click);
             // 
             // werTextField1
@@ -89,11 +93,23 @@ namespace Wer.Winforms.Demo
             this.werTextField1.TabIndex = 4;
             this.werTextField1.TabStop = false;
             // 
+            // werBadge1
+            // 
+            this.werBadge1.BackColor = System.Drawing.Color.Transparent;
+            this.werBadge1.BadgeColor = System.Drawing.Color.FromArgb(((int)(((byte)(12)))), ((int)(((byte)(124)))), ((int)(((byte)(146)))));
+            this.werBadge1.Font = new System.Drawing.Font("Segoe UI", 8.5F, System.Drawing.FontStyle.Bold);
+            this.werBadge1.Location = new System.Drawing.Point(556, 45);
+            this.werBadge1.Name = "werBadge1";
+            this.werBadge1.Size = new System.Drawing.Size(95, 24);
+            this.werBadge1.TabIndex = 5;
+            this.werBadge1.Text = "werBadge1";
+            // 
             // DetailsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 17F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1565, 1040);
+            this.Controls.Add(this.werBadge1);
             this.Controls.Add(this.werTextField1);
             this.Controls.Add(this.werButton1);
             this.Controls.Add(this.werCurrencyField1);
@@ -104,6 +120,7 @@ namespace Wer.Winforms.Demo
             this.Text = "Details";
             this.Load += new System.EventHandler(this.DetailsForm_Load);
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -113,5 +130,6 @@ namespace Wer.Winforms.Demo
         private Toolkit.Controls.WerCurrencyField werCurrencyField1;
         private Toolkit.Controls.WerButton werButton1;
         private Toolkit.Controls.WerTextField werTextField1;
+        private Toolkit.Controls.WerBadge werBadge1;
     }
 }

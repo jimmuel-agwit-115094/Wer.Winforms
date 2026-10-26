@@ -17,6 +17,7 @@ namespace Wer.Winforms.Toolkit.Controls
     public class WerBadge : Control
     {
         private Color _badgeColor;
+        private bool  _transparent;
         private Font  _ownFont;
         private const int PadH     = 12;
         private const int MinH     = 24;
@@ -46,6 +47,15 @@ namespace Wer.Winforms.Toolkit.Controls
         {
             get => _badgeColor;
             set { _badgeColor = value; Invalidate(); }
+        }
+
+        [Category("WerBadge")]
+        [DefaultValue(false)]
+        [Description("When true, badge has no fill or border — text only.")]
+        public bool Transparent
+        {
+            get => _transparent;
+            set { _transparent = value; Invalidate(); }
         }
 
         public override bool AutoSize
@@ -88,17 +98,20 @@ namespace Wer.Winforms.Toolkit.Controls
             var rect   = new Rectangle(0, 0, Width - 1, Height - 1);
             int radius = Height / 2;
 
-            // Light tint fill (15% opacity)
-            Color fillColor   = Color.FromArgb(38, _badgeColor.R, _badgeColor.G, _badgeColor.B);
-            // Border (30% opacity)
-            Color borderColor = Color.FromArgb(77, _badgeColor.R, _badgeColor.G, _badgeColor.B);
-
-            using (var path = RoundedRect(rect, radius))
+            if (!_transparent)
             {
-                using (var brush = new SolidBrush(fillColor))
-                    g.FillPath(brush, path);
-                using (var pen = new Pen(borderColor, 1f))
-                    g.DrawPath(pen, path);
+                // Light tint fill (15% opacity)
+                Color fillColor   = Color.FromArgb(38, _badgeColor.R, _badgeColor.G, _badgeColor.B);
+                // Border (30% opacity)
+                Color borderColor = Color.FromArgb(77, _badgeColor.R, _badgeColor.G, _badgeColor.B);
+
+                using (var path = RoundedRect(rect, radius))
+                {
+                    using (var brush = new SolidBrush(fillColor))
+                        g.FillPath(brush, path);
+                    using (var pen = new Pen(borderColor, 1f))
+                        g.DrawPath(pen, path);
+                }
             }
 
             TextRenderer.DrawText(g, Text, Font, rect, _badgeColor,

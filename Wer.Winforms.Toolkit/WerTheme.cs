@@ -10,13 +10,21 @@ namespace Wer.Winforms.Toolkit
         Secondary
     }
 
+    public enum WerButtonTextAlign
+    {
+        Center,
+        Left,
+        Right
+    }
+
     public enum WerButtonColor
     {
         Blue,
         Primary,
         Warning,
         Success,
-        Orange
+        Orange,
+        Gray
     }
 
     public static class WerTheme
@@ -123,6 +131,7 @@ namespace Wer.Winforms.Toolkit
                 case WerButtonColor.Warning: return _warningColor;
                 case WerButtonColor.Success: return _successColor;
                 case WerButtonColor.Orange:  return _orangeColor;
+                case WerButtonColor.Gray:    return Color.FromArgb(200, 210, 220);
                 default: return _blueColor;
             }
         }

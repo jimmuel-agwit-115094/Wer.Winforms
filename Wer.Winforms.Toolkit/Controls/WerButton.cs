@@ -11,6 +11,7 @@ namespace Wer.Winforms.Toolkit.Controls
     {
         private WerButtonType _buttonType = WerButtonType.Primary;
         private WerButtonColor _colorType = WerButtonColor.Blue;
+        private WerButtonTextAlign _textAlign = WerButtonTextAlign.Center;
         private int _borderRadius = 20;
         private bool _isHovering;
         private bool _isPressed;
@@ -77,6 +78,15 @@ namespace Wer.Winforms.Toolkit.Controls
         {
             get => _colorType;
             set { _colorType = value; Invalidate(); }
+        }
+
+        [Category("WerButtons")]
+        [DefaultValue(WerButtonTextAlign.Center)]
+        [Description("Horizontal alignment of text content (Left, Center, Right).")]
+        public WerButtonTextAlign TextAlign
+        {
+            get => _textAlign;
+            set { _textAlign = value; Invalidate(); }
         }
 
         [Category("WerButtons")]
@@ -184,19 +194,23 @@ namespace Wer.Winforms.Toolkit.Controls
 
         private void PaintOutlined(Graphics g, Rectangle rect, int radius, Color color)
         {
+            bool isGray = _colorType == WerButtonColor.Gray;
+
             Color fill = _isPressed ? LightenColor(color, 0.85)
                        : _isHovering ? LightenColor(color, 0.92)
                        : Color.White;
+
+            float borderW = isGray ? 1f : 2f;
 
             using (var path = CreateRoundedRect(rect, radius))
             {
                 using (var brush = new SolidBrush(fill))
                     g.FillPath(brush, path);
-                using (var pen = new Pen(color, 2))
+                using (var pen = new Pen(color, borderW))
                     g.DrawPath(pen, path);
             }
 
-            DrawContent(g, color);
+            DrawContent(g, isGray ? WerTheme.TextColor : color);
         }
 
         private void PaintDisabled(Graphics g, Rectangle rect, int radius, bool isOutlined)
@@ -227,6 +241,7 @@ namespace Wer.Winforms.Toolkit.Controls
             bool hasIcon = !string.IsNullOrEmpty(_iconCode);
             bool hasText = !string.IsNullOrEmpty(Text);
             var textFont = ActiveFont;
+            int pad = 12;
 
             if (!hasIcon && !hasText) return;
 
@@ -238,7 +253,14 @@ namespace Wer.Winforms.Toolkit.Controls
                     int textW = TextRenderer.MeasureText(g, Text, textFont).Width;
                     int gap = 6;
                     int totalW = iconW + gap + textW;
-                    int startX = (Width - totalW) / 2;
+                    int startX;
+
+                    switch (_textAlign)
+                    {
+                        case WerButtonTextAlign.Left:  startX = pad; break;
+                        case WerButtonTextAlign.Right: startX = Width - pad - totalW; break;
+                        default:                       startX = (Width - totalW) / 2; break;
+                    }
 
                     var iconRect = new Rectangle(startX, 0, iconW, Height);
                     TextRenderer.DrawText(g, _iconCode, iconFont, iconRect, color,
@@ -257,8 +279,26 @@ namespace Wer.Winforms.Toolkit.Controls
             }
             else
             {
-                TextRenderer.DrawText(g, Text, textFont, ClientRectangle, color,
-                    TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter | TextFormatFlags.SingleLine | TextFormatFlags.NoPadding);
+                TextFormatFlags flags = TextFormatFlags.VerticalCenter | TextFormatFlags.SingleLine | TextFormatFlags.NoPrefix;
+                Rectangle textRect;
+
+                switch (_textAlign)
+                {
+                    case WerButtonTextAlign.Left:
+                        flags |= TextFormatFlags.Left;
+                        textRect = new Rectangle(pad, 0, Width - pad * 2, Height);
+                        break;
+                    case WerButtonTextAlign.Right:
+                        flags |= TextFormatFlags.Right;
+                        textRect = new Rectangle(pad, 0, Width - pad * 2, Height);
+                        break;
+                    default:
+                        flags |= TextFormatFlags.HorizontalCenter;
+                        textRect = ClientRectangle;
+                        break;
+                }
+
+                TextRenderer.DrawText(g, Text, textFont, textRect, color, flags);
             }
         }
 

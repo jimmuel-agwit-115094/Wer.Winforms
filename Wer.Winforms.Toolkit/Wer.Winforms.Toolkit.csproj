@@ -143,6 +143,9 @@
     <Compile Include="Controls\WerBadge.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Controls\WerLabelIndicator.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Controls\WerDateRangePicker.cs">
       <SubType>UserControl</SubType>
     </Compile>
