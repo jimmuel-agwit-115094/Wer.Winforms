@@ -387,7 +387,8 @@ namespace Wer.Winforms.Toolkit.Controls
             EmbedForm(formInstance);
         }
 
-        private void SetPageTitle(string title)
+        /// <summary>Set or hide the page title shown above the hosted form.</summary>
+        public void SetPageTitle(string title)
         {
             if (_titlePanel == null || _titleLabel == null) return;
             if (!string.IsNullOrEmpty(title))

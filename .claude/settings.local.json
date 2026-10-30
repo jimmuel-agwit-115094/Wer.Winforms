@@ -4,5 +4,10 @@
       "Bash(\"C:/Program Files/Microsoft Visual Studio/18/Professional/MSBuild/Current/Bin/MSBuild.exe\" Wer.Winforms.sln -p:Configuration=Debug -verbosity:minimal)",
       "Bash(\"/c/Program Files/Microsoft Visual Studio/18/Professional/MSBuild/Current/Bin/MSBuild.exe\" Wer.Winforms.sln -p:Configuration=Debug -verbosity:minimal)"
     ]
-  }
+  },
+  "enabledMcpjsonServers": [
+    "azure-devops",
+    "playwright",
+    "datadog-mcp"
+  ]
 }

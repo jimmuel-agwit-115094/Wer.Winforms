@@ -137,6 +137,7 @@ grid.DataSource = products;        // List<T>, DataTable, IEnumerable
 | `PrimaryKeyColumn` | `string` | `null` | Property for Edit button's primary key (doesn't need to be visible) |
 | `ShowEditColumn` | `bool` | `false` | Appends an Edit button column |
 | `TotalAmountColumn` | `string` | `null` | Numeric property to sum in footer. String columns ignored |
+| `AddStatusColumn(name, style, map)` | method | — | Render column as status badges. Multiple allowed; `WerStatusStyle` = `Pill`/`Outline`/`Solid`/`Dot`. Also `RemoveStatusColumn`, `ClearStatusColumns`. Legacy `StatusColumn`/`StatusMap` = single `Pill` column |
 | `PageSize` | `int` | `25` | Rows per page. Footer with pagination shown when rows > PageSize |
 | `ShowFooterPagination` | `bool` | `true` | `false` = render all rows at once, no footer (POS / full-list mode) |
 | `AllowSorting` | `bool` | `true` | Click header to sort |

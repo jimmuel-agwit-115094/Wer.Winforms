@@ -86,6 +86,15 @@ namespace Wer.Winforms.Toolkit.Controls
         private DataTable _filteredTable;
         private string _statusColumn;
         private Dictionary<string, WerStatus> _statusMap;
+        private readonly Dictionary<string, WerDataGridStatusColumn> _statusColumns =
+            new Dictionary<string, WerDataGridStatusColumn>(StringComparer.OrdinalIgnoreCase);
+        private WerDataGridStatusColumn _legacyStatusEntry;
+
+        // --- Status badge metrics ---
+        private const int BadgeDotSize = 8;
+        private const int BadgeDotGap = 6;
+        private const int BadgePadH = 10;
+        private const int BadgeRadius = 12;
         private Font _headerFont;
         private Font _dataFont;
         private Font _editFont;
@@ -380,20 +389,100 @@ namespace Wer.Winforms.Toolkit.Controls
         public string StatusColumn
         {
             get => _statusColumn;
-            set { _statusColumn = value; InvalidateGrid(); }
+            set
+            {
+                RemoveLegacyStatusEntry();
+                _statusColumn = value;
+                SyncLegacyStatusColumn();
+            }
         }
 
         /// <summary>
         /// Maps status text values to WerStatus styles for pill badge rendering.
         /// Usage: grid.StatusMap = new Dictionary&lt;string, WerStatus&gt; { { "Active", WerStatus.Positive } };
         /// Unmatched values render as plain text.
+        /// For multiple status columns or other styles, use AddStatusColumn.
         /// </summary>
         [Browsable(false)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public Dictionary<string, WerStatus> StatusMap
         {
             get => _statusMap;
-            set { _statusMap = value; InvalidateGrid(); }
+            set { _statusMap = value; SyncLegacyStatusColumn(); }
+        }
+
+        /// <summary>
+        /// Registers a column to render as status badges. Each column has its own value map and style.
+        /// Re-adding the same column name replaces the previous definition.
+        /// Usage: grid.AddStatusColumn("PaymentStatus", WerStatusStyle.Solid, new Dictionary&lt;string, WerStatus&gt; { { "Paid", WerStatus.Positive } });
+        /// </summary>
+        public void AddStatusColumn(string columnName, WerStatusStyle style, IDictionary<string, WerStatus> map)
+        {
+            if (string.IsNullOrEmpty(columnName)) return;
+            _statusColumns[columnName] = new WerDataGridStatusColumn(columnName, style, map);
+            InvalidateGrid();
+        }
+
+        /// <summary>
+        /// Removes a status column registration. The column renders as plain text afterwards.
+        /// </summary>
+        public void RemoveStatusColumn(string columnName)
+        {
+            if (string.IsNullOrEmpty(columnName)) return;
+            if (string.Equals(columnName, _statusColumn, StringComparison.OrdinalIgnoreCase))
+            {
+                _statusColumn = null;
+                _legacyStatusEntry = null;
+            }
+            if (_statusColumns.Remove(columnName))
+                InvalidateGrid();
+        }
+
+        /// <summary>
+        /// Removes all status column registrations (including StatusColumn/StatusMap).
+        /// </summary>
+        public void ClearStatusColumns()
+        {
+            _statusColumns.Clear();
+            _legacyStatusEntry = null;
+            _statusColumn = null;
+            _statusMap = null;
+            InvalidateGrid();
+        }
+
+        private void SyncLegacyStatusColumn()
+        {
+            RemoveLegacyStatusEntry();
+            if (_statusColumn != null && _statusMap != null)
+            {
+                _legacyStatusEntry = new WerDataGridStatusColumn(_statusColumn, WerStatusStyle.Pill, _statusMap);
+                _statusColumns[_statusColumn] = _legacyStatusEntry;
+            }
+            InvalidateGrid();
+        }
+
+        // Only removes the entry created by StatusColumn/StatusMap — never one added via AddStatusColumn
+        private void RemoveLegacyStatusEntry()
+        {
+            if (_legacyStatusEntry == null) return;
+            if (_statusColumns.TryGetValue(_legacyStatusEntry.ColumnName, out var current) &&
+                ReferenceEquals(current, _legacyStatusEntry))
+                _statusColumns.Remove(_legacyStatusEntry.ColumnName);
+            _legacyStatusEntry = null;
+        }
+
+        private WerDataGridStatusColumn GetStatusColumn(string propertyName)
+        {
+            if (propertyName == null || _statusColumns.Count == 0) return null;
+            _statusColumns.TryGetValue(propertyName, out var sc);
+            return sc;
+        }
+
+        private int BadgeChromeWidth(WerStatusStyle style)
+        {
+            bool hasDot = style == WerStatusStyle.Pill || style == WerStatusStyle.Dot;
+            int padH = style == WerStatusStyle.Dot ? 0 : BadgePadH;
+            return padH * 2 + (hasDot ? BadgeDotSize + BadgeDotGap : 0);
         }
 
         /// <summary>
@@ -877,12 +966,15 @@ namespace Wer.Winforms.Toolkit.Controls
                     var measureTable = ActiveTable;
                     if (measureTable != null)
                     {
+                        var statusCol = GetStatusColumn(_columns[i].PropertyName);
                         int sampleCount = Math.Min(measureTable.Rows.Count, 50);
                         for (int r = 0; r < sampleCount; r++)
                         {
                             var val = measureTable.Rows[r][_columns[i].PropertyName];
                             string text = FormatValue(val, _columns[i].PropertyName);
                             int tw = TextRenderer.MeasureText(g, text, _dataFont).Width + CellPadding * 2 + 4;
+                            if (statusCol != null && statusCol.Map.ContainsKey(text))
+                                tw += BadgeChromeWidth(statusCol.Style);
                             if (tw > maxW) maxW = tw;
                         }
                     }
@@ -1140,6 +1232,11 @@ namespace Wer.Winforms.Toolkit.Controls
 
             var cellTextColor = _readOnly ? Color.FromArgb(140, 150, 160) : DataText;
 
+            // Resolve status columns once per paint, not per cell
+            var colStatus = new WerDataGridStatusColumn[_columns.Count];
+            for (int i = 0; i < _columns.Count; i++)
+                colStatus[i] = GetStatusColumn(_columns[i].PropertyName);
+
             for (int vi = startRow; vi < endRow && y + RowHeight <= maxY; vi++)
             {
                 var row = view[vi];
@@ -1169,13 +1266,13 @@ namespace Wer.Winforms.Toolkit.Controls
                     var val = row[_columns[i].PropertyName];
                     string text = FormatValue(val, _columns[i].PropertyName);
 
-                    // Status pill badge
-                    if (_statusMap != null && _statusColumn != null &&
-                        string.Equals(_columns[i].PropertyName, _statusColumn, StringComparison.OrdinalIgnoreCase) &&
+                    // Status badge
+                    var statusCol = colStatus[i];
+                    if (statusCol != null &&
                         val != null && val != DBNull.Value &&
-                        _statusMap.TryGetValue(text, out WerStatus status))
+                        statusCol.Map.TryGetValue(text, out WerStatus status))
                     {
-                        DrawStatusBadge(g, textRect, text, status);
+                        DrawStatusBadge(g, textRect, text, status, statusCol.Style);
                         x += colW;
                         continue;
                     }
@@ -1236,35 +1333,69 @@ namespace Wer.Winforms.Toolkit.Controls
             }
         }
 
-        private void DrawStatusBadge(Graphics g, Rectangle cellRect, string text, WerStatus status)
+        private void DrawStatusBadge(Graphics g, Rectangle cellRect, string text, WerStatus status, WerStatusStyle style)
         {
             WerStatusIndicator.GetPalette(status, out Color bg, out Color dot, out Color textColor);
 
-            const int dotSize = 8;
-            const int dotTextGap = 6;
-            const int padH = 10;
-            const int badgeRadius = 12;
+            bool hasDot = style == WerStatusStyle.Pill || style == WerStatusStyle.Dot;
+            int padH = style == WerStatusStyle.Dot ? 0 : BadgePadH;
 
             int textW = TextRenderer.MeasureText(g, text, _dataFont).Width;
-            int badgeW = padH + dotSize + dotTextGap + textW + padH;
+            int badgeW = BadgeChromeWidth(style) + textW;
             int badgeH = Math.Min(24, cellRect.Height - 6);
             int badgeX = cellRect.X;
             int badgeY = cellRect.Y + (cellRect.Height - badgeH) / 2;
 
-            // Pill background
-            using (var path = RoundedRect(badgeX, badgeY, badgeW, badgeH, badgeRadius))
-            using (var brush = new SolidBrush(bg))
-                g.FillPath(brush, path);
+            // Keep badge inside its cell when the column is resized narrow
+            var oldClip = g.Clip;
+            g.SetClip(cellRect, CombineMode.Intersect);
+            try
+            {
+                switch (style)
+                {
+                    case WerStatusStyle.Outline:
+                        using (var path = RoundedRect(badgeX, badgeY, badgeW, badgeH, BadgeRadius))
+                        {
+                            using (var brush = new SolidBrush(Color.White))
+                                g.FillPath(brush, path);
+                            using (var pen = new Pen(dot, 1f))
+                                g.DrawPath(pen, path);
+                        }
+                        break;
+                    case WerStatusStyle.Solid:
+                        using (var path = RoundedRect(badgeX, badgeY, badgeW, badgeH, BadgeRadius))
+                        using (var brush = new SolidBrush(dot))
+                            g.FillPath(brush, path);
+                        textColor = Color.White;
+                        break;
+                    case WerStatusStyle.Dot:
+                        textColor = DataText;
+                        break;
+                    default: // Pill
+                        using (var path = RoundedRect(badgeX, badgeY, badgeW, badgeH, BadgeRadius))
+                        using (var brush = new SolidBrush(bg))
+                            g.FillPath(brush, path);
+                        break;
+                }
 
-            // Dot
-            int dotY = badgeY + (badgeH - dotSize) / 2;
-            using (var brush = new SolidBrush(dot))
-                g.FillEllipse(brush, badgeX + padH, dotY, dotSize, dotSize);
+                int textX = badgeX + padH;
+                if (hasDot)
+                {
+                    int dotY = badgeY + (badgeH - BadgeDotSize) / 2;
+                    using (var brush = new SolidBrush(dot))
+                        g.FillEllipse(brush, textX, dotY, BadgeDotSize, BadgeDotSize);
+                    textX += BadgeDotSize + BadgeDotGap;
+                }
 
-            // Text
-            var textRect = new Rectangle(badgeX + padH + dotSize + dotTextGap, badgeY, textW, badgeH);
-            TextRenderer.DrawText(g, text, _dataFont, textRect, textColor,
-                TextFormatFlags.Left | TextFormatFlags.VerticalCenter | TextFormatFlags.SingleLine | TextFormatFlags.NoPrefix);
+                var textRect = new Rectangle(textX, badgeY, textW, badgeH);
+                TextRenderer.DrawText(g, text, _dataFont, textRect, textColor,
+                    TextFormatFlags.Left | TextFormatFlags.VerticalCenter | TextFormatFlags.SingleLine | TextFormatFlags.NoPrefix);
+            }
+            finally
+            {
+                g.Clip = oldClip;
+                oldClip.Dispose();
+            }
         }
 
         private void DrawFooter(Graphics g, int totalWidth, int totalHeight)

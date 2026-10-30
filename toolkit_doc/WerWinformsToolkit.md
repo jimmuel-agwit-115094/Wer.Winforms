@@ -933,6 +933,30 @@ werDataGrid1.AddClicked += (s, e) => OpenAddForm();
 | `TabChanged` | `EventHandler` | Tab selection changed |
 | `AddClicked` | `EventHandler` | Add button clicked |
 
+**Status columns:** any number of columns can render as status badges, each with its own value map and style.
+
+```csharp
+werDataGrid1.AddStatusColumn("Status", WerStatusStyle.Pill, new Dictionary<string, WerStatus>
+{
+    { "Delivered", WerStatus.Positive }, { "Pending", WerStatus.Neutral }
+});
+werDataGrid1.AddStatusColumn("PaymentStatus", WerStatusStyle.Solid, new Dictionary<string, WerStatus>
+{
+    { "Paid", WerStatus.Positive }, { "Unpaid", WerStatus.Negative }
+});
+werDataGrid1.RemoveStatusColumn("PaymentStatus");
+werDataGrid1.ClearStatusColumns();
+```
+
+| `WerStatusStyle` | Look |
+|------------------|------|
+| `Pill` (default) | Tinted background + dot + colored text |
+| `Outline` | White background, colored border + text, no dot |
+| `Solid` | Filled status color, white text |
+| `Dot` | Colored dot + normal text, no background |
+
+Value matching is case-insensitive; unmapped values render as plain text. Re-adding a column name replaces it. Legacy `StatusColumn` + `StatusMap` still work (rendered as `Pill`).
+
 **Auto-formatting:** `decimal`/`double`/`float` → `#,##0.00` (right-aligned), `DateTime` → `"MMM. dd, yyyy"`.
 
 **Features:**
@@ -973,6 +997,9 @@ werLeftNavMenu1.LogoHeight = 60;
 // Show form (cached — created once, reused)
 werLeftNavMenu1.ShowForm<UsersForm>();
 werLeftNavMenu1.ShowForm<UsersForm>("Users");  // with page title
+
+// Change the page title of the currently hosted form (null/empty hides it)
+werLeftNavMenu1.SetPageTitle("Pre-Orders");
 ```
 
 **Default:** Dock = Left, Width = 220, White background.

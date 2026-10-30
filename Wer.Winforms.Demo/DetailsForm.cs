@@ -15,7 +15,7 @@ namespace Wer.Winforms.Demo
         private void DetailsForm_Load(object sender, EventArgs e)
         {
             
-            SampleGrid.FieldOptions = new[] { "Name", "Category", "Qty", "Price", "Total", "OrderDate", "CreatedAt", "StartTime", "Status" };
+            SampleGrid.FieldOptions = new[] { "Name", "Category", "Qty", "Price", "Total", "OrderDate", "CreatedAt", "StartTime", "Status", "PaymentStatus", "Priority" };
             SampleGrid.PrimaryKeyColumn = "Id";
             SampleGrid.TotalAmountColumn = "Total";
 
@@ -23,7 +23,7 @@ namespace Wer.Winforms.Demo
             SampleGrid.DateOnlyColumns = new List<string> { "OrderDate" };
             SampleGrid.TimeOnlyColumns = new List<string> { "StartTime" };
 
-            SampleGrid.DataSource = new List<Product>
+            var products = new List<Product>
             {
                 new Product { Id = 1,  Name = "Wireless Mouse",       Category = "Electronics", Qty = 25,  Price = 29.99m,   Total = 749.75m,   OrderDate = new DateTime(2026, 9, 1),  Status = "Delivered",  CreatedAt = new DateTime(2026, 8, 28, 9, 15, 30),  StartTime = new DateTime(2026, 9, 1, 8, 0, 0) },
                 new Product { Id = 2,  Name = "USB-C Hub",            Category = "Electronics", Qty = 15,  Price = 49.95m,   Total = 749.25m,   OrderDate = new DateTime(2026, 9, 3),  Status = "Delivered",  CreatedAt = new DateTime(2026, 8, 30, 14, 22, 10), StartTime = new DateTime(2026, 9, 3, 10, 30, 0) },
@@ -54,16 +54,44 @@ namespace Wer.Winforms.Demo
                 new Product { Id = 27, Name = "Wrist Rest Gel",       Category = "Accessories", Qty = 38,  Price = 16.50m,   Total = 627.00m,   OrderDate = new DateTime(2026, 10, 1), Status = "Delivered",  CreatedAt = new DateTime(2026, 9, 29, 12, 0, 0),   StartTime = new DateTime(2026, 10, 1, 7, 0, 0) },
             };
 
+            // Sample payment status / priority values for the extra status columns
+            string[] paymentStatuses = { "Paid", "Unpaid", "Partial" };
+            string[] priorities = { "High", "Normal", "Low" };
+            foreach (var p in products)
+            {
+                p.PaymentStatus = paymentStatuses[p.Id % paymentStatuses.Length];
+                p.Priority = priorities[p.Id % priorities.Length];
+            }
+
+            SampleGrid.DataSource = products;
+
             SampleGrid.ShowEditColumn = true;
             SampleGrid.TotalAmountColumn = "Total";
-            SampleGrid.StatusColumn = "Status";
-            SampleGrid.StatusMap = new Dictionary<string, WerStatus>
+
+            // Order status — default Pill style
+            SampleGrid.AddStatusColumn("Status", WerStatusStyle.Pill, new Dictionary<string, WerStatus>
             {
                 { "Delivered",  WerStatus.Positive },
                 { "Shipped",    WerStatus.Informative },
                 { "Processing", WerStatus.Negative },
                 { "Pending",    WerStatus.Neutral },
-            };
+            });
+
+            // Payment status — Solid style
+            SampleGrid.AddStatusColumn("PaymentStatus", WerStatusStyle.Solid, new Dictionary<string, WerStatus>
+            {
+                { "Paid",    WerStatus.Positive },
+                { "Unpaid",  WerStatus.Negative },
+                { "Partial", WerStatus.Notice },
+            });
+
+            // Priority — Outline style
+            SampleGrid.AddStatusColumn("Priority", WerStatusStyle.Dot, new Dictionary<string, WerStatus>
+            {
+                { "High",   WerStatus.Negative },
+                { "Normal", WerStatus.Informative },
+                { "Low",    WerStatus.Neutral },
+            });
         }
 
         private void werButton1_Click(object sender, EventArgs e)

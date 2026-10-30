@@ -167,6 +167,7 @@
     </Compile>
     <Compile Include="Controls\WerDataGridColumn.cs" />
     <Compile Include="Controls\WerDataGridEditEventArgs.cs" />
+    <Compile Include="Controls\WerDataGridStatusColumn.cs" />
     <Compile Include="WerTheme.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
