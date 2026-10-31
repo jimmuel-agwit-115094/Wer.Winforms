@@ -31,7 +31,6 @@ namespace Wer.Winforms.Demo
             this.SampleGrid = new Wer.Winforms.Toolkit.Controls.WerDataGrid();
             this.werCurrencyField1 = new Wer.Winforms.Toolkit.Controls.WerCurrencyField();
             this.werButton1 = new Wer.Winforms.Toolkit.Controls.WerButton();
-            this.werTextField1 = new Wer.Winforms.Toolkit.Controls.WerTextField();
             this.werBadge1 = new Wer.Winforms.Toolkit.Controls.WerBadge();
             this.SuspendLayout();
             // 
@@ -56,7 +55,6 @@ namespace Wer.Winforms.Demo
             this.werCurrencyField1.LabelText = "Currency Label";
             this.werCurrencyField1.Location = new System.Drawing.Point(22, 11);
             this.werCurrencyField1.Name = "werCurrencyField1";
-            this.werCurrencyField1.ReadOnly = true;
             this.werCurrencyField1.Size = new System.Drawing.Size(350, 60);
             this.werCurrencyField1.TabIndex = 2;
             this.werCurrencyField1.TabStop = false;
@@ -82,17 +80,6 @@ namespace Wer.Winforms.Demo
             this.werButton1.TextAlign = Wer.Winforms.Toolkit.WerButtonTextAlign.Left;
             this.werButton1.Click += new System.EventHandler(this.werButton1_Click);
             // 
-            // werTextField1
-            // 
-            this.werTextField1.BackColor = System.Drawing.Color.Transparent;
-            this.werTextField1.Font = new System.Drawing.Font("Segoe UI", 9.75F);
-            this.werTextField1.LabelText = "TextField Label";
-            this.werTextField1.Location = new System.Drawing.Point(713, 11);
-            this.werTextField1.Name = "werTextField1";
-            this.werTextField1.Size = new System.Drawing.Size(350, 60);
-            this.werTextField1.TabIndex = 4;
-            this.werTextField1.TabStop = false;
-            // 
             // werBadge1
             // 
             this.werBadge1.BackColor = System.Drawing.Color.Transparent;
@@ -110,7 +97,6 @@ namespace Wer.Winforms.Demo
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1565, 1040);
             this.Controls.Add(this.werBadge1);
-            this.Controls.Add(this.werTextField1);
             this.Controls.Add(this.werButton1);
             this.Controls.Add(this.werCurrencyField1);
             this.Controls.Add(this.SampleGrid);
@@ -129,7 +115,6 @@ namespace Wer.Winforms.Demo
         private Toolkit.Controls.WerDataGrid SampleGrid;
         private Toolkit.Controls.WerCurrencyField werCurrencyField1;
         private Toolkit.Controls.WerButton werButton1;
-        private Toolkit.Controls.WerTextField werTextField1;
         private Toolkit.Controls.WerBadge werBadge1;
     }
 }

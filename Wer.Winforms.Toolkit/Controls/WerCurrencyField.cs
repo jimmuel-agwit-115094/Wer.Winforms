@@ -324,9 +324,10 @@ namespace Wer.Winforms.Toolkit.Controls
         protected override void OnVisibleChanged(EventArgs e)
         {
             base.OnVisibleChanged(e);
-            if (_focusOnLoad && Visible && IsHandleCreated)
+            if (_focusOnLoad && Visible && IsHandleCreated && Enabled && !_readOnly)
             {
-                BeginInvoke(new Action(() => _input.Focus()));
+                // TextBox is hidden while empty (placeholder mode) — show it so Focus() succeeds
+                BeginInvoke(new Action(() => { _input.Visible = true; _input.Focus(); }));
             }
         }
 

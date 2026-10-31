@@ -9,7 +9,7 @@ namespace Wer.Winforms.Demo
         public DetailsForm()
         {
             InitializeComponent();
-            werTextField1.FocusOnLoad = true;
+            werCurrencyField1.FocusOnLoad = true;
         }
 
         private void DetailsForm_Load(object sender, EventArgs e)

@@ -271,7 +271,8 @@ namespace Wer.Winforms.Toolkit.Controls
             base.OnVisibleChanged(e);
             if (_focusOnLoad && Visible && IsHandleCreated)
             {
-                BeginInvoke(new Action(() => _input.Focus()));
+                // TextBox is hidden while empty (placeholder mode) — show it so Focus() succeeds
+                BeginInvoke(new Action(() => { _input.Visible = true; _input.Focus(); }));
             }
         }
 
