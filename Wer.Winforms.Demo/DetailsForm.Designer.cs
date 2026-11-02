@@ -32,6 +32,7 @@ namespace Wer.Winforms.Demo
             this.werCurrencyField1 = new Wer.Winforms.Toolkit.Controls.WerCurrencyField();
             this.werButton1 = new Wer.Winforms.Toolkit.Controls.WerButton();
             this.werBadge1 = new Wer.Winforms.Toolkit.Controls.WerBadge();
+            this.werComboBox1 = new Wer.Winforms.Toolkit.Controls.WerComboBox();
             this.SuspendLayout();
             // 
             // SampleGrid
@@ -91,11 +92,26 @@ namespace Wer.Winforms.Demo
             this.werBadge1.TabIndex = 5;
             this.werBadge1.Text = "werBadge1";
             // 
+            // werComboBox1
+            // 
+            this.werComboBox1.AllowTyping = true;
+            this.werComboBox1.BackColor = System.Drawing.Color.Transparent;
+            this.werComboBox1.Font = new System.Drawing.Font("Segoe UI", 9.75F);
+            this.werComboBox1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(33)))), ((int)(((byte)(37)))), ((int)(((byte)(41)))));
+            this.werComboBox1.ItemsArray = new string[0];
+            this.werComboBox1.Location = new System.Drawing.Point(774, 35);
+            this.werComboBox1.Name = "werComboBox1";
+            this.werComboBox1.SelectedValue = null;
+            this.werComboBox1.Size = new System.Drawing.Size(350, 60);
+            this.werComboBox1.TabIndex = 6;
+            this.werComboBox1.TabStop = false;
+            // 
             // DetailsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 17F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1565, 1040);
+            this.Controls.Add(this.werComboBox1);
             this.Controls.Add(this.werBadge1);
             this.Controls.Add(this.werButton1);
             this.Controls.Add(this.werCurrencyField1);
@@ -116,5 +132,6 @@ namespace Wer.Winforms.Demo
         private Toolkit.Controls.WerCurrencyField werCurrencyField1;
         private Toolkit.Controls.WerButton werButton1;
         private Toolkit.Controls.WerBadge werBadge1;
+        private Toolkit.Controls.WerComboBox werComboBox1;
     }
 }

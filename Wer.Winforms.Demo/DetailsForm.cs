@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Windows.Forms;
 using Wer.Winforms.Toolkit.Controls;
 
 namespace Wer.Winforms.Demo
@@ -11,10 +12,22 @@ namespace Wer.Winforms.Demo
             InitializeComponent();
             werCurrencyField1.FocusOnLoad = true;
         }
+        private void PopulateComboBox()
+        {
+            werComboBox1.Items.Clear();
 
+            for (int i = 1; i <= 20; i++)
+            {
+                werComboBox1.Items.Add($"Item {i}");
+            }
+
+            werComboBox1.SelectedIndex = 0;
+        }
         private void DetailsForm_Load(object sender, EventArgs e)
         {
-            
+            PopulateComboBox();
+
+
             SampleGrid.FieldOptions = new[] { "Name", "Category", "Qty", "Price", "Total", "OrderDate", "CreatedAt", "StartTime", "Status", "PaymentStatus", "Priority" };
             SampleGrid.PrimaryKeyColumn = "Id";
             SampleGrid.TotalAmountColumn = "Total";

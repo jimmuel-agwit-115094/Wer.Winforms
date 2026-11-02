@@ -344,6 +344,17 @@ var orders = await _service.GetOrders();
 werDataGrid1.DataSource = orders;
 ```
 
+### WerComboBox — search + scrollable dropdown
+```csharp
+werComboBox1.ItemsArray      = units;   // or DataSource + DisplayMember/ValueMember
+werComboBox1.AllowTyping     = true;    // type to filter (starts-with first, then contains), match bolded
+werComboBox1.MaxVisibleItems = 10;      // popup height cap in rows; scrolls beyond (default 10)
+```
+- Custom non-activating popup (rounded, drop shadow, gray hover, selected item teal) replaces the native dropdown in both modes
+- Keys: ↑/↓, PgUp/PgDn, Enter/Tab commit, Esc cancel, F4/Alt+↓ toggle. Non-typing mode: letter jumps while open
+- Typed text that isn't an exact match reverts to the last selection on leave; empty → `SelectedIndex = -1`
+- Native `ComboBox` stays hidden as item/data store — public API unchanged
+
 ### WerSpinner
 ```csharp
 werSpinner1.IsSpinning = true;
