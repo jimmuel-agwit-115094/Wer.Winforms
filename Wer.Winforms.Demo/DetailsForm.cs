@@ -26,8 +26,15 @@ namespace Wer.Winforms.Demo
         private void DetailsForm_Load(object sender, EventArgs e)
         {
             PopulateComboBox();
+            PopulateGrid();
 
 
+
+
+        }
+
+        private void PopulateGrid()
+        {
             SampleGrid.FieldOptions = new[] { "Name", "Category", "Qty", "Price", "Total", "OrderDate", "CreatedAt", "StartTime", "Status", "PaymentStatus", "Priority" };
             SampleGrid.PrimaryKeyColumn = "Id";
             SampleGrid.TotalAmountColumn = "Total";

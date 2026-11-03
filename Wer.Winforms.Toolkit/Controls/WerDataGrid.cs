@@ -67,8 +67,10 @@ namespace Wer.Winforms.Toolkit.Controls
         private string _totalAmountColumn;
         private int _hoverNavBtn = -1;
         private const int FooterHeight = 44;
-        private const int SearchBarHeightDefault = 42;
-        private const int TabHeight = 30;
+        private const int SearchBarHeightDefault = 52;
+        private const int TabHeight = 38;
+        private const int SearchBoxHeight = 38;
+        private const int SearchBoxMaxWidth = 360;
         private const int TabPadH = 14;
         private const int TabGap = 2;
         private static readonly string[] NavLabels = { "|<", "<", ">", ">|" };
@@ -81,6 +83,14 @@ namespace Wer.Winforms.Toolkit.Controls
         private WerButton _addButton;
         private bool _showAddButton;
         private bool _showSearchField = true;
+        private string _emptyText = "No Records Found";
+        private bool _clearSearchOnHide = true;
+
+        // --- Filter banner ("N records found for ...  [Clear filter]") ---
+        private const int FilterBannerHeight = 46;
+        private const int FilterBannerGap = 10;
+        private Rectangle _clearFilterRect = Rectangle.Empty; // set while painting, used for hit testing
+        private bool _hoverClearFilter;
         private bool _readOnly;
         private string _searchText = "";
         private DataTable _filteredTable;
@@ -298,13 +308,58 @@ namespace Wer.Winforms.Toolkit.Controls
                 if (_searchBox != null) _searchBox.Visible = value;
                 if (!value)
                 {
-                    _searchText = "";
+                    ClearSearch();
+                    _searchText = "";      // in case the search box isn't created yet
                     _filteredTable = null;
                 }
                 PositionSearchBox();
                 RecalcLayout();
                 InvalidateGrid();
             }
+        }
+
+        /// <summary>
+        /// When true (default), the search text is cleared whenever the grid becomes hidden —
+        /// e.g. when WerLeftNavMenu switches to another form — so users don't come back to a
+        /// filtered grid and wonder why records are missing.
+        /// </summary>
+        [Category("Wer Data")]
+        [DefaultValue(true)]
+        [Description("Clear the search text when the grid is hidden (e.g. switching forms).")]
+        public bool ClearSearchOnHide
+        {
+            get => _clearSearchOnHide;
+            set => _clearSearchOnHide = value;
+        }
+
+        /// <summary>
+        /// Clears the search text and shows all rows again. Safe to call anytime.
+        /// </summary>
+        public void ClearSearch()
+        {
+            // Setting the box text fires its TextChanged handler, which rebuilds the
+            // filter, resets page/selection, recalculates layout and repaints.
+            if (_searchBox != null && _searchBox.Text.Length > 0)
+                _searchBox.Text = "";
+        }
+
+        protected override void OnVisibleChanged(EventArgs e)
+        {
+            base.OnVisibleChanged(e);
+            if (!Visible && _clearSearchOnHide && !IsDisposed && !Disposing)
+                ClearSearch();
+        }
+
+        /// <summary>
+        /// Message shown under the empty-state illustration when there are no rows.
+        /// </summary>
+        [Category("Wer Data")]
+        [DefaultValue("No Records Found")]
+        [Description("Message shown under the empty-state illustration when there are no rows.")]
+        public string EmptyText
+        {
+            get => _emptyText;
+            set { _emptyText = value; InvalidateGrid(); }
         }
 
         /// <summary>
@@ -522,6 +577,10 @@ namespace Wer.Winforms.Toolkit.Controls
                 if (_dataTable != null && _columns.Count == 0)
                     AutoGenerateColumns();
 
+                // Rebuild the filtered snapshot from the new data so an active
+                // search doesn't keep rendering stale rows. Keeps the search text.
+                ApplySearch();
+
                 _selectedRowIndex = 0;
                 _scrollOffset = 0;
                 _sortColumnIndex = -1;
@@ -610,7 +669,7 @@ namespace Wer.Winforms.Toolkit.Controls
             Controls.Add(_hScroll);
 
             _searchBox = new WerSearchField();
-            _searchBox.Size = new Size(260, 30);
+            _searchBox.Size = new Size(SearchBoxMaxWidth, SearchBoxHeight);
             _searchBox.Text = "";
             _searchBox.TextChanged += (s, ev) =>
             {
@@ -842,7 +901,13 @@ namespace Wer.Winforms.Toolkit.Controls
 
         private int SearchBarHeight => (_showSearchField || (_tabOptions != null && _tabOptions.Length > 0)) ? SearchBarHeightDefault : 0;
 
-        private int ContentAreaTop => CornerRadius + HeaderHeight + SearchBarHeight;
+        /// <summary>Filter banner is shown while search text is active.</summary>
+        private bool ShowFilterBanner => _showSearchField && !string.IsNullOrEmpty(_searchText);
+
+        /// <summary>Top of the rounded grid container (below search bar and filter banner).</summary>
+        private int GridTop => SearchBarHeight + (ShowFilterBanner ? FilterBannerHeight + FilterBannerGap : 0);
+
+        private int ContentAreaTop => CornerRadius + HeaderHeight + GridTop;
 
         private int FooterTop
         {
@@ -1053,22 +1118,33 @@ namespace Wer.Winforms.Toolkit.Controls
             int w = Width - scrollW;
             int h = Height;
 
-            // White background above grid (search + tabs area)
+            int gridTop = GridTop;
+
+            // White background above grid (search + tabs + filter banner area)
             using (var brush = new SolidBrush(Color.White))
-                g.FillRectangle(brush, 0, 0, w, SearchBarHeight);
+                g.FillRectangle(brush, 0, 0, w, gridTop);
 
             // --- Tabs ---
             if (_tabOptions != null && _tabOptions.Length > 0)
                 DrawTabs(g);
 
+            // --- Filter banner ---
+            if (ShowFilterBanner)
+                DrawFilterBanner(g, w);
+            else
+            {
+                _clearFilterRect = Rectangle.Empty;
+                _hoverClearFilter = false;
+            }
+
             // --- Outer rounded container (below search) ---
-            using (var path = RoundedRect(0, SearchBarHeight, w - 1, h - SearchBarHeight - 1, CornerRadius))
+            using (var path = RoundedRect(0, gridTop, w - 1, h - gridTop - 1, CornerRadius))
             {
                 g.SetClip(path);
 
                 // White background
                 using (var brush = new SolidBrush(Color.White))
-                    g.FillRectangle(brush, 0, SearchBarHeight, w, h - SearchBarHeight);
+                    g.FillRectangle(brush, 0, gridTop, w, h - gridTop);
 
                 // --- Header ---
                 DrawHeader(g, w);
@@ -1091,74 +1167,148 @@ namespace Wer.Winforms.Toolkit.Controls
             }
         }
 
+        /// <summary>
+        /// Rectangles of each tab button. Used by both DrawTabs and GetTabAtX so
+        /// what is drawn and what is clickable always match.
+        /// Widths are measured with the bold font so the selected tab never clips.
+        /// </summary>
+        private Rectangle[] GetTabRects(Graphics g, Font boldFont)
+        {
+            const int innerPad = 4;
+            int y = (SearchBarHeight - TabHeight) / 2 + innerPad;
+            int h = TabHeight - innerPad * 2;
+
+            var rects = new Rectangle[_tabOptions.Length];
+            int x = innerPad;
+            for (int i = 0; i < _tabOptions.Length; i++)
+            {
+                int w = TextRenderer.MeasureText(g, _tabOptions[i], boldFont).Width + TabPadH * 2;
+                rects[i] = new Rectangle(x, y, w, h);
+                x += w + TabGap;
+            }
+            return rects;
+        }
+
         private void DrawTabs(Graphics g)
         {
+            const int innerPad = 4;
             int containerY = (SearchBarHeight - TabHeight) / 2;
-            int innerPad = 4;
 
-            // Measure total width of all tabs
-            using (var measureFont = new Font(WerTheme.FontFamily, 9.75f, FontStyle.Regular))
+            using (var boldFont = new Font(WerTheme.FontFamily, 9.75f, FontStyle.Bold))
+            using (var regularFont = new Font(WerTheme.FontFamily, 9.75f, FontStyle.Regular))
             {
-                int totalTabsW = innerPad;
-                var tabWidths = new int[_tabOptions.Length];
-                for (int i = 0; i < _tabOptions.Length; i++)
-                {
-                    tabWidths[i] = TextRenderer.MeasureText(g, _tabOptions[i], measureFont).Width + TabPadH * 2;
-                    totalTabsW += tabWidths[i];
-                }
-                totalTabsW += innerPad;
+                var rects = GetTabRects(g, boldFont);
+                int containerW = rects[rects.Length - 1].Right + innerPad;
 
-                // Outer rounded container — aligned to grid left edge
-                var containerRect = new Rectangle(0, containerY, totalTabsW, TabHeight);
-                using (var path = RoundedRect(containerRect.X, containerRect.Y, containerRect.Width, containerRect.Height, 8))
+                // Outer track — light gray so the selected tab stands out
+                using (var path = RoundedRect(0, containerY, containerW, TabHeight, 10))
                 {
-                    using (var brush = new SolidBrush(Color.White))
+                    using (var brush = new SolidBrush(Color.FromArgb(244, 246, 248)))
                         g.FillPath(brush, path);
-                    using (var pen = new Pen(Color.FromArgb(210, 215, 222), 1f))
+                    using (var pen = new Pen(Color.FromArgb(214, 219, 226), 1f))
                         g.DrawPath(pen, path);
                 }
 
-                // Draw each tab inside
-                int x = containerRect.X + innerPad;
-                for (int i = 0; i < _tabOptions.Length; i++)
+                for (int i = 0; i < rects.Length; i++)
                 {
-                    string text = _tabOptions[i];
-                    int tabW = tabWidths[i];
-                    var tabRect = new Rectangle(x, containerY + 2, tabW, TabHeight - 4);
-
+                    var r = rects[i];
                     bool selected = i == _tabSelected;
                     bool hovered = i == _hoverTab && !selected;
 
                     if (selected)
                     {
-                        using (var path = RoundedRect(tabRect.X, tabRect.Y, tabRect.Width, tabRect.Height, 6))
-                        using (var brush = new SolidBrush(Color.FromArgb(245, 247, 250)))
-                            g.FillPath(brush, path);
+                        // Tinted teal pill + teal border
+                        using (var path = RoundedRect(r.X, r.Y, r.Width, r.Height, 8))
+                        {
+                            using (var brush = new SolidBrush(Color.FromArgb(222, 239, 243)))
+                                g.FillPath(brush, path);
+                            using (var pen = new Pen(Color.FromArgb(160, 205, 215), 1f))
+                                g.DrawPath(pen, path);
+                        }
                     }
                     else if (hovered)
                     {
-                        using (var path = RoundedRect(tabRect.X, tabRect.Y, tabRect.Width, tabRect.Height, 6))
-                        using (var brush = new SolidBrush(Color.FromArgb(250, 251, 252)))
+                        using (var path = RoundedRect(r.X, r.Y, r.Width, r.Height, 8))
+                        using (var brush = new SolidBrush(Color.FromArgb(232, 236, 240)))
                             g.FillPath(brush, path);
                     }
 
-                    var textColor = selected ? Color.FromArgb(12, 124, 146)
-                                  : hovered ? Color.FromArgb(60, 65, 75)
-                                  : Color.FromArgb(120, 130, 140);
+                    var textColor = selected ? WerTheme.PrimaryColor
+                                  : hovered ? WerTheme.TextColor
+                                  : Color.FromArgb(105, 115, 125);
 
-                    var fontStyle = selected ? FontStyle.Bold : FontStyle.Regular;
-                    using (var font = new Font(WerTheme.FontFamily, 9.75f, fontStyle))
-                        TextRenderer.DrawText(g, text, font, tabRect, textColor,
-                            TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter | TextFormatFlags.NoPrefix);
+                    TextRenderer.DrawText(g, _tabOptions[i], selected ? boldFont : regularFont, r, textColor,
+                        TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter | TextFormatFlags.NoPrefix);
+                }
+            }
+        }
 
-                    x += tabW;
+        private void DrawFilterBanner(Graphics g, int totalWidth)
+        {
+            var banner = new Rectangle(0, SearchBarHeight, totalWidth - 1, FilterBannerHeight);
+            const int padH = 16;
+
+            // Background + border
+            using (var path = RoundedRect(banner.X, banner.Y, banner.Width, banner.Height, 10))
+            {
+                using (var brush = new SolidBrush(Color.FromArgb(232, 244, 247)))
+                    g.FillPath(brush, path);
+                using (var pen = new Pen(Color.FromArgb(196, 225, 232), 1f))
+                    g.DrawPath(pen, path);
+            }
+
+            const TextFormatFlags flags = TextFormatFlags.Left | TextFormatFlags.VerticalCenter
+                                          | TextFormatFlags.NoPrefix | TextFormatFlags.NoPadding;
+
+            using (var iconFont = new Font("Segoe MDL2 Assets", 12f, FontStyle.Regular))
+            using (var regularFont = new Font(WerTheme.FontFamily, 9.75f, FontStyle.Regular))
+            using (var boldFont = new Font(WerTheme.FontFamily, 9.75f, FontStyle.Bold))
+            using (var linkFont = new Font(WerTheme.FontFamily, 9.75f,
+                       _hoverClearFilter ? FontStyle.Bold | FontStyle.Underline : FontStyle.Bold))
+            {
+                // "Clear filter" link on the right (underlined on hover)
+                // Hidden in ReadOnly mode — clicks are blocked there.
+                const string linkText = "Clear filter";
+                if (_readOnly)
+                {
+                    _clearFilterRect = new Rectangle(banner.Right - padH, banner.Y, 0, banner.Height); // zero width = not clickable
+                }
+                else
+                {
+                    var linkSize = TextRenderer.MeasureText(g, linkText, linkFont, Size.Empty, flags);
+                    _clearFilterRect = new Rectangle(banner.Right - padH - linkSize.Width, banner.Y,
+                                                     linkSize.Width, banner.Height);
+                    TextRenderer.DrawText(g, linkText, linkFont, _clearFilterRect, WerTheme.PrimaryColor, flags);
+                }
+
+                // Info icon
+                int x = banner.X + padH;
+                var iconRect = new Rectangle(x, banner.Y, 20, banner.Height);
+                TextRenderer.DrawText(g, WerIcons.Info, iconFont, iconRect, WerTheme.PrimaryColor, flags);
+                x = iconRect.Right + 10;
+
+                // Message: 3 records found for "TEST".  (search term in bold)
+                int count = RowCount;
+                string prefix = count + (count == 1 ? " record found for " : " records found for ");
+                string term = "“" + _searchText + "”";
+                int maxRight = _clearFilterRect.Left - 12;
+
+                int prefixW = TextRenderer.MeasureText(g, prefix, regularFont, Size.Empty, flags).Width;
+                TextRenderer.DrawText(g, prefix, regularFont, new Rectangle(x, banner.Y, Math.Max(0, maxRight - x), banner.Height),
+                    WerTheme.TextColor, flags | TextFormatFlags.EndEllipsis);
+                x += prefixW;
+
+                if (x < maxRight)
+                {
+                    TextRenderer.DrawText(g, term + ".", boldFont, new Rectangle(x, banner.Y, maxRight - x, banner.Height),
+                        WerTheme.TextColor, flags | TextFormatFlags.EndEllipsis);
                 }
             }
         }
 
         private void DrawHeader(Graphics g, int totalWidth)
         {
-            int headerY = SearchBarHeight;
+            int headerY = GridTop;
 
             // Header background with rounded top corners
             var headerBgColor = _readOnly ? Color.FromArgb(240, 241, 243) : HeaderBg;
@@ -1211,11 +1361,100 @@ namespace Wer.Winforms.Toolkit.Controls
         {
             int maxY = ShowFooter ? FooterTop : (totalHeight - CornerRadius);
             int areaHeight = maxY - ContentAreaTop;
-            var rect = new Rectangle(0, ContentAreaTop, totalWidth, areaHeight);
-            using (var font = new Font(WerTheme.FontFamily, 12f, FontStyle.Italic))
-                TextRenderer.DrawText(g, "No Records Found", font, rect,
-                    Color.FromArgb(180, 180, 180),
-                    TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter | TextFormatFlags.NoPrefix);
+            if (areaHeight <= 0) return;
+
+            const TextFormatFlags textFlags = TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter
+                                              | TextFormatFlags.NoPrefix | TextFormatFlags.EndEllipsis;
+            const int gap = 12;
+            const int minIcon = 48, maxIcon = 120;
+
+            using (var font = new Font(WerTheme.FontFamily, 11f, FontStyle.Bold))
+            {
+                string text = _emptyText ?? "";
+                int textH = TextRenderer.MeasureText(g, string.IsNullOrEmpty(text) ? " " : text, font).Height;
+
+                int iconSize = Math.Min(maxIcon, (int)(areaHeight * 0.45f));
+                iconSize = Math.Min(iconSize, totalWidth - 2 * CellPadding);
+
+                if (iconSize < minIcon || iconSize + gap + textH > areaHeight)
+                {
+                    // Too small for the illustration — text only
+                    TextRenderer.DrawText(g, text, font, new Rectangle(0, ContentAreaTop, totalWidth, areaHeight),
+                        WerTheme.MutedColor, textFlags);
+                    return;
+                }
+
+                int groupH = iconSize + gap + textH;
+                int top = ContentAreaTop + (areaHeight - groupH) / 2;
+                var iconBox = new Rectangle((totalWidth - iconSize) / 2, top, iconSize, iconSize);
+                DrawEmptyIllustration(g, iconBox);
+
+                TextRenderer.DrawText(g, text, font, new Rectangle(0, iconBox.Bottom + gap, totalWidth, textH),
+                    WerTheme.MutedColor, textFlags);
+            }
+        }
+
+        /// <summary>
+        /// Vector "no results" illustration: gray circle with ✕, magnifier with "?", small dot, floor shadow.
+        /// All geometry is proportional to <paramref name="box"/> (square).
+        /// </summary>
+        private static void DrawEmptyIllustration(Graphics g, Rectangle box)
+        {
+            float s = box.Width;
+            float ox = box.X, oy = box.Y;
+            PointF P(float x, float y) => new PointF(ox + x * s, oy + y * s);
+            RectangleF Circle(float cx, float cy, float r) => new RectangleF(ox + (cx - r) * s, oy + (cy - r) * s, 2 * r * s, 2 * r * s);
+
+            var oldSmoothing = g.SmoothingMode;
+            var oldTextHint = g.TextRenderingHint;
+            g.SmoothingMode = SmoothingMode.AntiAlias;
+            g.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAlias;
+            try
+            {
+                // Floor shadow
+                using (var b = new SolidBrush(Color.FromArgb(242, 242, 242)))
+                    g.FillEllipse(b, ox + 0.12f * s, oy + 0.93f * s, 0.76f * s, 0.035f * s);
+
+                // Main circle
+                using (var b = new SolidBrush(Color.FromArgb(230, 230, 230)))
+                    g.FillEllipse(b, Circle(0.36f, 0.36f, 0.36f));
+
+                // ✕ inside main circle
+                using (var pen = new Pen(Color.White, Math.Max(2f, 0.044f * s)))
+                {
+                    pen.StartCap = pen.EndCap = LineCap.Round;
+                    g.DrawLine(pen, P(0.205f, 0.21f), P(0.515f, 0.515f));
+                    g.DrawLine(pen, P(0.515f, 0.21f), P(0.205f, 0.515f));
+                }
+
+                // Small dot top-right
+                using (var b = new SolidBrush(Color.FromArgb(240, 240, 240)))
+                    g.FillEllipse(b, Circle(0.925f, 0.285f, 0.075f));
+
+                // Magnifier: handle, lens fill, ring
+                using (var pen = new Pen(Color.FromArgb(128, 128, 128), Math.Max(2f, 0.04f * s)))
+                {
+                    pen.StartCap = pen.EndCap = LineCap.Round;
+                    g.DrawLine(pen, P(0.735f, 0.74f), P(0.835f, 0.835f));
+
+                    var lens = Circle(0.6f, 0.59f, 0.18f);
+                    using (var b = new SolidBrush(Color.White))
+                        g.FillEllipse(b, lens);
+                    g.DrawEllipse(pen, lens);
+
+                    // "?" centered in lens
+                    float qSize = Math.Max(6f, 0.2f * s);
+                    using (var qFont = new Font(WerTheme.FontFamily, qSize, FontStyle.Bold, GraphicsUnit.Pixel))
+                    using (var qBrush = new SolidBrush(Color.FromArgb(225, 225, 225)))
+                    using (var sf = new StringFormat { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center })
+                        g.DrawString("?", qFont, qBrush, lens, sf);
+                }
+            }
+            finally
+            {
+                g.SmoothingMode = oldSmoothing;
+                g.TextRenderingHint = oldTextHint;
+            }
         }
 
         private void DrawRows(Graphics g, int totalWidth, int totalHeight)
@@ -1548,6 +1787,19 @@ namespace Wer.Winforms.Toolkit.Controls
             _hoverEditRow = -1;
             _hoverHeaderCol = -1;
 
+            // "Clear filter" link hover
+            bool overClear = _clearFilterRect.Contains(e.Location);
+            if (overClear != _hoverClearFilter)
+            {
+                _hoverClearFilter = overClear;
+                InvalidateGrid();
+            }
+            if (overClear)
+            {
+                Cursor = Cursors.Hand;
+                return;
+            }
+
             // Tab hover (in search bar area, left side)
             if (e.Y < SearchBarHeight && _tabOptions != null && _tabOptions.Length > 0)
             {
@@ -1562,7 +1814,7 @@ namespace Wer.Winforms.Toolkit.Controls
                 _hoverTab = -1;
             }
 
-            if (e.Y >= SearchBarHeight && e.Y < SearchBarHeight + HeaderHeight)
+            if (e.Y >= GridTop && e.Y < GridTop + HeaderHeight)
             {
                 // Check if near a column border for resize
                 int resizeCol = GetResizeBorderAtX(e.X);
@@ -1607,7 +1859,8 @@ namespace Wer.Winforms.Toolkit.Controls
         protected override void OnMouseLeave(EventArgs e)
         {
             base.OnMouseLeave(e);
-            bool dirty = _hoverRowIndex != -1 || _hoverEditRow != -1 || _hoverHeaderCol != -1 || _hoverNavBtn != -1 || _hoverTab != -1;
+            bool dirty = _hoverRowIndex != -1 || _hoverEditRow != -1 || _hoverHeaderCol != -1 || _hoverNavBtn != -1 || _hoverTab != -1 || _hoverClearFilter;
+            _hoverClearFilter = false;
             _hoverRowIndex = -1;
             _hoverEditRow = -1;
             _hoverHeaderCol = -1;
@@ -1646,6 +1899,15 @@ namespace Wer.Winforms.Toolkit.Controls
                 return;
             }
 
+            // "Clear filter" link click?
+            if (_clearFilterRect.Contains(e.Location))
+            {
+                ClearSearch();
+                _hoverClearFilter = false;
+                Cursor = Cursors.Default;
+                return;
+            }
+
             // Tab click?
             if (e.Y < SearchBarHeight && _tabOptions != null && _tabOptions.Length > 0)
             {
@@ -1657,12 +1919,7 @@ namespace Wer.Winforms.Toolkit.Controls
                     _selectedRowIndex = 0;
 
                     // Clear search on tab change
-                    if (_searchBox != null && !string.IsNullOrEmpty(_searchBox.Text))
-                    {
-                        _searchBox.Text = "";
-                        _searchText = "";
-                        _filteredTable = null;
-                    }
+                    ClearSearch();
 
                     InvalidateGrid();
                     TabChanged?.Invoke(this, EventArgs.Empty);
@@ -1685,7 +1942,7 @@ namespace Wer.Winforms.Toolkit.Controls
             this.Focus();
 
             // Start column resize?
-            if (e.Y >= SearchBarHeight && e.Y < SearchBarHeight + HeaderHeight)
+            if (e.Y >= GridTop && e.Y < GridTop + HeaderHeight)
             {
                 int resizeCol = GetResizeBorderAtX(e.X);
                 if (resizeCol >= 0)
@@ -1699,7 +1956,7 @@ namespace Wer.Winforms.Toolkit.Controls
             }
 
             // Header click → sort
-            if (e.Y >= SearchBarHeight && e.Y < SearchBarHeight + HeaderHeight && _allowSorting)
+            if (e.Y >= GridTop && e.Y < GridTop + HeaderHeight && _allowSorting)
             {
                 int col = GetColumnAtX(e.X);
                 if (col >= 0 && col < _columns.Count)
@@ -1756,6 +2013,11 @@ namespace Wer.Winforms.Toolkit.Controls
         {
             if (_searchBox == null) return;
             int scrollW = _vScroll != null && _vScroll.Visible ? _vScroll.Width : 0;
+
+            // Wide search box (360px), but never more than 40% of the grid so it can't cover the tabs
+            int searchW = Math.Max(160, Math.Min(SearchBoxMaxWidth, (Width * 40) / 100));
+            if (_searchBox.Width != searchW) _searchBox.Width = searchW;
+
             int searchY = (SearchBarHeight - _searchBox.Height) / 2;
             _searchBox.Location = new Point(Width - scrollW - _searchBox.Width - 2, Math.Max(0, searchY));
             _searchBox.BringToFront();
@@ -1776,7 +2038,7 @@ namespace Wer.Winforms.Toolkit.Controls
             if (_vScroll != null && _vScroll.Visible)
             {
                 int hScrollH = (_hScroll != null && _hScroll.Visible) ? _hScroll.Height : 0;
-                _vScroll.SetBounds(Width - _vScroll.Width, SearchBarHeight, _vScroll.Width, Height - SearchBarHeight - hScrollH);
+                _vScroll.SetBounds(Width - _vScroll.Width, GridTop, _vScroll.Width, Height - GridTop - hScrollH);
                 _vScroll.BringToFront();
             }
         }
@@ -1849,19 +2111,13 @@ namespace Wer.Winforms.Toolkit.Controls
         private int GetTabAtX(int mx, int my)
         {
             if (_tabOptions == null || _tabOptions.Length == 0) return -1;
-            int y = (SearchBarHeight - TabHeight) / 2;
-            if (my < y || my > y + TabHeight) return -1;
 
-            using (var bmp = new Bitmap(1, 1))
-            using (var g = Graphics.FromImage(bmp))
+            using (var g = CreateGraphics())
+            using (var boldFont = new Font(WerTheme.FontFamily, 9.75f, FontStyle.Bold))
             {
-                int x = 4;
-                for (int i = 0; i < _tabOptions.Length; i++)
-                {
-                    int textW = TextRenderer.MeasureText(g, _tabOptions[i], _dataFont).Width + TabPadH * 2;
-                    if (mx >= x && mx < x + textW) return i;
-                    x += textW + TabGap;
-                }
+                var rects = GetTabRects(g, boldFont);
+                for (int i = 0; i < rects.Length; i++)
+                    if (rects[i].Contains(mx, my)) return i;
             }
             return -1;
         }

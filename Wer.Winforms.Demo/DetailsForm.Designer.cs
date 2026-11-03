@@ -44,10 +44,13 @@ namespace Wer.Winforms.Demo
             this.SampleGrid.PrimaryKeyColumn = null;
             this.SampleGrid.RowHeight = 40;
             this.SampleGrid.ShowFooterPagination = false;
-            this.SampleGrid.ShowSearchField = false;
             this.SampleGrid.Size = new System.Drawing.Size(1521, 718);
             this.SampleGrid.TabIndex = 1;
-            this.SampleGrid.TabOptions = new string[0];
+            this.SampleGrid.TabOptions = new string[] {
+        "Test",
+        "Add",
+        "Edit",
+        "Twor"};
             // 
             // werCurrencyField1
             // 
@@ -73,7 +76,7 @@ namespace Wer.Winforms.Demo
             this.werButton1.Cursor = System.Windows.Forms.Cursors.Hand;
             this.werButton1.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F);
             this.werButton1.FontSize = 13F;
-            this.werButton1.Location = new System.Drawing.Point(462, 35);
+            this.werButton1.Location = new System.Drawing.Point(395, 35);
             this.werButton1.Name = "werButton1";
             this.werButton1.Size = new System.Drawing.Size(202, 44);
             this.werButton1.TabIndex = 3;
@@ -86,7 +89,7 @@ namespace Wer.Winforms.Demo
             this.werBadge1.BackColor = System.Drawing.Color.Transparent;
             this.werBadge1.BadgeColor = System.Drawing.Color.FromArgb(((int)(((byte)(12)))), ((int)(((byte)(124)))), ((int)(((byte)(146)))));
             this.werBadge1.Font = new System.Drawing.Font("Segoe UI", 8.5F, System.Drawing.FontStyle.Bold);
-            this.werBadge1.Location = new System.Drawing.Point(556, 45);
+            this.werBadge1.Location = new System.Drawing.Point(502, 47);
             this.werBadge1.Name = "werBadge1";
             this.werBadge1.Size = new System.Drawing.Size(95, 24);
             this.werBadge1.TabIndex = 5;
@@ -99,7 +102,7 @@ namespace Wer.Winforms.Demo
             this.werComboBox1.Font = new System.Drawing.Font("Segoe UI", 9.75F);
             this.werComboBox1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(33)))), ((int)(((byte)(37)))), ((int)(((byte)(41)))));
             this.werComboBox1.ItemsArray = new string[0];
-            this.werComboBox1.Location = new System.Drawing.Point(774, 35);
+            this.werComboBox1.Location = new System.Drawing.Point(632, 19);
             this.werComboBox1.Name = "werComboBox1";
             this.werComboBox1.SelectedValue = null;
             this.werComboBox1.Size = new System.Drawing.Size(350, 60);

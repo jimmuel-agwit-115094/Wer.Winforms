@@ -140,6 +140,7 @@ grid.DataSource = products;        // List<T>, DataTable, IEnumerable
 | `AddStatusColumn(name, style, map)` | method | — | Render column as status badges. Multiple allowed; `WerStatusStyle` = `Pill`/`Outline`/`Solid`/`Dot`. Also `RemoveStatusColumn`, `ClearStatusColumns`. Legacy `StatusColumn`/`StatusMap` = single `Pill` column |
 | `PageSize` | `int` | `25` | Rows per page. Footer with pagination shown when rows > PageSize |
 | `ShowFooterPagination` | `bool` | `true` | `false` = render all rows at once, no footer (POS / full-list mode) |
+| `EmptyText` | `string` | `"No Records Found"` | Message under empty-state illustration |
 | `AllowSorting` | `bool` | `true` | Click header to sort |
 | `ShowHorizontalScroll` | `bool` | `false` | Horizontal scrollbar when columns exceed width |
 | `TabOptions` | `string[]` | `null` | Filter tabs above grid (via Properties collection editor) |
@@ -159,7 +160,10 @@ grid.DataSource = products;        // List<T>, DataTable, IEnumerable
 - Pagination footer with "1 – 25 of N", nav buttons, optional total amount
 - Auto-formatting: `decimal`/`double`/`float` → `#,##0.00` (right-aligned), `DateTime` → `MMM. dd, yyyy`
 - Rounded container, rounded selection highlight, subtle row separators
-- "No Records Found" in light gray italic when empty/no search results
+- Filter banner below search bar while search text is active: "N records found for “X”." + **Clear filter** link (hidden in ReadOnly)
+- `ClearSearch()` public method; `ClearSearchOnHide` (default `true`) clears search when the grid is hidden (e.g. WerLeftNavMenu switching forms, tab page switch)
+- Tabs: gray track, selected tab = teal tinted pill + teal border + bold teal text; drawing and hit-testing share `GetTabRects`
+- Empty state (no rows / no search results): vector-drawn illustration (gray circle ✕ + magnifier ?) with bold gray `EmptyText` below; falls back to text only when grid is too short
 - Tab filter options in rounded group box above grid
 - Vertical scroll when page rows exceed visible area
 
