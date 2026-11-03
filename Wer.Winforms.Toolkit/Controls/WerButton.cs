@@ -19,6 +19,7 @@ namespace Wer.Winforms.Toolkit.Controls
         private string _iconCode = "";
         private float _fontSize = 0f;
         private bool _boldFont;
+        private bool _semiBoldFont;
         private Font _customFont;
         private DialogResult _dialogResult = DialogResult.None;
 
@@ -141,18 +142,45 @@ namespace Wer.Winforms.Toolkit.Controls
             }
         }
 
+        /// <summary>
+        /// Use semibold font weight for button label ("Segoe UI Semibold").
+        /// Ignored when BoldFont is true.
+        /// </summary>
+        [Category("WerButtons")]
+        [DefaultValue(false)]
+        [Description("Use semibold font weight for button label. Ignored when BoldFont is true.")]
+        public bool SemiBoldFont
+        {
+            get => _semiBoldFont;
+            set
+            {
+                _semiBoldFont = value;
+                RebuildCustomFont();
+                Invalidate();
+            }
+        }
+
         private void RebuildCustomFont()
         {
             _customFont?.Dispose();
             _customFont = null;
 
             float size = _fontSize > 0 ? _fontSize : WerTheme.ButtonSize;
-            FontStyle style = _boldFont ? FontStyle.Bold : WerTheme.ButtonFont.Style;
 
             // Only create custom font if different from theme default
-            if (_fontSize > 0 || _boldFont)
-                _customFont = new Font(WerTheme.FontFamily, size, style);
+            if (_boldFont)
+                _customFont = new Font(WerTheme.FontFamily, size, FontStyle.Bold);
+            else if (_semiBoldFont)
+                // .NET 4.7.2 has no FontStyle.SemiBold — use the Semibold family (built into Windows)
+                _customFont = new Font("Segoe UI Semibold", size, FontStyle.Regular);
+            else if (_fontSize > 0)
+                _customFont = new Font(WerTheme.FontFamily, size, WerTheme.ButtonFont.Style);
         }
+
+        /// <summary>The font actually used to draw the label (for measuring text width).</summary>
+        [Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public Font LabelFont => ActiveFont;
 
         private Font ActiveFont => _customFont ?? WerTheme.ButtonFont;
 

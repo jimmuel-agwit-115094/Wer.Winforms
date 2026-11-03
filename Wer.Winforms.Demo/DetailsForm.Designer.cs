@@ -43,6 +43,8 @@ namespace Wer.Winforms.Demo
             this.SampleGrid.Name = "SampleGrid";
             this.SampleGrid.PrimaryKeyColumn = null;
             this.SampleGrid.RowHeight = 40;
+            this.SampleGrid.ShowAddButton = true;
+            this.SampleGrid.ShowEditColumn = true;
             this.SampleGrid.ShowFooterPagination = false;
             this.SampleGrid.Size = new System.Drawing.Size(1521, 718);
             this.SampleGrid.TabIndex = 1;

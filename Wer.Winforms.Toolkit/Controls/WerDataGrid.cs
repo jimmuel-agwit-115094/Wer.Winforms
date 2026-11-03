@@ -69,7 +69,7 @@ namespace Wer.Winforms.Toolkit.Controls
         private const int FooterHeight = 44;
         private const int SearchBarHeightDefault = 52;
         private const int TabHeight = 38;
-        private const int SearchBoxHeight = 38;
+        private const int SearchBoxHeight = 36;   // Add button uses the same height so they line up
         private const int SearchBoxMaxWidth = 360;
         private const int TabPadH = 14;
         private const int TabGap = 2;
@@ -109,7 +109,6 @@ namespace Wer.Winforms.Toolkit.Controls
         private Font _dataFont;
         private Font _editFont;
         private Font _footerFont;
-        private Font _addButtonFont;
 
         public event EventHandler<WerDataGridEditEventArgs> EditClicked;
 
@@ -160,8 +159,8 @@ namespace Wer.Winforms.Toolkit.Controls
                     // Auto-size button width to text
                     using (var g = _addButton.CreateGraphics())
                     {
-                        int textW = TextRenderer.MeasureText(g, _addButtonText, _addButton.Font).Width;
-                        _addButton.Width = Math.Max(80, textW + 24);
+                        int textW = TextRenderer.MeasureText(g, _addButtonText, _addButton.LabelFont).Width;
+                        _addButton.Width = Math.Max(80, textW + 32);
                     }
                     PositionSearchBox();
                 }
@@ -684,9 +683,8 @@ namespace Wer.Winforms.Toolkit.Controls
 
             _addButton = new WerButton();
             _addButton.Text = "Add";
-            _addButtonFont = new Font(WerTheme.FontFamily, 9.75f, FontStyle.Bold);
-            _addButton.Font = _addButtonFont;
-            _addButton.Size = new Size(80, 30);
+            _addButton.SemiBoldFont = true;   // WerButton owns and disposes this font
+            _addButton.Size = new Size(80, SearchBoxHeight);
             _addButton.Visible = false;
             _addButton.Click += (s, ev) => AddClicked?.Invoke(this, EventArgs.Empty);
             Controls.Add(_addButton);
@@ -2028,8 +2026,9 @@ namespace Wer.Winforms.Toolkit.Controls
                 _addButton.Visible = _showAddButton;
                 if (_showAddButton)
                 {
-                    int btnY = (SearchBarHeight - _addButton.Height) / 2;
-                    _addButton.Location = new Point(_searchBox.Left - _addButton.Width - 8, Math.Max(0, btnY));
+                    // Same height and top as the search box
+                    if (_addButton.Height != _searchBox.Height) _addButton.Height = _searchBox.Height;
+                    _addButton.Location = new Point(_searchBox.Left - _addButton.Width - 12, _searchBox.Top);
                     _addButton.BringToFront();
                 }
             }
@@ -2185,7 +2184,6 @@ namespace Wer.Winforms.Toolkit.Controls
                 _dataFont?.Dispose();
                 _editFont?.Dispose();
                 _footerFont?.Dispose();
-                _addButtonFont?.Dispose();
                 _searchBox?.Dispose();
             }
             base.Dispose(disposing);
